@@ -1,0 +1,33 @@
+using Microsoft.AspNetCore.Mvc;
+
+#pragma warning disable CS1591
+
+namespace Microsoft.AspNetCore.Builder;
+
+public static class {{ assembly }}RoutesBuilder
+{
+	public static IEndpointRouteBuilder Map{{ assembly }}Endpoints(
+		this IEndpointRouteBuilder app
+	)
+	{
+		{{~ for m in methods ~}}
+		_ = app
+			.{{ m.method_name }}(
+				"{{ m.route }}",
+				async (
+					[AsParameters] {{ m.parameter_type }} parameters,
+					[FromServices] {{ m.class_name }}.Handler handler,
+					CancellationToken token
+				) => await handler.HandleAsync(parameters, token)
+			)
+			{{~ if m.allow_anonymous ~}}
+		    .AllowAnonymous()
+			{{~ else if m.authorize ~}}
+			.RequireAuthorization({{ if !string.empty m.authorize_policy }}"{{ m.authorize_policy }}"{{ end }})
+			{{~ end ~}}
+			;
+
+		{{~ end ~}}
+		return app;
+	}
+}

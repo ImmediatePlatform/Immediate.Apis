@@ -1,4 +1,4 @@
-namespace Immediate.Apis.Tests.GeneratorTests.SimpleHandler;
+namespace Immediate.Apis.Tests.GeneratorTests;
 
 public class SimpleApiTests
 {

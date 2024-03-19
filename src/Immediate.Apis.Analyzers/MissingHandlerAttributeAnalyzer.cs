@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using Immediate.Handlers.Analyzers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -36,15 +35,6 @@ public sealed class MissingHandlerAttributeAnalyzer : DiagnosticAnalyzer
 		context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.NamedType);
 	}
 
-	private static readonly string[] s_validAttributes =
-		[
-			"Immediate.Apis.Shared.MapGetAttribute",
-			"Immediate.Apis.Shared.MapPostAttribute",
-			"Immediate.Apis.Shared.MapPutAttribute",
-			"Immediate.Apis.Shared.MapPatchAttribute",
-			"Immediate.Apis.Shared.MapDeleteAttribute",
-		];
-
 	private static void AnalyzeSymbol(SymbolAnalysisContext context)
 	{
 		var token = context.CancellationToken;
@@ -55,7 +45,7 @@ public sealed class MissingHandlerAttributeAnalyzer : DiagnosticAnalyzer
 
 		if (!namedTypeSymbol
 				.GetAttributes()
-				.Any(x => s_validAttributes.Contains(x.AttributeClass?.ToString()))
+				.Any(x => Utility.ValidAttributes.Contains(x.AttributeClass?.ToString()))
 		)
 		{
 			return;

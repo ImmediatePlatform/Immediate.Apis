@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<TargetFramework>netstandard2.0</TargetFramework>
+	<IsPackable>true</IsPackable>
+	<IncludeBuildOutput>false</IncludeBuildOutput>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Nuget">
+	<Title>Immediate.Apis</Title>
+	<Description>An implementation of the mediator pattern in .NET using source-generation.</Description>
+
+	<Authors>Immediate.Apis Developers</Authors>
+
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageReadmeFile>readme.md</PackageReadmeFile>
+
+	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+	<RepositoryUrl>https://github.com/viceroypenguin/Immediate.Apis</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Immediate.Handlers" />
+  </ItemGroup>
+
+  <!--
+	This ensures the library will be packaged as a source generator when we use `dotnet pack`
+	-->
+  <ItemGroup>
+	<None Include="../../readme.md" Pack="true" PackagePath="/" />
+	<None Include="$(PkgScriban)/lib/netstandard2.0/Scriban.dll" Pack="true" PackagePath="analyzers/roslyn4.8/dotnet/cs" Visible="false" />
+	<None Include="../Immediate.Apis.Shared/bin/$(Configuration)/netstandard2.0/Immediate.Apis.Shared.dll" Pack="true" PackagePath="analyzers/roslyn4.8/dotnet/cs" Visible="true" />
+	<None Include="../Immediate.Apis.Generators/bin/$(Configuration)/$(TargetFramework)/Immediate.Apis.Generators.dll" Pack="true" PackagePath="analyzers/roslyn4.8/dotnet/cs" Visible="true" />
+	<None Include="../Immediate.Apis.Shared/bin/$(Configuration)/$(TargetFramework)/Immediate.Apis.Shared.dll" Pack="true" PackagePath="lib/netstandard2.0" Visible="true" />
+	<None Include="../Immediate.Apis.Shared/bin/$(Configuration)/$(TargetFramework)/Immediate.Apis.Shared.xml" Pack="true" PackagePath="lib/netstandard2.0" Visible="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Scriban" PrivateAssets="all" GeneratePathProperty="true" />
+	<PackageReference Include="MinVer" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<ProjectReference Include="../Immediate.Apis.Generators/Immediate.Apis.Generators.csproj" ReferenceOutputAssembly="false" />
+	<ProjectReference Include="../Immediate.Apis.Shared/Immediate.Apis.Shared.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <PropertyGroup Label="MinVer">
+	<MinVerAutoIncrement>minor</MinVerAutoIncrement>
+	<MinVerDefaultPreReleaseIdentifiers>preview.0</MinVerDefaultPreReleaseIdentifiers>
+	<MinVerTagPrefix>v</MinVerTagPrefix>
+  </PropertyGroup>
+
+</Project>

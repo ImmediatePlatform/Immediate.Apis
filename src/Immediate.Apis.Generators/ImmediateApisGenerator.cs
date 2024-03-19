@@ -66,7 +66,7 @@ public sealed class ImmediateApisGenerator : IIncrementalGenerator
 
 		var attribute = context.Attributes[0];
 		var method = attribute.AttributeClass!.Name[..^9];
-		var route = (string?)attribute.ConstructorArguments[0].Value;
+		var route = (string?)attribute.ConstructorArguments.FirstOrDefault().Value;
 
 		if (route == null)
 			return null;
@@ -154,6 +154,9 @@ public sealed class ImmediateApisGenerator : IIncrementalGenerator
 		string assemblyName
 	)
 	{
+		if (methods.Count == 0)
+			return;
+
 		var token = context.CancellationToken;
 
 		var template = Utility.GetTemplate("Routes");

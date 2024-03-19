@@ -1,6 +1,6 @@
 namespace Immediate.Apis.Tests.GeneratorTests;
 
-public class ApiAuthorizeTests
+public sealed class ApiAuthorizeTests
 {
 	[Theory]
 	[InlineData("Get")]

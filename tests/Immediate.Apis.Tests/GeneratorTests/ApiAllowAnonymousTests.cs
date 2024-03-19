@@ -1,6 +1,6 @@
 namespace Immediate.Apis.Tests.GeneratorTests;
 
-public class ApiAllowAnonymousTests
+public sealed class ApiAllowAnonymousTests
 {
 	[Theory]
 	[InlineData("Get")]

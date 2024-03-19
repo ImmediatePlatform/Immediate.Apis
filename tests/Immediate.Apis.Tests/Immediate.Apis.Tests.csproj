@@ -9,6 +9,8 @@
 	<PackageReference Include="coverlet.collector" PrivateAssets="All" />
 	<PackageReference Include="coverlet.msbuild" PrivateAssets="All" />
 	<PackageReference Include="GitHubActionsTestLogger" PrivateAssets="All" />
+	<PackageReference Include="Immediate.Handlers" />
+	<PackageReference Include="Microsoft.AspNetCore.Authorization" />
 	<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
 	<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit" />
 	<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.XUnit" />
@@ -19,10 +21,6 @@
 	<PackageReference Include="Verify.Xunit" />
 	<PackageReference Include="xunit" />
 	<PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
-  </ItemGroup>
-
-  <ItemGroup>
-	<PackageReference Include="Immediate.Handlers" />
   </ItemGroup>
 
   <ItemGroup>

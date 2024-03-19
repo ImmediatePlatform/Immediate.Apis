@@ -1,6 +1,6 @@
 namespace Immediate.Apis.Tests.GeneratorTests;
 
-public class SimpleApiTests
+public sealed class SimpleApiTests
 {
 	[Theory]
 	[InlineData("Get")]
@@ -34,7 +34,9 @@ public class SimpleApiTests
 			""");
 
 		var result = driver.GetRunResult();
+
 		Assert.Empty(result.Diagnostics);
+		_ = Assert.Single(result.GeneratedTrees);
 
 		_ = await Verify(result)
 			.UseParameters(method);

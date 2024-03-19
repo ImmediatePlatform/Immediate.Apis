@@ -36,7 +36,9 @@ public class ApiAllowAnonymousTests
 			""");
 
 		var result = driver.GetRunResult();
+
 		Assert.Empty(result.Diagnostics);
+		_ = Assert.Single(result.GeneratedTrees);
 
 		_ = await Verify(result)
 			.UseParameters(method);

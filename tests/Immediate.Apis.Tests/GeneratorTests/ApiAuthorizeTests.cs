@@ -3,11 +3,7 @@ namespace Immediate.Apis.Tests.GeneratorTests;
 public sealed class ApiAuthorizeTests
 {
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodWithSimpleAuthorizeTest(string method)
 	{
 		var driver = GeneratorTestHelper.GetDriver(
@@ -45,11 +41,7 @@ public sealed class ApiAuthorizeTests
 	}
 
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodWithAuthorizeConstructorTest(string method)
 	{
 		var driver = GeneratorTestHelper.GetDriver(
@@ -87,11 +79,7 @@ public sealed class ApiAuthorizeTests
 	}
 
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodWithAuthorizeNamedPolicyArgumentTest(string method)
 	{
 		var driver = GeneratorTestHelper.GetDriver(

@@ -3,11 +3,7 @@ namespace Immediate.Apis.Tests.GeneratorTests;
 public sealed class SimpleApiTests
 {
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodHandleTest(string method)
 	{
 		var driver = GeneratorTestHelper.GetDriver(
@@ -43,11 +39,7 @@ public sealed class SimpleApiTests
 	}
 
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodHandleAsyncTest(string method)
 	{
 		var driver = GeneratorTestHelper.GetDriver(
@@ -83,11 +75,7 @@ public sealed class SimpleApiTests
 	}
 
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMultipleHandlersTest(string method)
 	{
 		var driver = GeneratorTestHelper.GetDriver(

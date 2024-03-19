@@ -33,11 +33,7 @@ public sealed class InvalidAuthorizeAttributeAnalyzerTests
 		).RunAsync();
 
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task AuthorizeRolesShouldError(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<InvalidAuthorizeAttributeAnalyzer>(
 			$$"""
@@ -67,11 +63,7 @@ public sealed class InvalidAuthorizeAttributeAnalyzerTests
 		).RunAsync();
 
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task AuthorizeAuthenticationSchemesShouldError(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<InvalidAuthorizeAttributeAnalyzer>(
 			$$"""
@@ -101,11 +93,7 @@ public sealed class InvalidAuthorizeAttributeAnalyzerTests
 		).RunAsync();
 
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task AuthorizeShouldNotError(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<InvalidAuthorizeAttributeAnalyzer>(
 			$$"""
@@ -135,11 +123,7 @@ public sealed class InvalidAuthorizeAttributeAnalyzerTests
 		).RunAsync();
 
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task AuthorizeConstructorShouldNotError(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<InvalidAuthorizeAttributeAnalyzer>(
 			$$"""
@@ -169,11 +153,7 @@ public sealed class InvalidAuthorizeAttributeAnalyzerTests
 		).RunAsync();
 
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task AuthorizePolicyShouldNotError(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<InvalidAuthorizeAttributeAnalyzer>(
 			$$"""
@@ -203,11 +183,7 @@ public sealed class InvalidAuthorizeAttributeAnalyzerTests
 		).RunAsync();
 
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task AuthorizeAndAllowAnonymousShouldWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<InvalidAuthorizeAttributeAnalyzer>(
 			$$"""

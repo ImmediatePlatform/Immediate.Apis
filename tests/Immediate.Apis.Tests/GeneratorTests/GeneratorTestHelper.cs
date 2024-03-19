@@ -18,15 +18,7 @@ public static class GeneratorTestHelper
 			references:
 			[
 				.. Basic.Reference.Assemblies.Net80.References.All,
-				MetadataReference.CreateFromFile("./Immediate.Handlers.Shared.dll"),
-				MetadataReference.CreateFromFile("./Immediate.Apis.Shared.dll"),
-				MetadataReference.CreateFromFile("./Microsoft.Extensions.DependencyInjection.dll"),
-				MetadataReference.CreateFromFile("./Microsoft.Extensions.DependencyInjection.Abstractions.dll"),
-				MetadataReference.CreateFromFile("./Microsoft.AspNetCore.Authorization.dll"),
-				MetadataReference.CreateFromFile("./Microsoft.AspNetCore.Metadata.dll"),
-				MetadataReference.CreateFromFile("./Microsoft.Extensions.Logging.Abstractions.dll"),
-				MetadataReference.CreateFromFile("./Microsoft.Extensions.Options.dll"),
-				MetadataReference.CreateFromFile("./Microsoft.Extensions.Primitives.dll"),
+				.. Utility.GetMetadataReferences(),
 			]
 		);
 

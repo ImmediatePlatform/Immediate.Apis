@@ -25,6 +25,7 @@
 
   <ItemGroup>
 	<ProjectReference Include="../../src/Immediate.Apis.Shared/Immediate.Apis.Shared.csproj" />
+	<ProjectReference Include="../../src/Immediate.Apis.Analyzers/Immediate.Apis.Analyzers.csproj" />
 	<ProjectReference Include="../../src/Immediate.Apis.Generators/Immediate.Apis.Generators.csproj" />
   </ItemGroup>
 

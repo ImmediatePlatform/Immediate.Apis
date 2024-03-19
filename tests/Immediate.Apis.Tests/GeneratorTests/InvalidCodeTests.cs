@@ -3,11 +3,7 @@ namespace Immediate.Apis.Tests.GeneratorTests;
 public sealed class InvalidCodeTests
 {
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public void MissingRoute(string method)
 	{
 		var driver = GeneratorTestHelper.GetDriver(
@@ -40,11 +36,7 @@ public sealed class InvalidCodeTests
 	}
 
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public void MissingHandlerAttribute(string method)
 	{
 		var driver = GeneratorTestHelper.GetDriver(
@@ -75,11 +67,7 @@ public sealed class InvalidCodeTests
 	}
 
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public void NestedClass(string method)
 	{
 		var driver = GeneratorTestHelper.GetDriver(
@@ -115,11 +103,7 @@ public sealed class InvalidCodeTests
 	}
 
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public void MissingHandler(string method)
 	{
 		var driver = GeneratorTestHelper.GetDriver(
@@ -145,11 +129,7 @@ public sealed class InvalidCodeTests
 	}
 
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public void InvalidHandler(string method)
 	{
 		var driver = GeneratorTestHelper.GetDriver(
@@ -181,11 +161,7 @@ public sealed class InvalidCodeTests
 	}
 
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public void AuthorizeUsesAuthenticationSchemes(string method)
 	{
 		var driver = GeneratorTestHelper.GetDriver(
@@ -220,11 +196,7 @@ public sealed class InvalidCodeTests
 	}
 
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public void AuthorizeUsesRoles(string method)
 	{
 		var driver = GeneratorTestHelper.GetDriver(

@@ -3,11 +3,7 @@ namespace Immediate.Apis.Tests.GeneratorTests;
 public sealed class ApiAllowAnonymousTests
 {
 	[Theory]
-	[InlineData("Get")]
-	[InlineData("Post")]
-	[InlineData("Patch")]
-	[InlineData("Put")]
-	[InlineData("Delete")]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodWithAllowAnonymousTest(string method)
 	{
 		var driver = GeneratorTestHelper.GetDriver(

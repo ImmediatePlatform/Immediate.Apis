@@ -179,4 +179,82 @@ public sealed class InvalidCodeTests
 		Assert.Empty(result.Diagnostics);
 		Assert.Empty(result.GeneratedTrees);
 	}
+
+	[Theory]
+	[InlineData("Get")]
+	[InlineData("Post")]
+	[InlineData("Patch")]
+	[InlineData("Put")]
+	[InlineData("Delete")]
+	public void AuthorizeUsesAuthenticationSchemes(string method)
+	{
+		var driver = GeneratorTestHelper.GetDriver(
+			$$"""
+			using System.Threading.Tasks;
+			using Immediate.Apis.Shared;
+			using Immediate.Handlers.Shared;
+			using Microsoft.AspNetCore.Authorization;
+			
+			namespace Dummy;
+
+			[Handler]
+			[Map{{method}}("/test")]
+			[Authorize(AuthenticationSchemes = "test")]
+			public static class GetUsersQuery
+			{
+				public record Query;
+
+				private static ValueTask<int> HandleAsync(
+					Query _,
+					CancellationToken token)
+				{
+					return 0;
+				}
+			}
+			""");
+
+		var result = driver.GetRunResult();
+
+		Assert.Empty(result.Diagnostics);
+		Assert.Empty(result.GeneratedTrees);
+	}
+
+	[Theory]
+	[InlineData("Get")]
+	[InlineData("Post")]
+	[InlineData("Patch")]
+	[InlineData("Put")]
+	[InlineData("Delete")]
+	public void AuthorizeUsesRoles(string method)
+	{
+		var driver = GeneratorTestHelper.GetDriver(
+			$$"""
+			using System.Threading.Tasks;
+			using Immediate.Apis.Shared;
+			using Immediate.Handlers.Shared;
+			using Microsoft.AspNetCore.Authorization;
+			
+			namespace Dummy;
+
+			[Handler]
+			[Map{{method}}("/test")]
+			[Authorize(Roles = "test")]
+			public static class GetUsersQuery
+			{
+				public record Query;
+
+				private static ValueTask<int> HandleAsync(
+					Query _,
+					CancellationToken token)
+				{
+					return 0;
+				}
+			}
+			""");
+
+		var result = driver.GetRunResult();
+
+		Assert.Empty(result.Diagnostics);
+		Assert.Empty(result.GeneratedTrees);
+	}
 }

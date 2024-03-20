@@ -29,7 +29,6 @@
   <ItemGroup>
 	<None Include="../../readme.md" Pack="true" PackagePath="/" />
 	<None Include="$(PkgScriban)/lib/netstandard2.0/Scriban.dll" Pack="true" PackagePath="analyzers/roslyn4.8/dotnet/cs" Visible="false" />
-	<None Include="../Immediate.Apis.Shared/bin/$(Configuration)/netstandard2.0/Immediate.Apis.Shared.dll" Pack="true" PackagePath="analyzers/roslyn4.8/dotnet/cs" Visible="true" />
 	<None Include="../Immediate.Apis.Generators/bin/$(Configuration)/netstandard2.0/Immediate.Apis.Generators.dll" Pack="true" PackagePath="analyzers/roslyn4.8/dotnet/cs" Visible="true" />
 	<None Include="../Immediate.Apis.Shared/bin/$(Configuration)/net8.0/Immediate.Apis.Shared.dll" Pack="true" PackagePath="lib/net8.0" Visible="true" />
 	<None Include="../Immediate.Apis.Shared/bin/$(Configuration)/net8.0/Immediate.Apis.Shared.xml" Pack="true" PackagePath="lib/net8.0" Visible="true" />

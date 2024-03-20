@@ -1,13 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>net8.0</TargetFrameworks>
 	<IsPackable>false</IsPackable>
 	<NoWarn>$(NoWarn);CA1716</NoWarn>
   </PropertyGroup>
 
-  <ItemGroup>
-	<PackageReference Include="System.Threading.Tasks.Extensions" />
-  </ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App"/>
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="System.Threading.Tasks.Extensions"/>
+	</ItemGroup>
 
 </Project>

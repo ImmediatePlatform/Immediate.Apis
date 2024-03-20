@@ -25,6 +25,9 @@ public static class {{ assembly }}RoutesBuilder
 			{{~ else if m.authorize ~}}
 			.RequireAuthorization({{ if !string.empty m.authorize_policy }}"{{ m.authorize_policy }}"{{ end }})
 			{{~ end ~}}
+			{{~ for type in m.endpoint_filter_types ~}}
+			.AddEndpointFilter<{{ type }}>()
+			{{~ end ~}}
 			;
 
 		{{~ end ~}}

@@ -39,6 +39,7 @@ public sealed class ImmediateApisGenerator : IIncrementalGenerator
 		public required bool AllowAnonymous { get; init; }
 		public required bool Authorize { get; init; }
 		public required string? AuthorizePolicy { get; init; }
+		public required EquatableReadOnlyList<string> EndpointFilterTypes { get; init; }
 	}
 
 	private static readonly string[] s_methodAttributes =
@@ -83,11 +84,6 @@ public sealed class ImmediateApisGenerator : IIncrementalGenerator
 		// must have request type and cancellation token
 		if (handleMethod.Parameters.Length < 2)
 			return null;
-
-		token.ThrowIfCancellationRequested();
-
-		var requestType = handleMethod.Parameters[0].Type
-			.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
 		token.ThrowIfCancellationRequested();
 
@@ -137,6 +133,18 @@ public sealed class ImmediateApisGenerator : IIncrementalGenerator
 				}
 			}
 
+			var requestType = handleMethod.Parameters[0].Type
+				.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+			token.ThrowIfCancellationRequested();
+
+			var symbolDisplayFormat = new SymbolDisplayFormat(
+				typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
+			var endpointFilterTypes = symbol.GetAttributes()
+				.Where(a => a.AttributeClass?.ToDisplayString(symbolDisplayFormat) == "Immediate.Apis.Shared.EndpointFilterAttribute")
+				.Select(a => a.AttributeClass!.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))
+				.ToEquatableReadOnlyList();
+
 			token.ThrowIfCancellationRequested();
 
 			return new()
@@ -147,7 +155,8 @@ public sealed class ImmediateApisGenerator : IIncrementalGenerator
 				ParameterType = requestType,
 				AllowAnonymous = allowAnonymous,
 				Authorize = authorize,
-				AuthorizePolicy = authorizePolicy
+				AuthorizePolicy = authorizePolicy,
+				EndpointFilterTypes = endpointFilterTypes
 			};
 		}
 

@@ -1,6 +1,11 @@
 @Immediate.Apis.FunctionalTests_HostAddress = http://localhost:5233
+@Immediate.Apis.FunctionalTests_ApiKey = 123456
 
 GET {{Immediate.Apis.FunctionalTests_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+GET {{Immediate.Apis.FunctionalTests_HostAddress}}/admin/
+Accept: application/json
+X-Api-Key: {{Immediate.Apis.FunctionalTests_ApiKey}}

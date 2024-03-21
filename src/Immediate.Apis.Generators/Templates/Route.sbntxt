@@ -18,7 +18,6 @@ public static partial class {{ assembly }}RoutesBuilder
 				) => await handler.HandleAsync(parameters, token)
 			);
 
-
 		{{~ if method.allow_anonymous ~}}
 		_ = endpoint.AllowAnonymous();
 		{{~ else if method.authorize ~}}

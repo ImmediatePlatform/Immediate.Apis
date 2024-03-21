@@ -5,33 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Microsoft.AspNetCore.Builder;
 
-public static class TestsRoutesBuilder
+public static partial class TestsRoutesBuilder
 {
 	public static IEndpointRouteBuilder MapTestsEndpoints(
 		this IEndpointRouteBuilder app
 	)
 	{
-		_ = app
-			.MapGet(
-				"/test",
-				async (
-					[AsParameters] global::Dummy.GetUsersQuery.Query parameters,
-					[FromServices] global::Dummy.GetUsersQuery.Handler handler,
-					CancellationToken token
-				) => await handler.HandleAsync(parameters, token)
-			)
-			;
-
-		_ = app
-			.MapGet(
-				"/test",
-				async (
-					[AsParameters] global::Dummy.GetUserQuery.Query parameters,
-					[FromServices] global::Dummy.GetUserQuery.Handler handler,
-					CancellationToken token
-				) => await handler.HandleAsync(parameters, token)
-			)
-			;
+		MapDummy_GetUsersQueryEndpoint(app);
+		MapDummy_GetUserQueryEndpoint(app);
 
 		return app;
 	}

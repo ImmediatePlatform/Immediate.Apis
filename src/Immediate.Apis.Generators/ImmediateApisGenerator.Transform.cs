@@ -12,15 +12,93 @@ public sealed partial class ImmediateApisGenerator
 		token.ThrowIfCancellationRequested();
 
 		var symbol = (INamedTypeSymbol)context.TargetSymbol;
-		var displayName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+		var attributes = symbol.GetAttributes();
+		var attributeNames = attributes
+			.Select(a => a.AttributeClass?.ToString() ?? "")
+			.ToList();
 
 		token.ThrowIfCancellationRequested();
 
-		if (symbol.ContainingType is not null)
+		if (GetMethodAttributeIndex(attributeNames) is not { } methodIndex)
+			return null;
+
+		if (GetValidHandleMethod(symbol) is not { } handleMethod)
 			return null;
 
 		token.ThrowIfCancellationRequested();
 
+		var attribute = attributes[methodIndex];
+		var httpMethod = attribute.AttributeClass!.Name[..^9];
+		var route = (string?)attribute.ConstructorArguments.FirstOrDefault().Value;
+
+		if (route == null)
+			return null;
+
+		token.ThrowIfCancellationRequested();
+
+		var allowAnonymous = attributeNames.Contains("Microsoft.AspNetCore.Authorization.AllowAnonymousAttribute");
+
+		var authorizeIndex = attributeNames.IndexOf("Microsoft.AspNetCore.Authorization.AuthorizeAttribute");
+		var authorize = authorizeIndex >= 0;
+		var authorizePolicy = string.Empty;
+
+		if (authorize)
+		{
+			var authorizeAttribute = attributes[authorizeIndex];
+			if (authorizeAttribute.ConstructorArguments.Length > 0)
+			{
+				authorizePolicy = (string)authorizeAttribute.ConstructorArguments[0].Value!;
+			}
+			else if (authorizeAttribute.NamedArguments.Length > 0)
+			{
+				foreach (var argument in authorizeAttribute.NamedArguments)
+				{
+					if (argument.Key != "Policy")
+						return null;
+
+					authorizePolicy = (string)argument.Value.Value!;
+				}
+			}
+		}
+
+		token.ThrowIfCancellationRequested();
+
+		var className = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+		var classAsMethodName = symbol.ToString().Replace(".", "_");
+		var parameterType = handleMethod.Parameters[0].Type
+			.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+		token.ThrowIfCancellationRequested();
+
+		return new()
+		{
+			HttpMethod = httpMethod,
+			Route = route,
+
+			ClassName = className,
+			ClassAsMethodName = classAsMethodName,
+			ParameterType = parameterType,
+
+			AllowAnonymous = allowAnonymous,
+			Authorize = authorize,
+			AuthorizePolicy = authorizePolicy
+		};
+	}
+
+	private static int? GetMethodAttributeIndex(List<string> attributeNames)
+	{
+		foreach (var name in s_methodAttributes)
+		{
+			var index = attributeNames.IndexOf(name);
+			if (index >= 0)
+				return index;
+		}
+
+		return null;
+	}
+
+	private static IMethodSymbol? GetValidHandleMethod(INamedTypeSymbol symbol)
+	{
 		if (symbol
 				.GetMembers()
 				.OfType<IMethodSymbol>()
@@ -38,73 +116,6 @@ public sealed partial class ImmediateApisGenerator
 		if (handleMethod.Parameters.Length < 2)
 			return null;
 
-		token.ThrowIfCancellationRequested();
-
-		var requestType = handleMethod.Parameters[0].Type
-			.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-
-		token.ThrowIfCancellationRequested();
-
-		var attributeNames = symbol.GetAttributes()
-			.Select(a => a.AttributeClass?.ToString() ?? "")
-			.ToList();
-
-		foreach (var methodName in s_methodAttributes)
-		{
-			var methodIndex = attributeNames.IndexOf(methodName);
-			if (methodIndex < 0)
-				continue;
-
-			token.ThrowIfCancellationRequested();
-
-			var attribute = symbol.GetAttributes()[methodIndex];
-			var method = attribute.AttributeClass!.Name[..^9];
-			var route = (string?)attribute.ConstructorArguments.FirstOrDefault().Value;
-
-			if (route == null)
-				return null;
-
-			token.ThrowIfCancellationRequested();
-
-			var allowAnonymous = attributeNames.Contains("Microsoft.AspNetCore.Authorization.AllowAnonymousAttribute");
-
-			var authorizeIndex = attributeNames.IndexOf("Microsoft.AspNetCore.Authorization.AuthorizeAttribute");
-			var authorize = authorizeIndex >= 0;
-			var authorizePolicy = string.Empty;
-
-			if (authorize)
-			{
-				var authorizeAttribute = symbol.GetAttributes()[authorizeIndex];
-				if (authorizeAttribute.ConstructorArguments.Length > 0)
-				{
-					authorizePolicy = (string)authorizeAttribute.ConstructorArguments[0].Value!;
-				}
-				else if (authorizeAttribute.NamedArguments.Length > 0)
-				{
-					foreach (var argument in authorizeAttribute.NamedArguments)
-					{
-						if (argument.Key != "Policy")
-							return null;
-
-						authorizePolicy = (string)argument.Value.Value!;
-					}
-				}
-			}
-
-			token.ThrowIfCancellationRequested();
-
-			return new()
-			{
-				Route = route,
-				ClassName = displayName,
-				MethodName = method,
-				ParameterType = requestType,
-				AllowAnonymous = allowAnonymous,
-				Authorize = authorize,
-				AuthorizePolicy = authorizePolicy
-			};
-		}
-
-		return null;
+		return handleMethod;
 	}
 }

@@ -5,23 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Microsoft.AspNetCore.Builder;
 
-public static class TestsRoutesBuilder
+public static partial class TestsRoutesBuilder
 {
 	public static IEndpointRouteBuilder MapTestsEndpoints(
 		this IEndpointRouteBuilder app
 	)
 	{
-		_ = app
-			.MapGet(
-				"/test",
-				async (
-					[AsParameters] global::Dummy.GetUsersQuery.Query parameters,
-					[FromServices] global::Dummy.GetUsersQuery.Handler handler,
-					CancellationToken token
-				) => await handler.HandleAsync(parameters, token)
-			)
-			.RequireAuthorization("TestPolicy")
-			;
+		MapDummy_GetUsersQueryEndpoint(app);
 
 		return app;
 	}

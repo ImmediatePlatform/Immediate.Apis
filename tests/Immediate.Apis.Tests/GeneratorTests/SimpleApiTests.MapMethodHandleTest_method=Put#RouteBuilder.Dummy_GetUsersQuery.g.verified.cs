@@ -18,7 +18,5 @@ public static partial class TestsRoutesBuilder
 					CancellationToken token
 				) => await handler.HandleAsync(parameters, token)
 			);
-
-
 	}
 }

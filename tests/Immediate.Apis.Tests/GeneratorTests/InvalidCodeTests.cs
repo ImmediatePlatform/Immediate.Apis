@@ -193,4 +193,39 @@ public sealed class InvalidCodeTests
 		Assert.Empty(result.Diagnostics);
 		Assert.Empty(result.GeneratedTrees);
 	}
+
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	public void AuthorizePolicyHasInvalidType(string method)
+	{
+		var driver = GeneratorTestHelper.GetDriver(
+			$$"""
+			using System.Threading.Tasks;
+			using Immediate.Apis.Shared;
+			using Immediate.Handlers.Shared;
+			using Microsoft.AspNetCore.Authorization;
+			
+			namespace Dummy;
+
+			[Handler]
+			[Map{{method}}("/test")]
+			[Authorize(Policy = 3)]
+			public static class GetUsersQuery
+			{
+				public record Query;
+
+				private static ValueTask<int> HandleAsync(
+					Query _,
+					CancellationToken token)
+				{
+					return 0;
+				}
+			}
+			""");
+
+		var result = driver.GetRunResult();
+
+		Assert.Empty(result.Diagnostics);
+		Assert.Empty(result.GeneratedTrees);
+	}
 }

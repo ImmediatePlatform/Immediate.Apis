@@ -9,7 +9,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 {
 	[Theory]
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public async Task ValidDefinitionShouldNotError(string method) =>
+	public async Task ValidDefinitionShouldNotWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""
 			using System.Threading;
@@ -43,7 +43,44 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 
 	[Theory]
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public async Task InvalidAccessibilityShouldError(string method) =>
+	public async Task MultipleDefinitionShouldNotWarn(string method) =>
+		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
+			$$"""
+			using System.Threading;
+			using System.Threading.Tasks;
+			using Immediate.Apis.Shared;
+			using Immediate.Handlers.Shared;
+			using Microsoft.AspNetCore.Authorization;
+					
+			namespace Dummy;
+
+			[Handler]
+			[Map{{method}}("/test")]
+			[Authorize(Roles = "")]
+			public static class GetUsersQuery
+			{
+				internal static void CustomizeEndpoint(Microsoft.AspNetCore.{|CS0234:Builder|}.IEndpointConventionBuilder endpoint)
+					=> endpoint
+						.WithDescription("");
+			
+				internal static void CustomizeEndpoint(int id)
+					=> id.ToString();
+			
+				public record Query;
+
+				private static async ValueTask<int> Handle(
+					Query _,
+					CancellationToken token)
+				{
+					return 0;
+				}
+			}
+			"""
+		).RunAsync();
+
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	public async Task InvalidAccessibilityShouldWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""
 			using System.Threading;
@@ -77,7 +114,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 
 	[Theory]
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public async Task InstanceMethodShouldError(string method) =>
+	public async Task InstanceMethodShouldWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""
 			using System.Threading;
@@ -111,7 +148,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 
 	[Theory]
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public async Task InvalidReturnShouldError(string method) =>
+	public async Task InvalidReturnShouldWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""
 			using System.Threading;
@@ -145,7 +182,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 
 	[Theory]
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public async Task InvalidParameterTypeShouldError(string method) =>
+	public async Task InvalidParameterTypeShouldWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""
 			using System.Threading;

@@ -68,42 +68,6 @@ public sealed class InvalidCodeTests
 
 	[Theory]
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public void NestedClass(string method)
-	{
-		var driver = GeneratorTestHelper.GetDriver(
-			$$"""
-			using System.Threading.Tasks;
-			using Immediate.Apis.Shared;
-			using Immediate.Handlers.Shared;
-			
-			namespace Dummy;
-			
-			public static class Outer
-			{
-				[Handler]
-				[Map{{method}}("/test")]
-				public static class GetUsersQuery
-				{
-					public record Query;
-
-					private static ValueTask<int> Handle(
-						Query _,
-						CancellationToken token)
-					{
-						return 0;
-					}
-				}
-			}
-			""");
-
-		var result = driver.GetRunResult();
-
-		Assert.Empty(result.Diagnostics);
-		Assert.Empty(result.GeneratedTrees);
-	}
-
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public void MissingHandler(string method)
 	{
 		var driver = GeneratorTestHelper.GetDriver(

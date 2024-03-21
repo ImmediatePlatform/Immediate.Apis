@@ -13,8 +13,7 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 				(_, _) => true,
 				TransformMethod
 			)
-			.Where(m => m != null)
-			.Collect()!;
+			.Where(m => m != null);
 
 		var assemblyName = context.CompilationProvider
 			.Select((cp, _) => cp.AssemblyName!
@@ -23,9 +22,16 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 				.Trim()
 			);
 
+		var perMethodTemplate = Utility.GetTemplate("Route");
 		context.RegisterSourceOutput(
 			methods.Combine(assemblyName),
-			(spc, m) => RenderMethods(spc, m.Left!, m.Right)
+			(spc, m) => RenderMethod(spc, m.Left!, m.Right, perMethodTemplate)
+		);
+
+		var allMethodsTemplate = Utility.GetTemplate("Routes");
+		context.RegisterSourceOutput(
+			methods.Collect().Combine(assemblyName),
+			(spc, m) => RenderMethods(spc, m.Left!, m.Right, allMethodsTemplate)
 		);
 	}
 }

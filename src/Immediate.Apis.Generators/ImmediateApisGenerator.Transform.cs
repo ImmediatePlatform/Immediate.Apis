@@ -128,11 +128,15 @@ public sealed partial class ImmediateApisGenerator
 		=> symbol
 			.GetMembers()
 			.OfType<IMethodSymbol>()
-			.Any(m => m.IsStatic
-				&& m.DeclaredAccessibility == Accessibility.Public
-				&& m.Name.Equals("CustomizeEndpoint", StringComparison.Ordinal)
-				&& m.Parameters.Length == 1
-				&& m.Parameters[0].Type.ToString() == "Microsoft.AspNetCore.Builder.IEndpointConventionBuilder"
-				&& m.ReturnsVoid
+			.Any(m =>
+				m is
+				{
+					Name: "CustomizeEndpoint",
+					IsStatic: true,
+					DeclaredAccessibility: Accessibility.Internal,
+					ReturnsVoid: true,
+					Parameters: [{ } param]
+				}
+				&& param.Type.ToString() == "Microsoft.AspNetCore.Builder.IEndpointConventionBuilder"
 			);
 }

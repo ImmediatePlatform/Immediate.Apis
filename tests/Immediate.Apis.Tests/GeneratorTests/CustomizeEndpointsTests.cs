@@ -19,7 +19,7 @@ public sealed class CustomizeEndpointsTests
 			[Map{{method}}("/test")]
 			public static class GetUsersQuery
 			{
-				public static void CustomizeEndpoint(Microsoft.AspNetCore.Builder.IEndpointConventionBuilder endpoint)
+				internal static void CustomizeEndpoint(Microsoft.AspNetCore.Builder.IEndpointConventionBuilder endpoint)
 					=> endpoint
 						.WithDescription("");
 

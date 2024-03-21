@@ -29,9 +29,8 @@ public sealed partial class ImmediateApisGenerator
 
 		var attribute = attributes[methodIndex];
 		var httpMethod = attribute.AttributeClass!.Name[..^9];
-		var route = (string?)attribute.ConstructorArguments.FirstOrDefault().Value;
 
-		if (route == null)
+		if (attribute.ConstructorArguments.FirstOrDefault().Value is not string route)
 			return null;
 
 		token.ThrowIfCancellationRequested();
@@ -56,7 +55,10 @@ public sealed partial class ImmediateApisGenerator
 					if (argument.Key != "Policy")
 						return null;
 
-					authorizePolicy = (string)argument.Value.Value!;
+					if (argument.Value.Value is not string ap)
+						return null;
+
+					authorizePolicy = ap;
 				}
 			}
 		}
@@ -109,10 +111,7 @@ public sealed partial class ImmediateApisGenerator
 				.GetMembers()
 				.OfType<IMethodSymbol>()
 				.Where(m => m.IsStatic)
-				.Where(m =>
-					m.Name.Equals("Handle", StringComparison.Ordinal)
-					|| m.Name.Equals("HandleAsync", StringComparison.Ordinal)
-				)
+				.Where(m => m.Name is "Handle" or "HandleAsync")
 				.ToList() is not [var handleMethod])
 		{
 			return null;

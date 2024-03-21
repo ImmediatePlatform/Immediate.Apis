@@ -54,3 +54,55 @@ public static partial class GetUsersQuery
 In your `Program.cs`, add a call to `app.MapXxxEndpoints()`, where `Xxx` is the shortened form of the project name.
 * For a project named `Web`, it will be `app.MapWebEndpoints()`
 * For a project named `Application.Web`, it will be `app.MapApplicationWebEndpoints()`
+
+### Customizing the endpoints
+#### Authorization
+
+The `[AllowAnonymous]` and `[Authorized("Policy")]` attributes are supported and will be applied to the endpoint.
+
+```cs
+[Handler]
+[MapGet("/users")]
+[AllowAnonymous]
+public static partial class GetUsersQuery
+{
+    public record Query;
+
+    private static ValueTask<IEnumerable<User>> HandleAsync(
+        Query _,
+        UsersService usersService,
+        CancellationToken token)
+    {
+        return usersService.GetUsers();
+    }
+}
+```
+
+#### Additional Customization
+
+Additional customization of the endpoint registration can be done by adding a `CustomizeEndpoint` method.
+
+```cs
+[Handler]
+[MapGet("/users")]
+[Authorize(Policies.UserManagement)]
+public static partial class GetUsersQuery
+{
+    internal static void CustomizeGetFeaturesEndpoint(IEndpointConventionBuilder endpoint)
+        => endpoint
+            .Produces<IEnumerable<User>>(StatusCodes.Status200OK)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithTags(nameof(User));
+
+    public record Query;
+
+    private static ValueTask<IEnumerable<User>> HandleAsync(
+        Query _,
+        UsersService usersService,
+        CancellationToken token)
+    {
+        return usersService.GetUsers();
+    }
+}
+```

@@ -70,6 +70,10 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
+		var useCustomization = HasCustomizationMethod(symbol);
+
+		token.ThrowIfCancellationRequested();
+
 		return new()
 		{
 			HttpMethod = httpMethod,
@@ -81,7 +85,9 @@ public sealed partial class ImmediateApisGenerator
 
 			AllowAnonymous = allowAnonymous,
 			Authorize = authorize,
-			AuthorizePolicy = authorizePolicy
+			AuthorizePolicy = authorizePolicy,
+
+			UseCustomization = useCustomization,
 		};
 	}
 
@@ -118,4 +124,16 @@ public sealed partial class ImmediateApisGenerator
 
 		return handleMethod;
 	}
+
+	private static bool HasCustomizationMethod(INamedTypeSymbol symbol)
+		=> symbol
+			.GetMembers()
+			.OfType<IMethodSymbol>()
+			.Any(m => m.IsStatic
+				&& m.DeclaredAccessibility == Accessibility.Public
+				&& m.Name.Equals("CustomizeEndpoint", StringComparison.Ordinal)
+				&& m.Parameters.Length == 1
+				&& m.Parameters[0].Type.ToString() == "Microsoft.AspNetCore.Builder.IEndpointConventionBuilder"
+				&& m.ReturnsVoid
+			);
 }

@@ -18,5 +18,7 @@ public static partial class TestsRoutesBuilder
 					CancellationToken token
 				) => await handler.HandleAsync(parameters, token)
 			);
+
+		global::Dummy.GetUsersQuery.CustomizeEndpoint(endpoint);
 	}
 }

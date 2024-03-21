@@ -14,6 +14,8 @@ public sealed partial class ImmediateApisGenerator
 		public required bool AllowAnonymous { get; init; }
 		public required bool Authorize { get; init; }
 		public required string? AuthorizePolicy { get; init; }
+
+		public required bool UseCustomization { get; init; }
 	}
 
 	private static readonly string[] s_methodAttributes =

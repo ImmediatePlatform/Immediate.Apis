@@ -17,11 +17,16 @@ public static partial class {{ assembly }}RoutesBuilder
 					CancellationToken token
 				) => await handler.HandleAsync(parameters, token)
 			);
-
 		{{~ if method.allow_anonymous ~}}
+
 		_ = endpoint.AllowAnonymous();
 		{{~ else if method.authorize ~}}
+
 		_ = endpoint.RequireAuthorization({{ if !string.empty method.authorize_policy }}"{{ method.authorize_policy }}"{{ end }})
+		{{~ end ~}}
+		{{~ if method.use_customization ~}}
+
+		{{ method.class_name }}.CustomizeEndpoint(endpoint);
 		{{~ end ~}}
 	}
 }

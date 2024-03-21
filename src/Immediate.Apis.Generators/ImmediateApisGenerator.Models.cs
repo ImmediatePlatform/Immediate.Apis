@@ -1,6 +1,3 @@
-using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-
 namespace Immediate.Apis.Generators;
 
 public sealed partial class ImmediateApisGenerator

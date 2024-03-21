@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 namespace Immediate.Apis.Generators;
 
 [Generator]
-public sealed class ImmediateApisGenerator : IIncrementalGenerator
+public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 {
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{

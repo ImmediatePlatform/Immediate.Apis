@@ -17,13 +17,4 @@ public sealed partial class ImmediateApisGenerator
 
 		public required bool UseCustomization { get; init; }
 	}
-
-	private static readonly string[] s_methodAttributes =
-	[
-		"Immediate.Apis.Shared.MapGetAttribute",
-		"Immediate.Apis.Shared.MapPostAttribute",
-		"Immediate.Apis.Shared.MapPutAttribute",
-		"Immediate.Apis.Shared.MapPatchAttribute",
-		"Immediate.Apis.Shared.MapDeleteAttribute",
-	];
 }

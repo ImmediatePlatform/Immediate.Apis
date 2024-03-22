@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 
 namespace Immediate.Apis.Generators;
@@ -13,13 +14,10 @@ public sealed partial class ImmediateApisGenerator
 
 		var symbol = (INamedTypeSymbol)context.TargetSymbol;
 		var attributes = symbol.GetAttributes();
-		var attributeNames = attributes
-			.Select(a => a.AttributeClass?.ToString() ?? "")
-			.ToList();
 
 		token.ThrowIfCancellationRequested();
 
-		if (GetMethodAttributeIndex(attributeNames) is not { } methodIndex)
+		if (GetMethodAttribute(attributes) is not { } attribute)
 			return null;
 
 		if (GetValidHandleMethod(symbol) is not { } handleMethod)
@@ -27,7 +25,6 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
-		var attribute = attributes[methodIndex];
 		var httpMethod = attribute.AttributeClass!.Name[..^9];
 
 		if (attribute.ConstructorArguments.FirstOrDefault().Value is not string route)
@@ -35,15 +32,14 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
-		var allowAnonymous = attributeNames.Contains("Microsoft.AspNetCore.Authorization.AllowAnonymousAttribute");
+		var allowAnonymous = attributes.Any(a => a.AttributeClass.IsAllowAnonymous());
 
-		var authorizeIndex = attributeNames.IndexOf("Microsoft.AspNetCore.Authorization.AuthorizeAttribute");
-		var authorize = authorizeIndex >= 0;
+		var authorizeAttribute = attributes.FirstOrDefault(a => a.AttributeClass.IsAuthorize());
+		var authorize = authorizeAttribute != null;
 		var authorizePolicy = string.Empty;
 
-		if (authorize)
+		if (authorizeAttribute != null)
 		{
-			var authorizeAttribute = attributes[authorizeIndex];
 			if (authorizeAttribute.ConstructorArguments.Length > 0)
 			{
 				authorizePolicy = (string)authorizeAttribute.ConstructorArguments[0].Value!;
@@ -93,13 +89,14 @@ public sealed partial class ImmediateApisGenerator
 		};
 	}
 
-	private static int? GetMethodAttributeIndex(List<string> attributeNames)
+	private static readonly string[] s_methods = ["Get", "Post", "Put", "Patch", "Delete"];
+	private static AttributeData? GetMethodAttribute(ImmutableArray<AttributeData> attributes)
 	{
-		foreach (var name in s_methodAttributes)
+		foreach (var name in s_methods)
 		{
-			var index = attributeNames.IndexOf(name);
-			if (index >= 0)
-				return index;
+			var attribute = attributes.FirstOrDefault(a => a.AttributeClass.IsMapMethodAttribute(name));
+			if (attribute != null)
+				return attribute;
 		}
 
 		return null;
@@ -135,8 +132,8 @@ public sealed partial class ImmediateApisGenerator
 					IsStatic: true,
 					DeclaredAccessibility: Accessibility.Internal,
 					ReturnsVoid: true,
-					Parameters: [{ } param]
+					Parameters: [{ Type: { } paramType }],
 				}
-				&& param.Type.ToString() == "Microsoft.AspNetCore.Builder.IEndpointConventionBuilder"
+				&& paramType.IsIEndpointConventionBuilder()
 			);
 }

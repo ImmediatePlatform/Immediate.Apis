@@ -55,36 +55,29 @@ public sealed class InvalidAuthorizeAttributeAnalyzer : DiagnosticAnalyzer
 		if (context.Symbol is not INamedTypeSymbol namedTypeSymbol)
 			return;
 
-		var attributeNames = namedTypeSymbol
-			.GetAttributes()
-			.Select(a => a.AttributeClass?.ToString() ?? "")
-			.ToList();
+		var attributes = namedTypeSymbol.GetAttributes();
 
-		if (!attributeNames.Any(x => Utility.ValidAttributes.Contains(x)))
-		{
+		if (!attributes.Any(a => a.AttributeClass.IsMapMethodAttribute()))
 			return;
-		}
 
 		token.ThrowIfCancellationRequested();
 
-		var allowAnonymous = attributeNames.Contains("Microsoft.AspNetCore.Authorization.AllowAnonymousAttribute");
+		var allowAnonymous = attributes.Any(a => a.AttributeClass.IsAllowAnonymous());
 
-		var authorizeIndex = attributeNames.IndexOf("Microsoft.AspNetCore.Authorization.AuthorizeAttribute");
-		var authorize = authorizeIndex >= 0;
+		var authorizeAttribute = attributes.FirstOrDefault(a => a.AttributeClass.IsAuthorize());
 
-		if (allowAnonymous && authorize)
+		if (authorizeAttribute is not null)
 		{
-			context.ReportDiagnostic(
-				Diagnostic.Create(
-					UsedBothAuthorizeAndAnonymous,
-					namedTypeSymbol.Locations[0]
-				)
-			);
-		}
+			if (allowAnonymous)
+			{
+				context.ReportDiagnostic(
+					Diagnostic.Create(
+						UsedBothAuthorizeAndAnonymous,
+						namedTypeSymbol.Locations[0]
+					)
+				);
+			}
 
-		if (authorize)
-		{
-			var authorizeAttribute = namedTypeSymbol.GetAttributes()[authorizeIndex];
 			if (authorizeAttribute.NamedArguments.Length > 0)
 			{
 				foreach (var argument in authorizeAttribute.NamedArguments)

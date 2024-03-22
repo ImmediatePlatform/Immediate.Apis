@@ -46,8 +46,7 @@ public sealed class CustomizeEndpointUsageAnalyzer : DiagnosticAnalyzer
 
 		if (!namedTypeSymbol
 				.GetAttributes()
-				.Any(x => Utility.ValidAttributes.Contains(x.AttributeClass?.ToString()))
-		)
+				.Any(x => x.AttributeClass.IsMapMethodAttribute()))
 		{
 			return;
 		}
@@ -63,16 +62,14 @@ public sealed class CustomizeEndpointUsageAnalyzer : DiagnosticAnalyzer
 			return;
 		}
 
-		if (
-			customizeEndpointMethod is
+		if (customizeEndpointMethod is
 			{
 				DeclaredAccessibility: Accessibility.Internal,
 				IsStatic: true,
 				ReturnsVoid: true,
-				Parameters: [{ } param]
+				Parameters: [{ Type: { } paramType }],
 			}
-			&& param.Type.ToString() == "Microsoft.AspNetCore.Builder.IEndpointConventionBuilder"
-		)
+			&& paramType.IsIEndpointConventionBuilder())
 		{
 			return;
 		}

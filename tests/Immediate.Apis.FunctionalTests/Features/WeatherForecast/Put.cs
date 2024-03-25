@@ -6,7 +6,7 @@ namespace Immediate.Apis.FunctionalTests.Features.WeatherForecast;
 
 [Handler]
 [MapPut("/forecast")]
-[AllowAnonymous]
+[Authorize("Test")]
 public static partial class Put
 {
 	public sealed record Command

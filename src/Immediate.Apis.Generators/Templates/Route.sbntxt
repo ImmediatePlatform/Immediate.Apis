@@ -22,7 +22,7 @@ public static partial class {{ assembly }}RoutesBuilder
 		_ = endpoint.AllowAnonymous();
 		{{~ else if method.authorize ~}}
 
-		_ = endpoint.RequireAuthorization({{ if !string.empty method.authorize_policy }}"{{ method.authorize_policy }}"{{ end }})
+		_ = endpoint.RequireAuthorization({{ if !string.empty method.authorize_policy }}"{{ method.authorize_policy }}"{{ end }});
 		{{~ end ~}}
 		{{~ if method.use_customization ~}}
 

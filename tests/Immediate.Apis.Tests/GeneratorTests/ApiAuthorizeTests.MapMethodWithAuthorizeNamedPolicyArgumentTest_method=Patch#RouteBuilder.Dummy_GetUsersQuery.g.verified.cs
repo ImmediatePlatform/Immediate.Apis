@@ -19,6 +19,6 @@ public static partial class TestsRoutesBuilder
 				) => await handler.HandleAsync(parameters, token)
 			);
 
-		_ = endpoint.RequireAuthorization("TestPolicy")
+		_ = endpoint.RequireAuthorization("TestPolicy");
 	}
 }

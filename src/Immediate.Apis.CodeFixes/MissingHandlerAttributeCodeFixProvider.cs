@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Rename;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Immediate.Apis.CodeFixes;
 
@@ -35,23 +35,20 @@ public class MissingHandlerAttributeCodeFixProvider : CodeFixProvider
 		// 'SourceSpan' of 'Location' is the highlighted area. We're going to use this area to find the 'SyntaxNode' to rename.
 		var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-		// Get the root of Syntax Tree that contains the highlighted diagnostic.
 		var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
-		// Find SyntaxNode corresponding to the diagnostic.
-		var diagnosticNode = root?.FindNode(diagnosticSpan);
-
-		// To get the required metadata, we should match the Node to the specific type: 'ClassDeclarationSyntax'.
-		if (diagnosticNode is not ClassDeclarationSyntax declaration)
-			return;
-
-		// Register a code action that will invoke the fix.
-		context.RegisterCodeFix(
-			CodeAction.Create(
-				title: "Add [Handler] attribute",
-				createChangedSolution: c => AddHandlerAttributeAsync(context.Document, declaration, c),
-				equivalenceKey: "AddHandlerAttribute"),
-			diagnostic);
+		if (root?.FindNode(diagnosticSpan) is ClassDeclarationSyntax classDeclarationSyntax &&
+			root is CompilationUnitSyntax compilationUnitSyntax)
+		{
+			context.RegisterCodeFix(
+				CodeAction.Create(
+					title: "Add [Handler] attribute",
+					createChangedDocument: c =>
+						AddHandlerAttributeAsync(context.Document, compilationUnitSyntax, classDeclarationSyntax, c),
+					equivalenceKey: nameof(MissingHandlerAttributeCodeFixProvider)
+				),
+				diagnostic);
+		}
 	}
 
 	/// <summary>
@@ -60,27 +57,45 @@ public class MissingHandlerAttributeCodeFixProvider : CodeFixProvider
 	/// <param name="document">Affected source file.</param>
 	/// <param name="classDeclarationSyntax">Highlighted class declaration Syntax Node.</param>
 	/// <param name="cancellationToken">Any fix is cancellable by the user, so we should support the cancellation token.</param>
-	/// <returns>Clone of the solution with updates: renamed class.</returns>
-	private static async Task<Solution> AddHandlerAttributeAsync(Document document,
-		ClassDeclarationSyntax classDeclarationSyntax, CancellationToken cancellationToken)
+	/// <returns>Clone of the solution with updates: added handler attribute.</returns>
+	private static Task<Document> AddHandlerAttributeAsync(Document document,
+		CompilationUnitSyntax root, ClassDeclarationSyntax classDeclarationSyntax, CancellationToken cancellationToken)
 	{
-		// 'Identifier' means the token of the node. Compute the new name based on the text of the token of the node.
-		var newName = classDeclarationSyntax.Identifier.Text.Replace(SampleSyntaxAnalyzer.CompanyName, CommonName);
+		// Create the attribute syntax
+		var handlerAttrSyntax = AttributeList(
+			SingletonSeparatedList(
+				Attribute(
+					IdentifierName("Handler"))));
 
-		// To make a refactoring, we need to get compiled code metadata: the Semantic Model.
-		var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
+		// Add the attribute to the class declaration
+		var newClassDecl =
+			classDeclarationSyntax.WithAttributeLists(
+				classDeclarationSyntax.AttributeLists.Insert(0, handlerAttrSyntax));
 
-		// Attempt to find the 'TypeSymbol' (compile time metadata of the class) based on highlighted Class Declaration Syntax.
-		var typeSymbol = semanticModel?.GetDeclaredSymbol(classDeclarationSyntax, cancellationToken);
-		if (typeSymbol == null) return document.Project.Solution;
+		cancellationToken.ThrowIfCancellationRequested();
 
-		// Produce a new solution that has all references to the class being renamed, including the declaration.
-		var newSolution = await Renamer
-			.RenameSymbolAsync(document.Project.Solution, typeSymbol, new SymbolRenameOptions(), newName,
-				cancellationToken)
-			.ConfigureAwait(false);
+		// Replace the old class declaration with the new one
+		var newRoot = root.ReplaceNode(classDeclarationSyntax, newClassDecl);
 
-		// Return the new solution with the updated type name.
-		return newSolution;
+		cancellationToken.ThrowIfCancellationRequested();
+
+		var usingSyntax = UsingDirective(
+			QualifiedName(
+				QualifiedName(
+					IdentifierName("Immediate"),
+					IdentifierName("Handlers")),
+				IdentifierName("Shared"))).NormalizeWhitespace();
+
+		if (!newRoot.Usings.Contains(usingSyntax))
+			newRoot = newRoot.AddUsings(usingSyntax);
+
+		cancellationToken.ThrowIfCancellationRequested();
+
+		// Create a new document with the updated syntax root
+		var newDocument = document.WithSyntaxRoot(newRoot);
+
+		cancellationToken.ThrowIfCancellationRequested();
+
+		return Task.FromResult(newDocument);
 	}
 }

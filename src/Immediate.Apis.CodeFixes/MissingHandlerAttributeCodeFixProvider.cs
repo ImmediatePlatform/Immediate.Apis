@@ -42,7 +42,7 @@ public class MissingHandlerAttributeCodeFixProvider : CodeFixProvider
 		{
 			context.RegisterCodeFix(
 				CodeAction.Create(
-					title: "Add [Handler] attribute",
+					title: "Add [Handler] attributes",
 					createChangedDocument: c =>
 						AddHandlerAttributeAsync(context.Document, compilationUnitSyntax, classDeclarationSyntax, c),
 					equivalenceKey: nameof(MissingHandlerAttributeCodeFixProvider)

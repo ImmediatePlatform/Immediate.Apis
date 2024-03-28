@@ -296,3 +296,6 @@ dotnet_diagnostic.CA5394.severity = none                # CA5394: Random is an i
 
 # Dispose things need disposing
 dotnet_diagnostic.CA2000.severity = error               # CA2000: Dispose objects before losing scope
+
+# Resharper
+resharper_csharp_alignment_tab_fill_style = use_tabs_only

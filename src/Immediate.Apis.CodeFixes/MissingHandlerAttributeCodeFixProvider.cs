@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Composition;
 using Immediate.Apis.Analyzers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -10,23 +9,13 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Immediate.Apis.CodeFixes;
 
-/// <summary>
-///     A sample code fix provider that renames classes with the company name in their definition.
-///     All code fixes must  be linked to specific analyzers.
-/// </summary>
-[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MissingHandlerAttributeCodeFixProvider))]
-[Shared]
+[ExportCodeFixProvider(LanguageNames.CSharp)]
 public class MissingHandlerAttributeCodeFixProvider : CodeFixProvider
 {
-	// Specify the diagnostic IDs of analyzers that are expected to be linked.
 	public sealed override ImmutableArray<string> FixableDiagnosticIds { get; } =
-		ImmutableArray.Create(DiagnosticIds.IAPI0001MissingHandlerAttribute);
+		ImmutableArray.Create([DiagnosticIds.IAPI0001MissingHandlerAttribute]);
 
-	// If you don't need the 'fix all' behaviour, return null.
-	public override FixAllProvider GetFixAllProvider()
-	{
-		return WellKnownFixAllProviders.BatchFixer;
-	}
+	public override FixAllProvider? GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
 	public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
 	{
@@ -52,30 +41,27 @@ public class MissingHandlerAttributeCodeFixProvider : CodeFixProvider
 		}
 	}
 
-	/// <summary>
-	///     Executed on the quick fix action raised by the user.
-	/// </summary>
-	/// <param name="document">Affected source file.</param>
-	/// <param name="classDeclarationSyntax">Highlighted class declaration Syntax Node.</param>
-	/// <param name="cancellationToken">Any fix is cancellable by the user, so we should support the cancellation token.</param>
-	/// <returns>Clone of the solution with updates: added handler attribute.</returns>
-	private static async Task<Document> AddHandlerAttributeAsync(Document document,
-		CompilationUnitSyntax root, ClassDeclarationSyntax classDeclarationSyntax, CancellationToken cancellationToken)
+	private static async Task<Document> AddHandlerAttributeAsync(
+		Document document,
+		CompilationUnitSyntax root,
+		ClassDeclarationSyntax classDeclarationSyntax,
+		CancellationToken cancellationToken
+	)
 	{
 		var model = await document.GetSemanticModelAsync(cancellationToken);
 
-		var handlerAttributeSymbol =
-			model?.Compilation.GetTypeByMetadataName("Immediate.Handlers.Shared.HandlerAttribute")!;
+		var handlerAttributeSymbol = model?.Compilation
+			.GetTypeByMetadataName("Immediate.Handlers.Shared.HandlerAttribute")!;
 
 		var referenceId = DocumentationCommentId.CreateReferenceId(handlerAttributeSymbol);
-
 		var annotation = new SyntaxAnnotation("SymbolId", referenceId);
 
 		// Create the attribute syntax
 		var handlerAttrSyntax = AttributeList(
 				SingletonSeparatedList(
-					Attribute(
-						IdentifierName("Handler"))))
+					Attribute(IdentifierName("Handler"))
+				)
+			)
 			.WithAdditionalAnnotations(Simplifier.AddImportsAnnotation, annotation);
 
 		// Add the attribute to the class declaration

@@ -35,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Immediate.Apis.Tests", "tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Immediate.Apis.Analyzers", "src\Immediate.Apis.Analyzers\Immediate.Apis.Analyzers.csproj", "{2E3B32C4-7A45-43C5-AAE7-D9001EEABD23}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Immediate.Apis.CodeFixes", "src\Immediate.Apis.CodeFixes\Immediate.Apis.CodeFixes.csproj", "{1DBD2F87-3D12-438A-8F91-F263B1F747B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Immediate.Apis.CodeFixes", "src\Immediate.Apis.CodeFixes\Immediate.Apis.CodeFixes.csproj", "{1DBD2F87-3D12-438A-8F91-F263B1F747B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

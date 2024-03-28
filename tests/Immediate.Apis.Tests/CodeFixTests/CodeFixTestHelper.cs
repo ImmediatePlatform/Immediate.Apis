@@ -1,4 +1,3 @@
-using Immediate.Apis.Tests.Helpers;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -8,21 +7,20 @@ namespace Immediate.Apis.Tests.CodeFixTests;
 
 public static class CodeFixTestHelper
 {
-	private const string EditorConfig = """
-	                                    root = true
+	private const string EditorConfig =
+		"""
+	    root = true
 
-	                                    [*.cs]
-	                                    charset = utf-8
-	                                    end_of_line = lf
-	                                    indent_style = tab
-	                                    insert_final_newline = true
-	                                    indent_size = 4
-	                                    """;
+	    [*.cs]
+	    charset = utf-8
+	    indent_style = tab
+	    insert_final_newline = true
+	    indent_size = 4
+	    """;
 
 	public static CSharpCodeFixTest<TAnalyzer, TCodeFix, DefaultVerifier> CreateCodeFixTest<TAnalyzer, TCodeFix>(
 		string inputSource,
 		string fixedSource,
-		DriverReferenceAssemblies assemblies = DriverReferenceAssemblies.Normal,
 		int codeActionIndex = 0
 	)
 		where TAnalyzer : DiagnosticAnalyzer, new()
@@ -46,7 +44,7 @@ public static class CodeFixTestHelper
 		};
 
 		csTest.TestState.AdditionalReferences
-			.AddRange(assemblies.GetAdditionalReferences());
+			.AddRange(Utility.GetMetadataReferences());
 
 		return csTest;
 	}

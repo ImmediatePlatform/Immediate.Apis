@@ -11,7 +11,7 @@ public static partial class Get
 {
 	internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
 	{
-		endpoint
+		_ = endpoint
 			.WithDescription("Gets the current weather forecast");
 	}
 

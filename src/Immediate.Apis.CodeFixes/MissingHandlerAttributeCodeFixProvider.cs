@@ -77,7 +77,6 @@ public class MissingHandlerAttributeCodeFixProvider : CodeFixProvider
 					Attribute(
 						IdentifierName("Handler"))))
 			.WithAdditionalAnnotations(Simplifier.AddImportsAnnotation, annotation);
-		;
 
 		// Add the attribute to the class declaration
 		var newClassDecl =
@@ -90,18 +89,6 @@ public class MissingHandlerAttributeCodeFixProvider : CodeFixProvider
 		var newRoot = root.ReplaceNode(classDeclarationSyntax, newClassDecl);
 
 		cancellationToken.ThrowIfCancellationRequested();
-
-		// var usingSyntax = UsingDirective(
-		// 	QualifiedName(
-		// 		QualifiedName(
-		// 			IdentifierName("Immediate"),
-		// 			IdentifierName("Handlers")),
-		// 		IdentifierName("Shared"))).WithAdditionalAnnotations(Formatter.Annotation);
-		//
-		// if (!newRoot.Usings.Contains(usingSyntax))
-		// 	newRoot = newRoot.AddUsings(usingSyntax).WithAdditionalAnnotations(Formatter.Annotation);
-		//
-		// cancellationToken.ThrowIfCancellationRequested();
 
 		// Create a new document with the updated syntax root
 		var newDocument = document.WithSyntaxRoot(newRoot);

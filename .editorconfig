@@ -283,7 +283,6 @@ resharper_csharp_max_line_length = 150
 resharper_indent_raw_literal_string = do_not_change
 resharper_trailing_comma_in_multiline_lists = true
 
-
 # Style Analytics
 dotnet_analyzer_diagnostic.category-Style.severity = warning
 

@@ -1,9 +1,9 @@
-﻿{
-  "$schema": "http://json.schemastore.org/launchsettings.json",
-  "profiles": {
-    "DebugRoslynAnalyzers": {
-      "commandName": "DebugRoslynComponent",
-      "targetProject": "../Immediate.Apis.CodeFixes.Sample/Immediate.Apis.CodeFixes.Sample.csproj"
-    }
-  }
+{
+	"$schema": "http://json.schemastore.org/launchsettings.json",
+	"profiles": {
+		"DebugRoslynAnalyzers": {
+			"commandName": "DebugRoslynComponent",
+			"targetProject": "../Immediate.Apis.CodeFixes.Sample/Immediate.Apis.CodeFixes.Sample.csproj"
+		}
+	}
 }

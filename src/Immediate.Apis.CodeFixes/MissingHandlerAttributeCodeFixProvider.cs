@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Simplification;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Immediate.Apis.CodeFixes;
@@ -58,14 +59,25 @@ public class MissingHandlerAttributeCodeFixProvider : CodeFixProvider
 	/// <param name="classDeclarationSyntax">Highlighted class declaration Syntax Node.</param>
 	/// <param name="cancellationToken">Any fix is cancellable by the user, so we should support the cancellation token.</param>
 	/// <returns>Clone of the solution with updates: added handler attribute.</returns>
-	private static Task<Document> AddHandlerAttributeAsync(Document document,
+	private static async Task<Document> AddHandlerAttributeAsync(Document document,
 		CompilationUnitSyntax root, ClassDeclarationSyntax classDeclarationSyntax, CancellationToken cancellationToken)
 	{
+		var model = await document.GetSemanticModelAsync(cancellationToken);
+
+		var handlerAttributeSymbol =
+			model?.Compilation.GetTypeByMetadataName("Immediate.Handlers.Shared.HandlerAttribute")!;
+
+		var referenceId = DocumentationCommentId.CreateReferenceId(handlerAttributeSymbol);
+
+		var annotation = new SyntaxAnnotation("SymbolId", referenceId);
+
 		// Create the attribute syntax
 		var handlerAttrSyntax = AttributeList(
-			SingletonSeparatedList(
-				Attribute(
-					IdentifierName("Handler"))));
+				SingletonSeparatedList(
+					Attribute(
+						IdentifierName("Handler"))))
+			.WithAdditionalAnnotations(Simplifier.AddImportsAnnotation, annotation);
+		;
 
 		// Add the attribute to the class declaration
 		var newClassDecl =
@@ -79,23 +91,23 @@ public class MissingHandlerAttributeCodeFixProvider : CodeFixProvider
 
 		cancellationToken.ThrowIfCancellationRequested();
 
-		var usingSyntax = UsingDirective(
-			QualifiedName(
-				QualifiedName(
-					IdentifierName("Immediate"),
-					IdentifierName("Handlers")),
-				IdentifierName("Shared"))).NormalizeWhitespace();
-
-		if (!newRoot.Usings.Contains(usingSyntax))
-			newRoot = newRoot.AddUsings(usingSyntax);
-
-		cancellationToken.ThrowIfCancellationRequested();
+		// var usingSyntax = UsingDirective(
+		// 	QualifiedName(
+		// 		QualifiedName(
+		// 			IdentifierName("Immediate"),
+		// 			IdentifierName("Handlers")),
+		// 		IdentifierName("Shared"))).WithAdditionalAnnotations(Formatter.Annotation);
+		//
+		// if (!newRoot.Usings.Contains(usingSyntax))
+		// 	newRoot = newRoot.AddUsings(usingSyntax).WithAdditionalAnnotations(Formatter.Annotation);
+		//
+		// cancellationToken.ThrowIfCancellationRequested();
 
 		// Create a new document with the updated syntax root
 		var newDocument = document.WithSyntaxRoot(newRoot);
 
 		cancellationToken.ThrowIfCancellationRequested();
 
-		return Task.FromResult(newDocument);
+		return newDocument;
 	}
 }

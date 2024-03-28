@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Immediate.Apis.FunctionalTests.Features.WeatherForecast;
 
+[Handler]
 [MapGet("/forecast")]
 [AllowAnonymous]
-[Handler]
 public static partial class Get
 {
 	internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)

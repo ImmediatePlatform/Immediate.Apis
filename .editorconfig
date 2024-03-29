@@ -274,6 +274,15 @@ csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimenta
 csharp_style_allow_blank_line_after_token_in_conditional_expression_experimental = true:silent
 csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimental = true:silent
 
+# Resharper
+resharper_align_multiline_binary_expressions_chain = false
+resharper_align_multiline_comments = false
+resharper_align_multiline_statement_conditions = false
+resharper_csharp_alignment_tab_fill_style = use_tabs_only
+resharper_csharp_max_line_length = 150
+resharper_indent_raw_literal_string = do_not_change
+resharper_trailing_comma_in_multiline_lists = true
+
 # Style Analytics
 dotnet_analyzer_diagnostic.category-Style.severity = warning
 

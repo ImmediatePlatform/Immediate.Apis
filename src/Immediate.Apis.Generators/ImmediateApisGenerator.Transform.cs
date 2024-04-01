@@ -72,6 +72,10 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
+		var useTransformMethod = HasTransformResultMethod(symbol, handleMethod.ReturnType);
+
+		token.ThrowIfCancellationRequested();
+
 		return new()
 		{
 			HttpMethod = httpMethod,
@@ -86,6 +90,7 @@ public sealed partial class ImmediateApisGenerator
 			AuthorizePolicy = authorizePolicy,
 
 			UseCustomization = useCustomization,
+			UseTransformMethod = useTransformMethod,
 		};
 	}
 
@@ -136,4 +141,21 @@ public sealed partial class ImmediateApisGenerator
 				}
 				&& paramType.IsIEndpointConventionBuilder()
 			);
+
+	private static bool HasTransformResultMethod(INamedTypeSymbol symbol, ITypeSymbol returnType)
+		=> returnType.IsValueTask1()
+			&& returnType is INamedTypeSymbol { TypeArguments: [{ } returnInnerType] }
+			&& symbol
+				.GetMembers()
+				.OfType<IMethodSymbol>()
+				.Any(m =>
+					m is
+					{
+						Name: "TransformResult",
+						IsStatic: true,
+						DeclaredAccessibility: Accessibility.Internal,
+						Parameters: [{ Type: { } paramType }],
+					}
+					&& SymbolEqualityComparer.IncludeNullability.Equals(returnInnerType, paramType)
+				);
 }

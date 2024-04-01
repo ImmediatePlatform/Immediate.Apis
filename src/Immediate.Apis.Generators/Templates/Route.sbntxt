@@ -15,7 +15,15 @@ public static partial class {{ assembly }}RoutesBuilder
 					[AsParameters] {{ method.parameter_type }} parameters,
 					[FromServices] {{ method.class_name }}.Handler handler,
 					CancellationToken token
-				) => await handler.HandleAsync(parameters, token)
+				) =>
+				{
+					var ret = await handler.HandleAsync(parameters, token);
+					{{~ if method.use_transform_method ~}}
+					return {{ method.class_name }}.TransformResult(ret);
+					{{~ else ~}}
+					return ret;
+					{{~ end ~}}
+				}
 			);
 		{{~ if method.allow_anonymous ~}}
 

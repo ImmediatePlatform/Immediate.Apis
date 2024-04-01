@@ -19,10 +19,8 @@ public static partial class TestsRoutesBuilder
 				) =>
 				{
 					var ret = await handler.HandleAsync(parameters, token);
-					return ret;
+					return global::Dummy.GetUsersQuery.TransformResult(ret);
 				}
 			);
-
-		global::Dummy.GetUsersQuery.CustomizeEndpoint(endpoint);
 	}
 }

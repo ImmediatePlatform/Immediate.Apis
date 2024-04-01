@@ -10,7 +10,7 @@ public static partial class TestsRoutesBuilder
 	private static void MapDummy_GetUsersQueryEndpoint(IEndpointRouteBuilder app)
 	{
 		var endpoint = app
-			.MapDelete(
+			.MapPost(
 				"/test",
 				async (
 					[AsParameters] global::Dummy.GetUsersQuery.Query parameters,
@@ -19,10 +19,8 @@ public static partial class TestsRoutesBuilder
 				) =>
 				{
 					var ret = await handler.HandleAsync(parameters, token);
-					return ret;
+					return global::Dummy.GetUsersQuery.TransformResult(ret);
 				}
 			);
-
-		global::Dummy.GetUsersQuery.CustomizeEndpoint(endpoint);
 	}
 }

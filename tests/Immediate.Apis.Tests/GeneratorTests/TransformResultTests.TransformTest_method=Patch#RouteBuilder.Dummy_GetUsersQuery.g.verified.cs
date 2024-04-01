@@ -1,4 +1,4 @@
-﻿//HintName: RouteBuilder.Dummy_GetUserQuery.g.cs
+﻿//HintName: RouteBuilder.Dummy_GetUsersQuery.g.cs
 using Microsoft.AspNetCore.Mvc;
 
 #pragma warning disable CS1591
@@ -7,19 +7,19 @@ namespace Microsoft.AspNetCore.Builder;
 
 public static partial class TestsRoutesBuilder
 {
-	private static void MapDummy_GetUserQueryEndpoint(IEndpointRouteBuilder app)
+	private static void MapDummy_GetUsersQueryEndpoint(IEndpointRouteBuilder app)
 	{
 		var endpoint = app
 			.MapPatch(
 				"/test",
 				async (
-					[AsParameters] global::Dummy.GetUserQuery.Query parameters,
-					[FromServices] global::Dummy.GetUserQuery.Handler handler,
+					[AsParameters] global::Dummy.GetUsersQuery.Query parameters,
+					[FromServices] global::Dummy.GetUsersQuery.Handler handler,
 					CancellationToken token
 				) =>
 				{
 					var ret = await handler.HandleAsync(parameters, token);
-					return ret;
+					return global::Dummy.GetUsersQuery.TransformResult(ret);
 				}
 			);
 	}

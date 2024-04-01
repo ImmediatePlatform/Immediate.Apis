@@ -16,5 +16,6 @@ public sealed partial class ImmediateApisGenerator
 		public required string? AuthorizePolicy { get; init; }
 
 		public required bool UseCustomization { get; init; }
+		public required bool UseTransformMethod { get; init; }
 	}
 }

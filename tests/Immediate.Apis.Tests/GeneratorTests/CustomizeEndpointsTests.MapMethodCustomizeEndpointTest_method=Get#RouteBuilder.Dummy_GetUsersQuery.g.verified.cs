@@ -16,7 +16,11 @@ public static partial class TestsRoutesBuilder
 					[AsParameters] global::Dummy.GetUsersQuery.Query parameters,
 					[FromServices] global::Dummy.GetUsersQuery.Handler handler,
 					CancellationToken token
-				) => await handler.HandleAsync(parameters, token)
+				) =>
+				{
+					var ret = await handler.HandleAsync(parameters, token);
+					return ret;
+				}
 			);
 
 		global::Dummy.GetUsersQuery.CustomizeEndpoint(endpoint);

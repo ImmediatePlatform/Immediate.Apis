@@ -65,4 +65,23 @@ internal static class ITypeSymbolExtensions
 				},
 			},
 		};
+
+	public static bool IsValueTask1(this ITypeSymbol? typeSymbol) =>
+		typeSymbol is INamedTypeSymbol
+		{
+			MetadataName: "ValueTask`1",
+			ContainingNamespace:
+			{
+				Name: "Tasks",
+				ContainingNamespace:
+				{
+					Name: "Threading",
+					ContainingNamespace:
+					{
+						Name: "System",
+						ContainingNamespace.IsGlobalNamespace: true,
+					},
+				},
+			},
+		};
 }

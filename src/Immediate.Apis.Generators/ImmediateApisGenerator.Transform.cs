@@ -154,6 +154,7 @@ public sealed partial class ImmediateApisGenerator
 						Name: "TransformResult",
 						IsStatic: true,
 						DeclaredAccessibility: Accessibility.Internal,
+						ReturnsVoid: false,
 						Parameters: [{ Type: { } paramType }],
 					}
 					&& SymbolEqualityComparer.IncludeNullability.Equals(returnInnerType, paramType)

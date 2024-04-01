@@ -16,7 +16,7 @@ public static partial class Post
 
 	internal static Results<Ok<IReadOnlyList<Result>>, NotFound> TransformResult(IReadOnlyList<Result> result)
 	{
-		return TypedResults.NotFound();
+		return TypedResults.Ok(result);
 	}
 
 	public sealed record Query

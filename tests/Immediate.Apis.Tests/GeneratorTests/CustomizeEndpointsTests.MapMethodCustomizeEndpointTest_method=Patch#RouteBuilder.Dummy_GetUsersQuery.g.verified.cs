@@ -1,4 +1,5 @@
 ﻿//HintName: RouteBuilder.Dummy_GetUsersQuery.g.cs
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 #pragma warning disable CS1591
@@ -13,7 +14,7 @@ public static partial class TestsRoutesBuilder
 			.MapPatch(
 				"/test",
 				async (
-					[AsParameters] global::Dummy.GetUsersQuery.Query parameters,
+					[FromBody] global::Dummy.GetUsersQuery.Query parameters,
 					[FromServices] global::Dummy.GetUsersQuery.Handler handler,
 					CancellationToken token
 				) =>

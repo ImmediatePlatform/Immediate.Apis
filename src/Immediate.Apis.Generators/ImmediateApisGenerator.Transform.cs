@@ -68,6 +68,10 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
+		var parameterAttribute = GetParameterAttribute(handleMethod.Parameters[0].Type, httpMethod);
+
+		token.ThrowIfCancellationRequested();
+
 		var useCustomization = HasCustomizationMethod(symbol);
 
 		token.ThrowIfCancellationRequested();
@@ -79,6 +83,7 @@ public sealed partial class ImmediateApisGenerator
 		return new()
 		{
 			HttpMethod = httpMethod,
+			ParameterAttribute = parameterAttribute,
 			Route = route,
 
 			ClassName = className,
@@ -159,4 +164,11 @@ public sealed partial class ImmediateApisGenerator
 					}
 					&& SymbolEqualityComparer.IncludeNullability.Equals(returnInnerType, paramType)
 				);
+
+	private static string GetParameterAttribute(ITypeSymbol parameterType, string httpMethod)
+	{
+		return httpMethod is "MapGet" or "MapDelete"
+			? "AsParameters"
+			: "FromBody";
+	}
 }

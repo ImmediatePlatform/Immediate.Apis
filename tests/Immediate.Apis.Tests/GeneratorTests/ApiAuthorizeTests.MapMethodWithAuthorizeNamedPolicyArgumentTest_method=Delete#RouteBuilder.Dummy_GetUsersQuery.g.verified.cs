@@ -1,4 +1,5 @@
 ﻿//HintName: RouteBuilder.Dummy_GetUsersQuery.g.cs
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 #pragma warning disable CS1591

@@ -84,4 +84,23 @@ internal static class ITypeSymbolExtensions
 				},
 			},
 		};
+
+	public static bool IsEndpointRegistrationOverrideAttribute(this ITypeSymbol? typeSymbol) =>
+		typeSymbol is INamedTypeSymbol
+		{
+			Name: "EndpointRegistrationOverrideAttribute",
+			ContainingNamespace:
+			{
+				Name: "Shared",
+				ContainingNamespace:
+				{
+					Name: "Apis",
+					ContainingNamespace:
+					{
+						Name: "Immediate",
+						ContainingNamespace.IsGlobalNamespace: true,
+					},
+				},
+			},
+		};
 }

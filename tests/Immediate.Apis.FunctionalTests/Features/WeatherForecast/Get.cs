@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Immediate.Apis.FunctionalTests.Features.WeatherForecast;
 
 [Handler]
-[MapGet("/forecast")]
+[MapGet("/forecast/{id:int}")]
 [AllowAnonymous]
 public static partial class Get
 {
@@ -13,7 +13,11 @@ public static partial class Get
 		=> endpoint
 			.WithDescription("Gets the current weather forecast");
 
-	public sealed record Query;
+	public sealed record Query
+	{
+		public required int Id { get; init; }
+		public required string Filter { get; init; }
+	}
 
 	public sealed record Result
 	{

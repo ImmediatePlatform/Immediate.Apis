@@ -167,6 +167,18 @@ public sealed partial class ImmediateApisGenerator
 
 	private static string GetParameterAttribute(ITypeSymbol parameterType, string httpMethod)
 	{
+		foreach (var a in parameterType.GetAttributes())
+		{
+			if (a.AttributeClass.IsEndpointRegistrationOverrideAttribute())
+			{
+				if (a.ConstructorArguments.Length != 0)
+					return (string)a.ConstructorArguments[0].Value!;
+
+				if (a.NamedArguments.Length != 0)
+					return (string)a.NamedArguments[0].Value.Value!;
+			}
+		}
+
 		return httpMethod is "MapGet" or "MapDelete"
 			? "AsParameters"
 			: "FromBody";

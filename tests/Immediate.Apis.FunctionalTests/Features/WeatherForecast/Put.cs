@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Authorization;
 namespace Immediate.Apis.FunctionalTests.Features.WeatherForecast;
 
 [Handler]
-[MapPut("/forecast")]
+[MapPut("/forecast/{date:datetime}")]
 [Authorize("Test")]
 public static partial class Put
 {
+	[EndpointRegistrationOverride(EndpointRegistration.AsParameters)]
 	public sealed record Command
 	{
 		public required DateOnly Date { get; init; }

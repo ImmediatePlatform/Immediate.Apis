@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 #pragma warning disable CS1591
@@ -12,7 +13,7 @@ public static partial class {{ assembly }}RoutesBuilder
 			.{{ method.http_method }}(
 				"{{ method.route }}",
 				async (
-					[AsParameters] {{ method.parameter_type }} parameters,
+					[{{ method.parameter_attribute }}] {{ method.parameter_type }} parameters,
 					[FromServices] {{ method.class_name }}.Handler handler,
 					CancellationToken token
 				) =>

@@ -2,9 +2,6 @@ using Immediate.Apis.Analyzers;
 
 namespace Immediate.Apis.Tests.AnalyzerTests;
 
-// NB: CS0234 is due to lack of `Microsoft.AspNetCore.Http.Abstractions` library
-// TODO: figure out how to reference `Microsoft.AspNetCore.App.Ref`
-
 public sealed class CustomizeEndpointUsageAnalyzerTests
 {
 	[Theory]
@@ -25,7 +22,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			[Authorize(Roles = "")]
 			public static class GetUsersQuery
 			{
-				internal static void CustomizeEndpoint(Microsoft.AspNetCore.{|CS0234:Builder|}.IEndpointConventionBuilder endpoint)
+				internal static void CustomizeEndpoint(Microsoft.AspNetCore.Builder.IEndpointConventionBuilder endpoint)
 					=> endpoint
 						.WithDescription("");
 
@@ -59,7 +56,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			[Authorize(Roles = "")]
 			public static class GetUsersQuery
 			{
-				internal static void CustomizeEndpoint(Microsoft.AspNetCore.{|CS0234:Builder|}.IEndpointConventionBuilder endpoint)
+				internal static void CustomizeEndpoint(Microsoft.AspNetCore.Builder.IEndpointConventionBuilder endpoint)
 					=> endpoint
 						.WithDescription("");
 			
@@ -96,7 +93,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			[Authorize(Roles = "")]
 			public static class GetUsersQuery
 			{
-				private static void {|IAPI0004:CustomizeEndpoint|}(Microsoft.AspNetCore.{|CS0234:Builder|}.IEndpointConventionBuilder endpoint)
+				private static void {|IAPI0004:CustomizeEndpoint|}(Microsoft.AspNetCore.Builder.IEndpointConventionBuilder endpoint)
 					=> endpoint
 						.WithDescription("");
 
@@ -130,7 +127,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			[Authorize(Roles = "")]
 			public class GetUsersQuery
 			{
-				internal void {|IAPI0004:CustomizeEndpoint|}(Microsoft.AspNetCore.{|CS0234:Builder|}.IEndpointConventionBuilder endpoint)
+				internal void {|IAPI0004:CustomizeEndpoint|}(Microsoft.AspNetCore.Builder.IEndpointConventionBuilder endpoint)
 					=> endpoint
 						.WithDescription("");
 
@@ -164,7 +161,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			[Authorize(Roles = "")]
 			public static class GetUsersQuery
 			{
-				internal static Microsoft.AspNetCore.{|CS0234:Builder|}.IEndpointConventionBuilder {|IAPI0004:CustomizeEndpoint|}(Microsoft.AspNetCore.{|CS0234:Builder|}.IEndpointConventionBuilder endpoint)
+				internal static Microsoft.AspNetCore.Builder.IEndpointConventionBuilder {|IAPI0004:CustomizeEndpoint|}(Microsoft.AspNetCore.Builder.IEndpointConventionBuilder endpoint)
 					=> endpoint
 						.WithDescription("");
 

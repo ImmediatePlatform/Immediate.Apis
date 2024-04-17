@@ -58,7 +58,7 @@ public sealed class MissingCustomizeEndpointMethodAnalyzerTests
 			[Map{{method}}("/test")]
 			public static class GetUsersQuery
 			{
-				internal static void CustomizeEndpoint(Microsoft.AspNetCore.{|CS0234:Builder|}.IEndpointConventionBuilder endpoint)
+				internal static void CustomizeEndpoint(Microsoft.AspNetCore.Builder.IEndpointConventionBuilder endpoint)
 					=> endpoint
 						.WithDescription("");
 

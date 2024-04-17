@@ -28,6 +28,7 @@
 	<ProjectReference Include="../../src/Immediate.Apis.Analyzers/Immediate.Apis.Analyzers.csproj" />
 	<ProjectReference Include="../../src/Immediate.Apis.CodeFixes/Immediate.Apis.CodeFixes.csproj" />
 	<ProjectReference Include="../../src/Immediate.Apis.Generators/Immediate.Apis.Generators.csproj" />
+	<ProjectReference Include="..\AspNetCore.Ref\AspNetCore.Ref.csproj" />
   </ItemGroup>
 
 </Project>

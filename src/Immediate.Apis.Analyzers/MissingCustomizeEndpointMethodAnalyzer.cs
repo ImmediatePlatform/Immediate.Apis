@@ -14,7 +14,7 @@ public sealed class MissingCustomizeEndpointMethodAnalyzer : DiagnosticAnalyzer
 			title: "Missing `CustomizeEndpoint` method",
 			messageFormat: "Missing `CustomizeEndpoint` method in the class",
 			category: "ImmediateApis",
-			defaultSeverity: DiagnosticSeverity.Info,
+			defaultSeverity: DiagnosticSeverity.Hidden,
 			isEnabledByDefault: true,
 			description: "A class with `MapMethod` attribute can have a `CustomizeEndpoint` method."
 		);
@@ -45,8 +45,8 @@ public sealed class MissingCustomizeEndpointMethodAnalyzer : DiagnosticAnalyzer
 			return;
 
 		if (!namedTypeSymbol
-			.GetAttributes()
-			.Any(x => x.AttributeClass.IsMapMethodAttribute()))
+				.GetAttributes()
+				.Any(x => x.AttributeClass.IsMapMethodAttribute()))
 		{
 			return;
 		}
@@ -54,12 +54,14 @@ public sealed class MissingCustomizeEndpointMethodAnalyzer : DiagnosticAnalyzer
 		token.ThrowIfCancellationRequested();
 
 		if (namedTypeSymbol
-			.GetMembers()
-			.OfType<IMethodSymbol>()
-			.Count(ims => ims.Name == "CustomizeEndpoint") == 1)
+				.GetMembers()
+				.OfType<IMethodSymbol>()
+				.Any(ims => ims.Name is "CustomizeEndpoint"))
 		{
 			return;
 		}
+
+		token.ThrowIfCancellationRequested();
 
 		var syntax = (ClassDeclarationSyntax)namedTypeSymbol
 			.DeclaringSyntaxReferences[0]

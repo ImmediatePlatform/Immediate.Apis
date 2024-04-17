@@ -11,7 +11,7 @@ public static partial class Get
 {
 	internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
 		=> endpoint
-			.WithDescription("");
+			.WithDescription("Gets the current weather forecast");
 
 	public sealed record Query
 	{

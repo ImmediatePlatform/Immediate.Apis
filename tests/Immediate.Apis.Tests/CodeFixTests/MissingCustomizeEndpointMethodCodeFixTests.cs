@@ -48,7 +48,7 @@ public sealed class MissingCustomizeEndpointMethodCodeFixTests
 				[Map{{method}}("/test")]
 				public static class GetUsersQuery
 				{
-					internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint) => endpoint.WithDescription("");
+					internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint) => {|CS0201:endpoint|};
 
 					public record Query;
 

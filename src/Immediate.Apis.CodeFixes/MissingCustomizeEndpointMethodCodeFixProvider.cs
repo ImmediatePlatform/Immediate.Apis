@@ -76,19 +76,7 @@ public class MissingCustomizeEndpointMethodCodeFixProvider : CodeFixProvider
 							.WithType(
 								IdentifierName("IEndpointConventionBuilder")))))
 			.WithExpressionBody(
-				ArrowExpressionClause(
-					InvocationExpression(
-							MemberAccessExpression(
-								SyntaxKind.SimpleMemberAccessExpression,
-								IdentifierName("endpoint"),
-								IdentifierName("WithDescription")))
-						.WithArgumentList(
-							ArgumentList(
-								SingletonSeparatedList(
-									Argument(
-										LiteralExpression(
-											SyntaxKind.StringLiteralExpression,
-											Literal(""))))))))
+				ArrowExpressionClause(IdentifierName("endpoint")))
 			.WithSemicolonToken(
 				Token(SyntaxKind.SemicolonToken))
 			.WithAdditionalAnnotations(Simplifier.AddImportsAnnotation, annotation)

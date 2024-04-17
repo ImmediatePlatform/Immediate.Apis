@@ -92,17 +92,17 @@ public class MissingCustomizeEndpointMethodCodeFixProvider : CodeFixProvider
 			.WithSemicolonToken(
 				Token(SyntaxKind.SemicolonToken))
 			.WithAdditionalAnnotations(Simplifier.AddImportsAnnotation, annotation)
-			.WithAdditionalAnnotations(Formatter.Annotation)
-			.NormalizeWhitespace();
+			.WithAdditionalAnnotations(Formatter.Annotation);
 
 		// Manually add trailing trivia to ensure proper spacing
-		var trailingTrivia = TriviaList(CarriageReturnLineFeed, CarriageReturnLineFeed);
+		var newMembers = classDeclarationSyntax.Members
+			.Insert(
+				0,
+				customizeEndpointMethodSyntax
+			);
 
-		var customizeEndpointMethodSyntaxWithTrivia = customizeEndpointMethodSyntax
-			.WithTrailingTrivia(trailingTrivia);
-
-		var newMembers = classDeclarationSyntax.Members.Insert(0, customizeEndpointMethodSyntaxWithTrivia);
-		var newClassDecl = classDeclarationSyntax.WithMembers(newMembers);
+		var newClassDecl = classDeclarationSyntax
+			.WithMembers(newMembers);
 
 		// Replace the old class declaration with the new one
 		var newRoot = root.ReplaceNode(classDeclarationSyntax, newClassDecl);

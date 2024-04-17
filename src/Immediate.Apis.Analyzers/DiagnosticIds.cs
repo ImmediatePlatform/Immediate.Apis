@@ -7,4 +7,5 @@ internal static class DiagnosticIds
 	public const string IAPI0003UsedBothAuthorizeAndAnonymous = "IAPI0003";
 	public const string IAPI0004CustomizeEndpointInvalid = "IAPI0004";
 	public const string IAPI0005TransformResultInvalid = "IAPI0005";
+	public const string IAPI0006MissingCustomizeEndpointMethod = "IAPI0006";
 }

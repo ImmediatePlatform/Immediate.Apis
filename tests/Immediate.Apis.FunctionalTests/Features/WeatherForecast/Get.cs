@@ -9,9 +9,7 @@ namespace Immediate.Apis.FunctionalTests.Features.WeatherForecast;
 [AllowAnonymous]
 public static partial class Get
 {
-	internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
-		=> endpoint
-			.WithDescription("Gets the current weather forecast");
+	internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint) => endpoint.WithDescription("");
 
 	public sealed record Query
 	{

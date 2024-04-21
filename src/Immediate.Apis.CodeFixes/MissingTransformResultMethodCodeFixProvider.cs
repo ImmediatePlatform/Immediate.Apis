@@ -28,8 +28,8 @@ public class MissingTransformResultMethodCodeFixProvider : CodeFixProvider
 
 		var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
-		if (root?.FindNode(diagnosticSpan) is ClassDeclarationSyntax classDeclarationSyntax &&
-		root is CompilationUnitSyntax compilationUnitSyntax)
+		if (root?.FindNode(diagnosticSpan) is ClassDeclarationSyntax classDeclarationSyntax
+			&& root is CompilationUnitSyntax compilationUnitSyntax)
 		{
 			context.RegisterCodeFix(
 				CodeAction.Create(
@@ -62,13 +62,20 @@ public class MissingTransformResultMethodCodeFixProvider : CodeFixProvider
 		if (handleMethodSymbol is null)
 			return document;
 
-		if (await handleMethodSymbol.DeclaringSyntaxReferences[0].GetSyntaxAsync(cancellationToken) is not MethodDeclarationSyntax handleMethodSyntax)
+		if (await handleMethodSymbol.DeclaringSyntaxReferences[0]
+				.GetSyntaxAsync(cancellationToken)
+				is not MethodDeclarationSyntax handleMethodSyntax)
+		{
 			return document;
+		}
 
-		if (handleMethodSyntax.ReturnType is not GenericNameSyntax returnTypeSyntax)
+		if (handleMethodSyntax.ReturnType is not GenericNameSyntax
+			{
+				TypeArgumentList.Arguments: [{ } returnType]
+			})
+		{
 			return document;
-
-		var returnType = returnTypeSyntax.TypeArgumentList.Arguments[0];
+		}
 
 		var transformResultMethodSyntax = MethodDeclaration(
 				returnType,
@@ -81,7 +88,7 @@ public class MissingTransformResultMethodCodeFixProvider : CodeFixProvider
 				]))
 			.WithParameterList(
 				ParameterList(
-					SingletonSeparatedList<ParameterSyntax>(
+					SingletonSeparatedList(
 						Parameter(
 								Identifier("result"))
 							.WithType(returnType))))

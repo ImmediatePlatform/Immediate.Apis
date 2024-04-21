@@ -7,10 +7,11 @@ namespace Microsoft.AspNetCore.Http.HttpResults;
 public interface IResult;
 #pragma warning restore CA1040
 
-public sealed class Results<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] TResult1, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] TResult2> :
-  IResult
-  where TResult1 : IResult
-  where TResult2 : IResult
+[ExcludeFromCodeCoverage]
+public sealed class Results<TResult1, TResult2>
+	: IResult
+	where TResult1 : IResult
+	where TResult2 : IResult
 {
 	private Results(IResult activeResult) => this.Result = activeResult;
 
@@ -32,10 +33,12 @@ public sealed class Results<[DynamicallyAccessedMembers(DynamicallyAccessedMembe
 	}
 }
 
+[ExcludeFromCodeCoverage]
 public sealed class Ok<TValue> : IResult
 {
 }
 
+[ExcludeFromCodeCoverage]
 public sealed class NotFound : IResult
 {
 }

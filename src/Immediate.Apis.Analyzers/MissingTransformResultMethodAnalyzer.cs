@@ -53,10 +53,10 @@ public sealed class MissingTransformResultMethodAnalyzer : DiagnosticAnalyzer
 
 		token.ThrowIfCancellationRequested();
 
-		if (namedTypeSymbol
+		if (!namedTypeSymbol
 				.GetMembers()
 				.OfType<IMethodSymbol>()
-				.All(ims => ims.Name is not "Handle"))
+				.Any(ims => ims.Name is "Handle" or "HandleAsync"))
 		{
 			return;
 		}

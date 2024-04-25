@@ -29,6 +29,8 @@
   <ItemGroup>
 	<None Include="../../readme.md" Pack="true" PackagePath="/" />
 	<None Include="$(PkgScriban)/lib/netstandard2.0/Scriban.dll" Pack="true" PackagePath="analyzers/roslyn4.8/dotnet/cs" Visible="false" />
+	<None Include="../Immediate.Apis.Analyzers/bin/$(Configuration)/netstandard2.0/Immediate.Apis.Analyzers.dll" Pack="true" PackagePath="analyzers/roslyn4.8/dotnet/cs" Visible="true" />
+	<None Include="../Immediate.Apis.CodeFixes/bin/$(Configuration)/netstandard2.0/Immediate.Apis.CodeFixes.dll" Pack="true" PackagePath="analyzers/roslyn4.8/dotnet/cs" Visible="true" />
 	<None Include="../Immediate.Apis.Generators/bin/$(Configuration)/netstandard2.0/Immediate.Apis.Generators.dll" Pack="true" PackagePath="analyzers/roslyn4.8/dotnet/cs" Visible="true" />
 	<None Include="../Immediate.Apis.Shared/bin/$(Configuration)/net8.0/Immediate.Apis.Shared.dll" Pack="true" PackagePath="lib/net8.0" Visible="true" />
 	<None Include="../Immediate.Apis.Shared/bin/$(Configuration)/net8.0/Immediate.Apis.Shared.xml" Pack="true" PackagePath="lib/net8.0" Visible="true" />
@@ -40,6 +42,8 @@
   </ItemGroup>
 
   <ItemGroup>
+	<ProjectReference Include="../Immediate.Apis.Analyzers/Immediate.Apis.Analyzers.csproj" ReferenceOutputAssembly="false" />
+	<ProjectReference Include="../Immediate.Apis.CodeFixes/Immediate.Apis.CodeFixes.csproj" ReferenceOutputAssembly="false" />
 	<ProjectReference Include="../Immediate.Apis.Generators/Immediate.Apis.Generators.csproj" ReferenceOutputAssembly="false" />
 	<ProjectReference Include="../Immediate.Apis.Shared/Immediate.Apis.Shared.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>

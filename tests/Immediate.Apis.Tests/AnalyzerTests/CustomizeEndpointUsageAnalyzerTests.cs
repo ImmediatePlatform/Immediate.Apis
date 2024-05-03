@@ -14,6 +14,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			using Microsoft.AspNetCore.Authorization;
+			using Microsoft.AspNetCore.Http;
 					
 			namespace Dummy;
 
@@ -48,7 +49,8 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			using Microsoft.AspNetCore.Authorization;
-					
+			using Microsoft.AspNetCore.Http;
+
 			namespace Dummy;
 
 			[Handler]
@@ -85,7 +87,8 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			using Microsoft.AspNetCore.Authorization;
-					
+			using Microsoft.AspNetCore.Http;
+
 			namespace Dummy;
 
 			[Handler]
@@ -119,7 +122,8 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			using Microsoft.AspNetCore.Authorization;
-					
+			using Microsoft.AspNetCore.Http;
+
 			namespace Dummy;
 
 			[Handler]
@@ -153,7 +157,8 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			using Microsoft.AspNetCore.Authorization;
-					
+			using Microsoft.AspNetCore.Http;
+
 			namespace Dummy;
 
 			[Handler]
@@ -187,7 +192,8 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			using Microsoft.AspNetCore.Authorization;
-					
+			using Microsoft.AspNetCore.Http;
+
 			namespace Dummy;
 
 			[Handler]

@@ -51,7 +51,8 @@ public sealed class MissingCustomizeEndpointMethodAnalyzerTests
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			using Microsoft.AspNetCore.Authorization;
-					
+			using Microsoft.AspNetCore.Http;
+
 			namespace Dummy;
 
 			[Handler]

@@ -37,8 +37,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Immediate.Apis.Analyzers", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Immediate.Apis.CodeFixes", "src\Immediate.Apis.CodeFixes\Immediate.Apis.CodeFixes.csproj", "{1DBD2F87-3D12-438A-8F91-F263B1F747B1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore.Ref", "tests\AspNetCore.Ref\AspNetCore.Ref.csproj", "{E4114F01-B2A6-44F0-A72F-E555C6ECE0F8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,10 +71,6 @@ Global
 		{1DBD2F87-3D12-438A-8F91-F263B1F747B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DBD2F87-3D12-438A-8F91-F263B1F747B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DBD2F87-3D12-438A-8F91-F263B1F747B1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E4114F01-B2A6-44F0-A72F-E555C6ECE0F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E4114F01-B2A6-44F0-A72F-E555C6ECE0F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E4114F01-B2A6-44F0-A72F-E555C6ECE0F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E4114F01-B2A6-44F0-A72F-E555C6ECE0F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,7 +84,6 @@ Global
 		{058EFC02-6DDA-486F-8C4F-08BA816061CE} = {4A2C6A96-653A-40CC-9354-535F92A0BBD8}
 		{2E3B32C4-7A45-43C5-AAE7-D9001EEABD23} = {68142973-97B4-45D0-B6C7-BE884990AB7E}
 		{1DBD2F87-3D12-438A-8F91-F263B1F747B1} = {68142973-97B4-45D0-B6C7-BE884990AB7E}
-		{E4114F01-B2A6-44F0-A72F-E555C6ECE0F8} = {4A2C6A96-653A-40CC-9354-535F92A0BBD8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E947E0E4-B196-46E5-8CFE-A6AE390B8897}

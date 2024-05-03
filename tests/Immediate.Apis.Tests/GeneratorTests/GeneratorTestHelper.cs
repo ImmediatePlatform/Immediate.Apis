@@ -17,7 +17,7 @@ public static class GeneratorTestHelper
 			syntaxTrees: [syntaxTree],
 			references:
 			[
-				.. Basic.Reference.Assemblies.Net80.References.All,
+				.. Basic.Reference.Assemblies.AspNet80.References.All,
 				.. Utility.GetMetadataReferences(),
 			]
 		);

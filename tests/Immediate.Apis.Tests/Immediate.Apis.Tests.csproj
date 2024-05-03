@@ -5,7 +5,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-	<PackageReference Include="Basic.Reference.Assemblies.Net80" />
+	<PackageReference Include="Basic.Reference.Assemblies.AspNet80" />
 	<PackageReference Include="coverlet.collector" PrivateAssets="All" />
 	<PackageReference Include="coverlet.msbuild" PrivateAssets="All" />
 	<PackageReference Include="GitHubActionsTestLogger" PrivateAssets="All" />
@@ -28,7 +28,6 @@
 	<ProjectReference Include="../../src/Immediate.Apis.Analyzers/Immediate.Apis.Analyzers.csproj" />
 	<ProjectReference Include="../../src/Immediate.Apis.CodeFixes/Immediate.Apis.CodeFixes.csproj" />
 	<ProjectReference Include="../../src/Immediate.Apis.Generators/Immediate.Apis.Generators.csproj" />
-	<ProjectReference Include="../AspNetCore.Ref/AspNetCore.Ref.csproj" />
   </ItemGroup>
 
 </Project>

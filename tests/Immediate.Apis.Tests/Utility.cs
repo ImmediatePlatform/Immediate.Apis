@@ -6,7 +6,6 @@ internal static class Utility
 {
 	public static MetadataReference[] GetMetadataReferences() =>
 	[
-		MetadataReference.CreateFromFile("./AspNetCore.Ref.dll"),
 		MetadataReference.CreateFromFile("./Immediate.Handlers.Shared.dll"),
 		MetadataReference.CreateFromFile("./Immediate.Apis.Shared.dll"),
 		MetadataReference.CreateFromFile("./Microsoft.Extensions.DependencyInjection.dll"),

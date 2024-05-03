@@ -26,6 +26,9 @@ public static class AnalyzerTestHelpers
 		};
 
 		csTest.TestState.AdditionalReferences
+			.AddRange(Basic.Reference.Assemblies.AspNet80.References.All);
+
+		csTest.TestState.AdditionalReferences
 			.AddRange(Utility.GetMetadataReferences());
 
 		return csTest;

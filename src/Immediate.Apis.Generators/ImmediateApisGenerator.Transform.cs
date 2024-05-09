@@ -190,7 +190,7 @@ public sealed partial class ImmediateApisGenerator
 				return a.AttributeClass.Name[..^9];
 		}
 
-		if (parameterSymbol is INamedTypeSymbol typeSymbol)
+		if (parameterSymbol.Type is INamedTypeSymbol typeSymbol)
 		{
 			foreach (var p in typeSymbol.GetMembers().OfType<IPropertySymbol>())
 			{

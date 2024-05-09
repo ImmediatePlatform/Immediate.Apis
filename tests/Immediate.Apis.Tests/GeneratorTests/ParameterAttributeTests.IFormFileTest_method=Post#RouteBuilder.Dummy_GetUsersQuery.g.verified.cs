@@ -14,7 +14,7 @@ namespace Microsoft.AspNetCore.Builder
 				.MapPost(
 					"/test",
 					async (
-						[FromBody] global::Dummy.GetUsersQuery.Query parameters,
+						[FromForm] global::Dummy.GetUsersQuery.Query parameters,
 						[FromServices] global::Dummy.GetUsersQuery.Handler handler,
 						CancellationToken token
 					) =>
@@ -30,6 +30,6 @@ namespace Microsoft.AspNetCore.Builder
 namespace Dummy
 {
 
-	/// <remarks><see cref="global::Dummy.GetUsersQuery.Query" /> registered using <c>[FromBody]</c></remarks>
+	/// <remarks><see cref="global::Dummy.GetUsersQuery.Query" /> registered using <c>[FromForm]</c></remarks>
 	partial class GetUsersQuery;
 }

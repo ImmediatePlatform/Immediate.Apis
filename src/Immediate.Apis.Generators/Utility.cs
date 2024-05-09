@@ -16,4 +16,7 @@ internal static class Utility
 		using var reader = new StreamReader(stream);
 		return Template.Parse(reader.ReadToEnd());
 	}
+
+	public static string? NullIf(this string value, string check) =>
+		value.Equals(check, StringComparison.Ordinal) ? null : value;
 }

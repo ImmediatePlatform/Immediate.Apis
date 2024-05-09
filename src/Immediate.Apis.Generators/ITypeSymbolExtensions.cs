@@ -103,4 +103,23 @@ internal static class ITypeSymbolExtensions
 				},
 			},
 		};
+
+	public static bool IsIFormFile(this ITypeSymbol? typeSymbol) =>
+		typeSymbol is INamedTypeSymbol
+		{
+			Name: "IFormFile",
+			ContainingNamespace:
+			{
+				Name: "Http",
+				ContainingNamespace:
+				{
+					Name: "AspNetCore",
+					ContainingNamespace:
+					{
+						Name: "Microsoft",
+						ContainingNamespace.IsGlobalNamespace: true,
+					},
+				},
+			},
+		};
 }

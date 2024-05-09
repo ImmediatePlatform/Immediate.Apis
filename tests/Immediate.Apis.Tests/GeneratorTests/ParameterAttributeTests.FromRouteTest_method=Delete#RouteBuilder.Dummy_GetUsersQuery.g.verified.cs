@@ -14,7 +14,7 @@ namespace Microsoft.AspNetCore.Builder
 				.MapDelete(
 					"/test",
 					async (
-						[AsParameters] global::Dummy.GetUsersQuery.Query parameters,
+						[FromRoute] global::Dummy.GetUsersQuery.Query parameters,
 						[FromServices] global::Dummy.GetUsersQuery.Handler handler,
 						CancellationToken token
 					) =>
@@ -30,6 +30,6 @@ namespace Microsoft.AspNetCore.Builder
 namespace Dummy
 {
 
-	/// <remarks><see cref="global::Dummy.GetUsersQuery.Query" /> registered using <c>[AsParameters]</c></remarks>
+	/// <remarks><see cref="global::Dummy.GetUsersQuery.Query" /> registered using <c>[FromRoute]</c></remarks>
 	partial class GetUsersQuery;
 }

@@ -49,6 +49,8 @@ public sealed class ParameterAttributeTests
 		var driver = GeneratorTestHelper.GetDriver(
 			$$"""
 			using System.Threading.Tasks;
+			using Microsoft.AspNetCore.Http;
+			using Microsoft.AspNetCore.Mvc;
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			
@@ -58,10 +60,10 @@ public sealed class ParameterAttributeTests
 			[Map{{method}}("/test")]
 			public static class GetUsersQuery
 			{
-				[EndpointRegistrationOverride(EndpointRegistration.AsParameters)]
 				public record Query;
 
 				private static ValueTask<int> Handle(
+					[AsParameters]
 					Query _,
 					CancellationToken token)
 				{
@@ -86,6 +88,8 @@ public sealed class ParameterAttributeTests
 		var driver = GeneratorTestHelper.GetDriver(
 			$$"""
 			using System.Threading.Tasks;
+			using Microsoft.AspNetCore.Http;
+			using Microsoft.AspNetCore.Mvc;
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			
@@ -95,10 +99,10 @@ public sealed class ParameterAttributeTests
 			[Map{{method}}("/test")]
 			public static class GetUsersQuery
 			{
-				[EndpointRegistrationOverride(EndpointRegistration.FromBody)]
 				public record Query;
 
 				private static ValueTask<int> Handle(
+					[FromBody]
 					Query _,
 					CancellationToken token)
 				{
@@ -123,6 +127,8 @@ public sealed class ParameterAttributeTests
 		var driver = GeneratorTestHelper.GetDriver(
 			$$"""
 			using System.Threading.Tasks;
+			using Microsoft.AspNetCore.Http;
+			using Microsoft.AspNetCore.Mvc;
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			
@@ -132,10 +138,10 @@ public sealed class ParameterAttributeTests
 			[Map{{method}}("/test")]
 			public static class GetUsersQuery
 			{
-				[EndpointRegistrationOverride(EndpointRegistration.FromForm)]
 				public record Query;
 
 				private static ValueTask<int> Handle(
+					[FromForm]
 					Query _,
 					CancellationToken token)
 				{
@@ -160,6 +166,8 @@ public sealed class ParameterAttributeTests
 		var driver = GeneratorTestHelper.GetDriver(
 			$$"""
 			using System.Threading.Tasks;
+			using Microsoft.AspNetCore.Http;
+			using Microsoft.AspNetCore.Mvc;
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			
@@ -169,10 +177,10 @@ public sealed class ParameterAttributeTests
 			[Map{{method}}("/test")]
 			public static class GetUsersQuery
 			{
-				[EndpointRegistrationOverride(EndpointRegistration.FromHeaders)]
 				public record Query;
 
 				private static ValueTask<int> Handle(
+					[FromHeader]
 					Query _,
 					CancellationToken token)
 				{
@@ -197,6 +205,8 @@ public sealed class ParameterAttributeTests
 		var driver = GeneratorTestHelper.GetDriver(
 			$$"""
 			using System.Threading.Tasks;
+			using Microsoft.AspNetCore.Http;
+			using Microsoft.AspNetCore.Mvc;
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			
@@ -206,10 +216,10 @@ public sealed class ParameterAttributeTests
 			[Map{{method}}("/test")]
 			public static class GetUsersQuery
 			{
-				[EndpointRegistrationOverride(EndpointRegistration.FromQuery)]
 				public record Query;
 
 				private static ValueTask<int> Handle(
+					[FromQuery]
 					Query _,
 					CancellationToken token)
 				{
@@ -234,6 +244,8 @@ public sealed class ParameterAttributeTests
 		var driver = GeneratorTestHelper.GetDriver(
 			$$"""
 			using System.Threading.Tasks;
+			using Microsoft.AspNetCore.Http;
+			using Microsoft.AspNetCore.Mvc;
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			
@@ -243,10 +255,10 @@ public sealed class ParameterAttributeTests
 			[Map{{method}}("/test")]
 			public static class GetUsersQuery
 			{
-				[EndpointRegistrationOverride(EndpointRegistration.FromRoute)]
 				public record Query;
 
 				private static ValueTask<int> Handle(
+					[FromRoute]
 					Query _,
 					CancellationToken token)
 				{

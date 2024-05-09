@@ -179,6 +179,15 @@ public sealed partial class ImmediateApisGenerator
 			}
 		}
 
+		if (parameterType is INamedTypeSymbol typeSymbol)
+		{
+			foreach (var p in typeSymbol.GetMembers().OfType<IPropertySymbol>())
+			{
+				if (p.Type.IsIFormFile())
+					return "FromForm";
+			}
+		}
+
 		return httpMethod is "MapGet" or "MapDelete"
 			? "AsParameters"
 			: "FromBody";

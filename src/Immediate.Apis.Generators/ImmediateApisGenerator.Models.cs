@@ -8,7 +8,9 @@ public sealed partial class ImmediateApisGenerator
 		public required string ParameterAttribute { get; init; }
 		public required string Route { get; init; }
 
-		public required string ClassName { get; init; }
+		public required string? Namespace { get; init; }
+		public required Class Class { get; init; }
+		public required string ClassFullName { get; init; }
 		public required string ClassAsMethodName { get; init; }
 		public required string ParameterType { get; init; }
 
@@ -18,5 +20,11 @@ public sealed partial class ImmediateApisGenerator
 
 		public required bool UseCustomization { get; init; }
 		public required bool UseTransformMethod { get; init; }
+	}
+
+	public sealed record Class
+	{
+		public required string Type { get; init; }
+		public required string Name { get; init; }
 	}
 }

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 
 namespace Immediate.Apis.Generators;
@@ -85,19 +86,45 @@ internal static class ITypeSymbolExtensions
 			},
 		};
 
-	public static bool IsEndpointRegistrationOverrideAttribute(this ITypeSymbol? typeSymbol) =>
+	public static bool IsBindingParameterAttribute([NotNullWhen(returnValue: true)] this ITypeSymbol? typeSymbol) =>
+		typeSymbol.IsAsParametersAttribute() || typeSymbol.IsFromXxxAttribute();
+
+	public static bool IsAsParametersAttribute(this ITypeSymbol? typeSymbol) =>
 		typeSymbol is INamedTypeSymbol
 		{
-			Name: "EndpointRegistrationOverrideAttribute",
+			Name: "AsParametersAttribute",
 			ContainingNamespace:
 			{
-				Name: "Shared",
+				Name: "Http",
 				ContainingNamespace:
 				{
-					Name: "Apis",
+					Name: "AspNetCore",
 					ContainingNamespace:
 					{
-						Name: "Immediate",
+						Name: "Microsoft",
+						ContainingNamespace.IsGlobalNamespace: true,
+					},
+				},
+			},
+		};
+
+	public static bool IsFromXxxAttribute(this ITypeSymbol? typeSymbol) =>
+		typeSymbol is INamedTypeSymbol
+		{
+			Name: "FromBodyAttribute"
+				or "FromFormAttribute"
+				or "FromHeaderAttribute"
+				or "FromQueryAttribute"
+				or "FromRouteAttribute",
+			ContainingNamespace:
+			{
+				Name: "Mvc",
+				ContainingNamespace:
+				{
+					Name: "AspNetCore",
+					ContainingNamespace:
+					{
+						Name: "Microsoft",
 						ContainingNamespace.IsGlobalNamespace: true,
 					},
 				},

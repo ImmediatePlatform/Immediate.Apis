@@ -61,14 +61,15 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
+		var @namespace = symbol.ContainingNamespace.ToString().NullIf("<global namespace>");
+		var @class = GetClass(symbol);
 		var className = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 		var classAsMethodName = symbol.ToString().Replace(".", "_");
-		var parameterType = handleMethod.Parameters[0].Type
-			.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+		var parameterType = handleMethod.Parameters[0].Type;
 
 		token.ThrowIfCancellationRequested();
 
-		var parameterAttribute = GetParameterAttribute(handleMethod.Parameters[0].Type, httpMethod);
+		var parameterAttribute = GetParameterAttribute(handleMethod.Parameters[0], httpMethod);
 
 		token.ThrowIfCancellationRequested();
 
@@ -86,9 +87,11 @@ public sealed partial class ImmediateApisGenerator
 			ParameterAttribute = parameterAttribute,
 			Route = route,
 
-			ClassName = className,
+			Namespace = @namespace,
+			Class = @class,
+			ClassFullName = className,
 			ClassAsMethodName = classAsMethodName,
-			ParameterType = parameterType,
+			ParameterType = parameterType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
 
 			AllowAnonymous = allowAnonymous,
 			Authorize = authorize,
@@ -165,21 +168,29 @@ public sealed partial class ImmediateApisGenerator
 					&& SymbolEqualityComparer.IncludeNullability.Equals(returnInnerType, paramType)
 				);
 
-	private static string GetParameterAttribute(ITypeSymbol parameterType, string httpMethod)
-	{
-		foreach (var a in parameterType.GetAttributes())
+	private static Class GetClass(INamedTypeSymbol symbol) =>
+		new()
 		{
-			if (a.AttributeClass.IsEndpointRegistrationOverrideAttribute())
+			Name = symbol.Name,
+			Type = symbol switch
 			{
-				if (a.ConstructorArguments.Length != 0)
-					return (string)a.ConstructorArguments[0].Value!;
+				{ TypeKind: TypeKind.Interface } => "interface",
+				{ IsRecord: true, TypeKind: TypeKind.Struct, } => "record struct",
+				{ IsRecord: true, } => "record",
+				{ TypeKind: TypeKind.Struct, } => "struct",
+				_ => "class",
+			},
+		};
 
-				if (a.NamedArguments.Length != 0)
-					return (string)a.NamedArguments[0].Value.Value!;
-			}
+	private static string GetParameterAttribute(IParameterSymbol parameterSymbol, string httpMethod)
+	{
+		foreach (var a in parameterSymbol.GetAttributes())
+		{
+			if (a.AttributeClass.IsBindingParameterAttribute())
+				return a.AttributeClass.Name[..^9];
 		}
 
-		if (parameterType is INamedTypeSymbol typeSymbol)
+		if (parameterSymbol.Type is INamedTypeSymbol typeSymbol)
 		{
 			foreach (var p in typeSymbol.GetMembers().OfType<IPropertySymbol>())
 			{

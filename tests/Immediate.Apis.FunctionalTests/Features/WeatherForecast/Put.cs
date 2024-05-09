@@ -9,7 +9,6 @@ namespace Immediate.Apis.FunctionalTests.Features.WeatherForecast;
 [Authorize("Test")]
 public static partial class Put
 {
-	[EndpointRegistrationOverride(EndpointRegistration.AsParameters)]
 	public sealed record Command
 	{
 		public required DateOnly Date { get; init; }
@@ -19,6 +18,7 @@ public static partial class Put
 	}
 
 	private static async ValueTask Handle(
+		[AsParameters]
 		Command _,
 		CancellationToken token
 	)

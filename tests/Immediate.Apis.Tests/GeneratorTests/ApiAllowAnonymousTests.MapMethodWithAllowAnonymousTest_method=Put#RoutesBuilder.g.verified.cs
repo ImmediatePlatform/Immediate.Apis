@@ -1,5 +1,6 @@
 ﻿//HintName: RoutesBuilder.g.cs
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 
 #pragma warning disable CS1591
 

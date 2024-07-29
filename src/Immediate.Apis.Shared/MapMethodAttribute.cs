@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Immediate.Apis.Shared;
 
 /// <summary>
@@ -6,11 +8,24 @@ namespace Immediate.Apis.Shared;
 /// <param name="route">
 ///		The route that the handler should be registered with
 /// </param>
+/// <param name="method">
+///		
+/// </param>
 [AttributeUsage(AttributeTargets.Class)]
-public abstract class MapMethodAttribute(string route) : Attribute
+[SuppressMessage(
+	"Performance",
+	"CA1813:Avoid unsealed attributes",
+	Justification = "Not used for runtime information"
+)]
+public class MapMethodAttribute(string route, string method) : Attribute
 {
 	/// <summary>
 	///		The route that the handler should be registered with
 	/// </summary>
 	public string Route { get; } = route;
+
+	/// <summary>
+	///		The route that the handler should be registered with
+	/// </summary>
+	public string Method { get; } = method;
 }

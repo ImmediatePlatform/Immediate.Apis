@@ -5,4 +5,4 @@ namespace Immediate.Apis.Shared;
 /// <inheritdoc />
 public sealed class MapPatchAttribute(
 	[StringSyntax("Route")] string route
-) : MapMethodAttribute(route);
+) : MapMethodAttribute(route, "PATCH");

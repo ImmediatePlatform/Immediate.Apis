@@ -25,8 +25,6 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
-		var httpMethod = attribute.AttributeClass!.Name[..^9];
-
 		if (attribute.ConstructorArguments.FirstOrDefault().Value is not string route)
 			return null;
 
@@ -66,10 +64,12 @@ public sealed partial class ImmediateApisGenerator
 		var className = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 		var classAsMethodName = symbol.ToString().Replace(".", "_");
 		var parameterType = handleMethod.Parameters[0].Type;
+		var mapMethod = GetMapMethod(attribute);
+		var httpMethod = GetHttpMethod(attribute);
 
 		token.ThrowIfCancellationRequested();
 
-		var parameterAttribute = GetParameterAttribute(handleMethod.Parameters[0], httpMethod);
+		var parameterAttribute = GetParameterAttribute(handleMethod.Parameters[0], mapMethod);
 
 		token.ThrowIfCancellationRequested();
 
@@ -83,6 +83,7 @@ public sealed partial class ImmediateApisGenerator
 
 		return new()
 		{
+			MapMethod = mapMethod,
 			HttpMethod = httpMethod,
 			ParameterAttribute = parameterAttribute,
 			Route = route,
@@ -102,18 +103,8 @@ public sealed partial class ImmediateApisGenerator
 		};
 	}
 
-	private static readonly string[] s_methods = ["Get", "Post", "Put", "Patch", "Delete"];
-	private static AttributeData? GetMethodAttribute(ImmutableArray<AttributeData> attributes)
-	{
-		foreach (var name in s_methods)
-		{
-			var attribute = attributes.FirstOrDefault(a => a.AttributeClass.IsMapMethodAttribute(name));
-			if (attribute != null)
-				return attribute;
-		}
-
-		return null;
-	}
+	private static AttributeData? GetMethodAttribute(ImmutableArray<AttributeData> attributes) =>
+		attributes.FirstOrDefault(a => a.AttributeClass.IsMapMethodAttribute());
 
 	private static IMethodSymbol? GetValidHandleMethod(INamedTypeSymbol symbol)
 	{
@@ -199,8 +190,31 @@ public sealed partial class ImmediateApisGenerator
 			}
 		}
 
-		return httpMethod is "MapGet" or "MapDelete"
-			? "AsParameters"
-			: "FromBody";
+		return httpMethod is "MapPatch" or "MapPost" or "MapPut"
+			? "FromBody"
+			: "AsParameters";
+	}
+
+	private static string GetMapMethod(AttributeData attributeData)
+	{
+		var attributeName = attributeData.AttributeClass!.Name;
+
+		if (attributeName is "MapMethodAttribute")
+			return "MapMethods";
+
+		return attributeName[..^9];
+	}
+
+	private static string? GetHttpMethod(AttributeData attributeData)
+	{
+		var attributeName = attributeData.AttributeClass!.Name;
+
+		if (attributeName is not "MapMethodAttribute")
+			return null;
+
+		return attributeData
+			.ConstructorArguments[1]
+			.Value
+			!.ToString();
 	}
 }

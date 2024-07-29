@@ -4,7 +4,8 @@ public sealed partial class ImmediateApisGenerator
 {
 	private sealed record Method
 	{
-		public required string HttpMethod { get; init; }
+		public required string MapMethod { get; init; }
+		public required string? HttpMethod { get; init; }
 		public required string ParameterAttribute { get; init; }
 		public required string Route { get; init; }
 

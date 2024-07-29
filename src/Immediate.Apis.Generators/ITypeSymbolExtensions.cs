@@ -5,24 +5,25 @@ namespace Immediate.Apis.Generators;
 
 internal static class ITypeSymbolExtensions
 {
-	public static bool IsImmediateApisShared(this INamespaceSymbol symbol) =>
-		symbol is
+	public static bool IsMapMethodAttribute(this ITypeSymbol? typeSymbol) =>
+		typeSymbol is INamedTypeSymbol
 		{
-			Name: "Shared",
 			ContainingNamespace:
 			{
-				Name: "Apis",
+				Name: "Shared",
 				ContainingNamespace:
 				{
-					Name: "Immediate",
-					ContainingNamespace.IsGlobalNamespace: true,
+					Name: "Apis",
+					ContainingNamespace:
+					{
+						Name: "Immediate",
+						ContainingNamespace.IsGlobalNamespace: true,
+					},
 				},
 			},
-		};
-
-	public static bool IsMapMethodAttribute(this ITypeSymbol? typeSymbol, string method) =>
-		typeSymbol?.Name == $"Map{method}Attribute"
-		&& typeSymbol.ContainingNamespace.IsImmediateApisShared();
+			Name: "MapMethodAttribute",
+		}
+		|| (typeSymbol?.BaseType is { } bt && IsMapMethodAttribute(bt));
 
 	public static bool IsMicrosoftAspNetCoreAuthorization(this INamespaceSymbol symbol) =>
 		symbol is

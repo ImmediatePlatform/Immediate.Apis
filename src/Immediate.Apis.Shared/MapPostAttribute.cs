@@ -5,4 +5,4 @@ namespace Immediate.Apis.Shared;
 /// <inheritdoc />
 public sealed class MapPostAttribute(
 	[StringSyntax("Route")] string route
-) : MapMethodAttribute(route);
+) : MapMethodAttribute(route, "POST");

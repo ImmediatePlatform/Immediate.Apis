@@ -1,4 +1,5 @@
 ﻿//HintName: RouteBuilder.Dummy_GetUsersQuery.g.cs
+using System.Threading;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;

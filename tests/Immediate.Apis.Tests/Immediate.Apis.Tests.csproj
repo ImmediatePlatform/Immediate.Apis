@@ -9,7 +9,7 @@
 	<PackageReference Include="coverlet.collector" PrivateAssets="All" />
 	<PackageReference Include="coverlet.msbuild" PrivateAssets="All" />
 	<PackageReference Include="GitHubActionsTestLogger" PrivateAssets="All" />
-	<PackageReference Include="Immediate.Handlers" />
+	<PackageReference Include="Immediate.Handlers" GeneratePathProperty="true" />
 	<PackageReference Include="Microsoft.AspNetCore.Authorization" />
 	<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
 	<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit" />
@@ -28,6 +28,7 @@
 	<ProjectReference Include="../../src/Immediate.Apis.Analyzers/Immediate.Apis.Analyzers.csproj" />
 	<ProjectReference Include="../../src/Immediate.Apis.CodeFixes/Immediate.Apis.CodeFixes.csproj" />
 	<ProjectReference Include="../../src/Immediate.Apis.Generators/Immediate.Apis.Generators.csproj" />
+	<Reference Include="$(PkgImmediate_Handlers)/analyzers/roslyn4.8/dotnet/cs/Immediate.Handlers.Generators.dll" />
   </ItemGroup>
 
 </Project>

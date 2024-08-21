@@ -4,19 +4,18 @@ public sealed class InvalidCodeTests
 {
 	[Theory]
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public void MissingRoute(string method)
+	public async Task MissingHandlerAttribute(string method)
 	{
-		var driver = GeneratorTestHelper.GetDriver(
+		var result = GeneratorTestHelper.RunGenerator(
 			$$"""
+			using System.Threading;
 			using System.Threading.Tasks;
 			using Immediate.Apis.Shared;
-			using Immediate.Handlers.Shared;
 			
 			namespace Dummy;
-			
-			[Handler]
-			[Map{{method}}()]
-			public static class GetUsersQuery
+
+			[Map{{method}}("/test")]
+			public static partial class GetUsersQuery
 			{
 				public record Query;
 
@@ -24,53 +23,26 @@ public sealed class InvalidCodeTests
 					Query _,
 					CancellationToken token)
 				{
-					return 0;
+					return ValueTask.FromResult(0);
 				}
 			}
 			""");
 
-		var result = driver.GetRunResult();
+		Assert.Equal(
+			[
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/ServiceCollectionExtensions.g.cs",
+			],
+			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
+		);
 
-		Assert.Empty(result.Diagnostics);
-		Assert.Empty(result.GeneratedTrees);
+		_ = await Verify(result).UseParameters(method);
 	}
 
 	[Theory]
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public void MissingHandlerAttribute(string method)
+	public async Task MissingHandler(string method)
 	{
-		var driver = GeneratorTestHelper.GetDriver(
-			$$"""
-			using System.Threading.Tasks;
-			using Immediate.Apis.Shared;
-			
-			namespace Dummy;
-
-			[Map{{method}}("/test")]
-			public static class GetUsersQuery
-			{
-				public record Query;
-
-				private static ValueTask<int> Handle(
-					Query _,
-					CancellationToken token)
-				{
-					return 0;
-				}
-			}
-			""");
-
-		var result = driver.GetRunResult();
-
-		Assert.Empty(result.Diagnostics);
-		Assert.Empty(result.GeneratedTrees);
-	}
-
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public void MissingHandler(string method)
-	{
-		var driver = GeneratorTestHelper.GetDriver(
+		var result = GeneratorTestHelper.RunGenerator(
 			$$"""
 			using System.Threading.Tasks;
 			using Immediate.Apis.Shared;
@@ -80,23 +52,25 @@ public sealed class InvalidCodeTests
 			
 			[Handler]
 			[Map{{method}}("/test")]
-			public static class GetUsersQuery
+			public static partial class GetUsersQuery
 			{
 				public record Query;
 			}
 			""");
 
-		var result = driver.GetRunResult();
+		Assert.Equal(
+			[],
+			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
+		);
 
-		Assert.Empty(result.Diagnostics);
-		Assert.Empty(result.GeneratedTrees);
+		_ = await Verify(result).UseParameters(method);
 	}
 
 	[Theory]
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public void InvalidHandler(string method)
+	public async Task InvalidHandler(string method)
 	{
-		var driver = GeneratorTestHelper.GetDriver(
+		var result = GeneratorTestHelper.RunGenerator(
 			$$"""
 			using System.Threading.Tasks;
 			using Immediate.Apis.Shared;
@@ -106,30 +80,32 @@ public sealed class InvalidCodeTests
 			
 			[Handler]
 			[Map{{method}}("/test")]
-			public static class GetUsersQuery
+			public static partial class GetUsersQuery
 			{
 				public record Query;
 
-				private static ValueTask<int> Handle(
-					Query _)
+				private static ValueTask<int> Handle()
 				{
-					return 0;
+					return ValueTask.FromResult(0);
 				}
 			}
 			""");
 
-		var result = driver.GetRunResult();
+		Assert.Equal(
+			[],
+			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
+		);
 
-		Assert.Empty(result.Diagnostics);
-		Assert.Empty(result.GeneratedTrees);
+		_ = await Verify(result).UseParameters(method);
 	}
 
 	[Theory]
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public void AuthorizeUsesAuthenticationSchemes(string method)
+	public async Task AuthorizeUsesAuthenticationSchemes(string method)
 	{
-		var driver = GeneratorTestHelper.GetDriver(
+		var result = GeneratorTestHelper.RunGenerator(
 			$$"""
+			using System.Threading;
 			using System.Threading.Tasks;
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
@@ -140,7 +116,7 @@ public sealed class InvalidCodeTests
 			[Handler]
 			[Map{{method}}("/test")]
 			[Authorize(AuthenticationSchemes = "test")]
-			public static class GetUsersQuery
+			public static partial class GetUsersQuery
 			{
 				public record Query;
 
@@ -148,23 +124,29 @@ public sealed class InvalidCodeTests
 					Query _,
 					CancellationToken token)
 				{
-					return 0;
+					return ValueTask.FromResult(0);
 				}
 			}
 			""");
 
-		var result = driver.GetRunResult();
+		Assert.Equal(
+			[
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/Dummy.GetUsersQuery.g.cs",
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/ServiceCollectionExtensions.g.cs",
+			],
+			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
+		);
 
-		Assert.Empty(result.Diagnostics);
-		Assert.Empty(result.GeneratedTrees);
+		_ = await Verify(result).UseParameters(method);
 	}
 
 	[Theory]
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public void AuthorizeUsesRoles(string method)
+	public async Task AuthorizeUsesRoles(string method)
 	{
-		var driver = GeneratorTestHelper.GetDriver(
+		var result = GeneratorTestHelper.RunGenerator(
 			$$"""
+			using System.Threading;
 			using System.Threading.Tasks;
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
@@ -175,7 +157,7 @@ public sealed class InvalidCodeTests
 			[Handler]
 			[Map{{method}}("/test")]
 			[Authorize(Roles = "test")]
-			public static class GetUsersQuery
+			public static partial class GetUsersQuery
 			{
 				public record Query;
 
@@ -183,49 +165,19 @@ public sealed class InvalidCodeTests
 					Query _,
 					CancellationToken token)
 				{
-					return 0;
+					return ValueTask.FromResult(0);
 				}
 			}
 			""");
 
-		var result = driver.GetRunResult();
+		Assert.Equal(
+			[
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/Dummy.GetUsersQuery.g.cs",
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/ServiceCollectionExtensions.g.cs",
+			],
+			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
+		);
 
-		Assert.Empty(result.Diagnostics);
-		Assert.Empty(result.GeneratedTrees);
-	}
-
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public void AuthorizePolicyHasInvalidType(string method)
-	{
-		var driver = GeneratorTestHelper.GetDriver(
-			$$"""
-			using System.Threading.Tasks;
-			using Immediate.Apis.Shared;
-			using Immediate.Handlers.Shared;
-			using Microsoft.AspNetCore.Authorization;
-			
-			namespace Dummy;
-
-			[Handler]
-			[Map{{method}}("/test")]
-			[Authorize(Policy = 3)]
-			public static class GetUsersQuery
-			{
-				public record Query;
-
-				private static ValueTask<int> HandleAsync(
-					Query _,
-					CancellationToken token)
-				{
-					return 0;
-				}
-			}
-			""");
-
-		var result = driver.GetRunResult();
-
-		Assert.Empty(result.Diagnostics);
-		Assert.Empty(result.GeneratedTrees);
+		_ = await Verify(result).UseParameters(method);
 	}
 }

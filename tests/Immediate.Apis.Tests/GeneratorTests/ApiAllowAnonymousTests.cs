@@ -6,8 +6,9 @@ public sealed class ApiAllowAnonymousTests
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodWithAllowAnonymousTest(string method)
 	{
-		var driver = GeneratorTestHelper.GetDriver(
+		var result = GeneratorTestHelper.RunGenerator(
 			$$"""
+			using System.Threading;
 			using System.Threading.Tasks;
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
@@ -18,7 +19,7 @@ public sealed class ApiAllowAnonymousTests
 			[Handler]
 			[Map{{method}}("/test")]
 			[AllowAnonymous]
-			public static class GetUsersQuery
+			public static partial class GetUsersQuery
 			{
 				public record Query;
 
@@ -26,17 +27,21 @@ public sealed class ApiAllowAnonymousTests
 					Query _,
 					CancellationToken token)
 				{
-					return 0;
+					return ValueTask.FromResult(0);
 				}
 			}
 			""");
 
-		var result = driver.GetRunResult();
+		Assert.Equal(
+			[
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RoutesBuilder.g.cs",
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/Dummy.GetUsersQuery.g.cs",
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/ServiceCollectionExtensions.g.cs",
+			],
+			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
+		);
 
-		Assert.Empty(result.Diagnostics);
-		Assert.Equal(2, result.GeneratedTrees.Length);
-
-		_ = await Verify(result)
-			.UseParameters(method);
+		_ = await Verify(result).UseParameters(method);
 	}
 }

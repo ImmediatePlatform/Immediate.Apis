@@ -6,8 +6,9 @@ public sealed class SimpleApiTests
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodHandleTest(string method)
 	{
-		var driver = GeneratorTestHelper.GetDriver(
+		var result = GeneratorTestHelper.RunGenerator(
 			$$"""
+			using System.Threading;
 			using System.Threading.Tasks;
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
@@ -16,7 +17,7 @@ public sealed class SimpleApiTests
 
 			[Handler]
 			[Map{{method}}("/test")]
-			public static class GetUsersQuery
+			public static partial class GetUsersQuery
 			{
 				public record Query;
 
@@ -24,26 +25,31 @@ public sealed class SimpleApiTests
 					Query _,
 					CancellationToken token)
 				{
-					return 0;
+					return ValueTask.FromResult(0);
 				}
 			}
 			""");
 
-		var result = driver.GetRunResult();
+		Assert.Equal(
+			[
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RoutesBuilder.g.cs",
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/Dummy.GetUsersQuery.g.cs",
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/ServiceCollectionExtensions.g.cs",
+			],
+			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
+		);
 
-		Assert.Empty(result.Diagnostics);
-		Assert.Equal(2, result.GeneratedTrees.Length);
-
-		_ = await Verify(result)
-			.UseParameters(method);
+		_ = await Verify(result).UseParameters(method);
 	}
 
 	[Theory]
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodHandleAsyncTest(string method)
 	{
-		var driver = GeneratorTestHelper.GetDriver(
+		var result = GeneratorTestHelper.RunGenerator(
 			$$"""
+			using System.Threading;
 			using System.Threading.Tasks;
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
@@ -52,7 +58,7 @@ public sealed class SimpleApiTests
 
 			[Handler]
 			[Map{{method}}("/test")]
-			public static class GetUsersQuery
+			public static partial class GetUsersQuery
 			{
 				public record Query;
 
@@ -60,26 +66,31 @@ public sealed class SimpleApiTests
 					Query _,
 					CancellationToken token)
 				{
-					return 0;
+					return ValueTask.FromResult(0);
 				}
 			}
 			""");
 
-		var result = driver.GetRunResult();
+		Assert.Equal(
+			[
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RoutesBuilder.g.cs",
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/Dummy.GetUsersQuery.g.cs",
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/ServiceCollectionExtensions.g.cs",
+			],
+			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
+		);
 
-		Assert.Empty(result.Diagnostics);
-		Assert.Equal(2, result.GeneratedTrees.Length);
-
-		_ = await Verify(result)
-			.UseParameters(method);
+		_ = await Verify(result).UseParameters(method);
 	}
 
 	[Theory]
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMultipleHandlersTest(string method)
 	{
-		var driver = GeneratorTestHelper.GetDriver(
+		var result = GeneratorTestHelper.RunGenerator(
 			$$"""
+			using System.Threading;
 			using System.Threading.Tasks;
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
@@ -88,7 +99,7 @@ public sealed class SimpleApiTests
 			
 			[Handler]
 			[Map{{method}}("/test")]
-			public static class GetUsersQuery
+			public static partial class GetUsersQuery
 			{
 				public record Query;
 			
@@ -96,39 +107,46 @@ public sealed class SimpleApiTests
 					Query _,
 					CancellationToken token)
 				{
-					return 0;
+					return ValueTask.FromResult(0);
 				}
 			}
 			
 			[Handler]
 			[Map{{method}}("/test")]
-			public static class GetUserQuery
+			public static partial class GetUserQuery
 			{
 				public record Query(int Id);
 			
-				private static async ValueTask<int> HandleAsync(
+				private static ValueTask<int> HandleAsync(
 					Query _,
 					CancellationToken token)
 				{
-					return 0;
+					return ValueTask.FromResult(0);
 				}
 			}
 			""");
 
-		var result = driver.GetRunResult();
+		Assert.Equal(
+			[
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUserQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RoutesBuilder.g.cs",
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/Dummy.GetUsersQuery.g.cs",
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/Dummy.GetUserQuery.g.cs",
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/ServiceCollectionExtensions.g.cs",
+			],
+			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
+		);
 
-		Assert.Empty(result.Diagnostics);
-		Assert.Equal(3, result.GeneratedTrees.Length);
-
-		_ = await Verify(result)
-			.UseParameters(method);
+		_ = await Verify(result).UseParameters(method);
 	}
 
 	[Fact]
 	public async Task MapCustomMethodHandleTest()
 	{
-		var driver = GeneratorTestHelper.GetDriver(
+		var result = GeneratorTestHelper.RunGenerator(
 			$$"""
+			using System.Threading;
 			using System.Threading.Tasks;
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
@@ -137,7 +155,7 @@ public sealed class SimpleApiTests
 
 			[Handler]
 			[MapMethod("/test", "HEAD")]
-			public static class GetUsersQuery
+			public static partial class GetUsersQuery
 			{
 				public record Query;
 
@@ -145,15 +163,20 @@ public sealed class SimpleApiTests
 					Query _,
 					CancellationToken token)
 				{
-					return 0;
+					return ValueTask.FromResult(0);
 				}
 			}
 			""");
 
-		var result = driver.GetRunResult();
-
-		Assert.Empty(result.Diagnostics);
-		Assert.Equal(2, result.GeneratedTrees.Length);
+		Assert.Equal(
+			[
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RoutesBuilder.g.cs",
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/Dummy.GetUsersQuery.g.cs",
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/ServiceCollectionExtensions.g.cs",
+			],
+			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
+		);
 
 		_ = await Verify(result);
 	}
@@ -161,8 +184,9 @@ public sealed class SimpleApiTests
 	[Fact]
 	public async Task MapCustomMethodHandleAsyncTest()
 	{
-		var driver = GeneratorTestHelper.GetDriver(
+		var result = GeneratorTestHelper.RunGenerator(
 			$$"""
+			using System.Threading;
 			using System.Threading.Tasks;
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
@@ -171,7 +195,7 @@ public sealed class SimpleApiTests
 
 			[Handler]
 			[MapMethod("/test", "HEAD")]
-			public static class GetUsersQuery
+			public static partial class GetUsersQuery
 			{
 				public record Query;
 
@@ -179,15 +203,20 @@ public sealed class SimpleApiTests
 					Query _,
 					CancellationToken token)
 				{
-					return 0;
+					return ValueTask.FromResult(0);
 				}
 			}
 			""");
 
-		var result = driver.GetRunResult();
-
-		Assert.Empty(result.Diagnostics);
-		Assert.Equal(2, result.GeneratedTrees.Length);
+		Assert.Equal(
+			[
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RoutesBuilder.g.cs",
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/Dummy.GetUsersQuery.g.cs",
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/ServiceCollectionExtensions.g.cs",
+			],
+			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
+		);
 
 		_ = await Verify(result);
 	}

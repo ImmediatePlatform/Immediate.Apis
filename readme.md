@@ -56,6 +56,39 @@ In your `Program.cs`, add a call to `app.MapXxxEndpoints()`, where `Xxx` is the 
 * For a project named `Application.Web`, it will be `app.MapApplicationWebEndpoints()`
 
 ### Customizing the endpoints
+#### AsParameters
+
+By default on POST and PUT requests Immediate.Apis will assume that your request class should be treated as a `[FromBody]`. Sometimes, however, this is not desired. For example imagine a PUT request that sits at a route `/api/todos/{id}` and updates a TODO with a given ID. We would want to get the `id` from the route and the properties to update from the body. To do so, we need to create the following request command class:
+
+```cs
+public sealed record Command
+{
+    public sealed record CommandBody
+    {
+        // props here;
+    }
+    
+    [FromRoute]
+    public required int Id { get; init; }
+    
+    [FromBody]
+    public required CommandBody Body { get; init; }
+}
+```
+
+...and modify the `HandleAsync` method to let Immediate.Apis know we want to treat the outer `Command` class as `[AsParameters]`, like so:
+
+```cs
+private static async ValueTask<Results<NoContent, NotFound>> HandleAsync(
+    [AsParameters] Command command,
+    ExampleDbContext dbContext,
+    CancellationToken ct
+) 
+{
+    // ...
+}
+```
+
 #### Authorization
 
 The `[AllowAnonymous]` and `[Authorized("Policy")]` attributes are supported and will be applied to the endpoint.

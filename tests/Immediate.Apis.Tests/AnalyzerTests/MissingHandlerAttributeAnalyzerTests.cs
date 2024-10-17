@@ -4,8 +4,8 @@ namespace Immediate.Apis.Tests.AnalyzerTests;
 
 public sealed class MissingHandlerAttributeAnalyzerTests
 {
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task MissingHandlerAttributeShouldError(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<MissingHandlerAttributeAnalyzer>(
 			$$"""

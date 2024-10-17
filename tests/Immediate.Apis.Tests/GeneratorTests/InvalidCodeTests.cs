@@ -2,11 +2,11 @@ namespace Immediate.Apis.Tests.GeneratorTests;
 
 public sealed class InvalidCodeTests
 {
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task MissingHandlerAttribute(string method)
 	{
-		var result = GeneratorTestHelper.RunGenerator(
+		var result = await GeneratorTestHelper.RunGenerator(
 			$$"""
 			using System.Threading;
 			using System.Threading.Tasks;
@@ -28,21 +28,20 @@ public sealed class InvalidCodeTests
 			}
 			""");
 
-		Assert.Equal(
-			[
+		_ = await Assert
+			.That(result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/')))
+			.IsEquivalentCollectionTo([
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
-			],
-			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
-		);
+			]);
 
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task MissingHandler(string method)
 	{
-		var result = GeneratorTestHelper.RunGenerator(
+		var result = await GeneratorTestHelper.RunGenerator(
 			$$"""
 			using System.Threading.Tasks;
 			using Immediate.Apis.Shared;
@@ -58,19 +57,18 @@ public sealed class InvalidCodeTests
 			}
 			""");
 
-		Assert.Equal(
-			[],
-			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
-		);
+		_ = await Assert
+			.That(result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/')))
+			.IsEmpty();
 
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task InvalidHandler(string method)
 	{
-		var result = GeneratorTestHelper.RunGenerator(
+		var result = await GeneratorTestHelper.RunGenerator(
 			$$"""
 			using System.Threading.Tasks;
 			using Immediate.Apis.Shared;
@@ -91,19 +89,18 @@ public sealed class InvalidCodeTests
 			}
 			""");
 
-		Assert.Equal(
-			[],
-			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
-		);
+		_ = await Assert
+			.That(result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/')))
+			.IsEmpty();
 
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task AuthorizeUsesAuthenticationSchemes(string method)
 	{
-		var result = GeneratorTestHelper.RunGenerator(
+		var result = await GeneratorTestHelper.RunGenerator(
 			$$"""
 			using System.Threading;
 			using System.Threading.Tasks;
@@ -129,22 +126,21 @@ public sealed class InvalidCodeTests
 			}
 			""");
 
-		Assert.Equal(
-			[
+		_ = await Assert
+			.That(result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/')))
+			.IsEquivalentCollectionTo([
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
-			],
-			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
-		);
+			]);
 
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task AuthorizeUsesRoles(string method)
 	{
-		var result = GeneratorTestHelper.RunGenerator(
+		var result = await GeneratorTestHelper.RunGenerator(
 			$$"""
 			using System.Threading;
 			using System.Threading.Tasks;
@@ -170,13 +166,12 @@ public sealed class InvalidCodeTests
 			}
 			""");
 
-		Assert.Equal(
-			[
+		_ = await Assert
+			.That(result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/')))
+			.IsEquivalentCollectionTo([
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
-			],
-			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
-		);
+			]);
 
 		_ = await Verify(result).UseParameters(method);
 	}

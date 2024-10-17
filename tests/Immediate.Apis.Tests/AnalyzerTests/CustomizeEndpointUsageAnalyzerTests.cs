@@ -4,8 +4,8 @@ namespace Immediate.Apis.Tests.AnalyzerTests;
 
 public sealed class CustomizeEndpointUsageAnalyzerTests
 {
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task ValidDefinitionShouldNotWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""
@@ -39,8 +39,8 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			"""
 		).RunAsync();
 
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task MultipleDefinitionShouldNotWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""
@@ -77,8 +77,8 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			"""
 		).RunAsync();
 
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task InvalidAccessibilityShouldWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""
@@ -112,8 +112,8 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			"""
 		).RunAsync();
 
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task InstanceMethodShouldWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""
@@ -147,8 +147,8 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			"""
 		).RunAsync();
 
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task InvalidReturnShouldWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""
@@ -182,8 +182,8 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			"""
 		).RunAsync();
 
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task InvalidParameterTypeShouldWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""

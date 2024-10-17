@@ -7,8 +7,8 @@ namespace Immediate.Apis.Tests.CodeFixTests;
 [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "Test names")]
 public sealed class MissingTransformResultMethodCodeFixTests
 {
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task ValidDefinition_ShouldAddTransformResultMethod(string method)
 	{
 		await CodeFixTestHelper

@@ -17,12 +17,12 @@ internal static class Utility
 		MetadataReference.CreateFromFile("./Microsoft.Extensions.Primitives.dll"),
 	];
 
-	public static TheoryData<string> Methods() =>
-		new([
+	public static IReadOnlyList<string> Methods() =>
+		[
 			"Get",
 			"Post",
 			"Patch",
 			"Put",
 			"Delete",
-		]);
+		];
 }

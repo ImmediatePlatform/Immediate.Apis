@@ -7,8 +7,8 @@ namespace Immediate.Apis.Tests.CodeFixTests;
 [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "Test names")]
 public sealed class MissingHandlerAttributeCodeFixTests
 {
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task MissingHandlerAttribute_ShouldAddAttributeAndUsing(string method)
 	{
 		await CodeFixTestHelper
@@ -58,8 +58,8 @@ public sealed class MissingHandlerAttributeCodeFixTests
 			).RunAsync();
 	}
 
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task MissingHandlerAttributeWithUsing_ShouldAddAttributeOnly(string method)
 	{
 		await CodeFixTestHelper

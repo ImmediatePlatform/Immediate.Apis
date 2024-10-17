@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Immediate.Apis.Generators;
 using Immediate.Handlers.Generators.ImmediateHandlers;
 using Microsoft.CodeAnalysis;
@@ -7,7 +8,7 @@ namespace Immediate.Apis.Tests.GeneratorTests;
 
 public static class GeneratorTestHelper
 {
-	public static GeneratorDriverRunResult RunGenerator(string source)
+	public static async Task<GeneratorDriverRunResult> RunGenerator([StringSyntax("c#-test")] string source)
 	{
 		var syntaxTree = CSharpSyntaxTree.ParseText(source);
 
@@ -34,13 +35,15 @@ public static class GeneratorTestHelper
 				out var diagnostics
 			);
 
-		Assert.Empty(
-			outputCompilation
-				.GetDiagnostics()
-				.Where(d => d.Severity is DiagnosticSeverity.Error or DiagnosticSeverity.Warning)
-		);
+		_ = await Assert
+			.That(
+				outputCompilation
+					.GetDiagnostics()
+					.Where(d => d.Severity is DiagnosticSeverity.Error or DiagnosticSeverity.Warning)
+			)
+			.IsEmpty();
 
-		Assert.Empty(diagnostics);
+		_ = await Assert.That(diagnostics).IsEmpty();
 		return driver.GetRunResult();
 	}
 }

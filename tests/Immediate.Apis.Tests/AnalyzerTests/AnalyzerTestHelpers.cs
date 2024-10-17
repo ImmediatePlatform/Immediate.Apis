@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
@@ -7,7 +8,7 @@ namespace Immediate.Apis.Tests.AnalyzerTests;
 public static class AnalyzerTestHelpers
 {
 	public static CSharpAnalyzerTest<TAnalyzer, DefaultVerifier> CreateAnalyzerTest<TAnalyzer>(
-		string inputSource
+		[StringSyntax("c#-test")] string inputSource
 	)
 		where TAnalyzer : DiagnosticAnalyzer, new()
 	{

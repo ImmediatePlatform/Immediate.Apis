@@ -9,8 +9,8 @@ namespace Immediate.Apis.Tests.AnalyzerTests;
 [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "Test names")]
 public sealed class MissingTransformResultMethodAnalyzerTests
 {
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task ValidDefinitionShouldRaiseHiddenDiagnostic(string method)
 	{
 		await AnalyzerTestHelpers.CreateAnalyzerTest<MissingTransformResultMethodAnalyzer>(
@@ -40,8 +40,8 @@ public sealed class MissingTransformResultMethodAnalyzerTests
 		).RunAsync();
 	}
 
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task ValidDefinition_WithExistingTransformResultMethod_ShouldNotRaiseHiddenDiagnostic(string method)
 	{
 		await AnalyzerTestHelpers.CreateAnalyzerTest<MissingTransformResultMethodAnalyzer>(
@@ -77,8 +77,8 @@ public sealed class MissingTransformResultMethodAnalyzerTests
 		).RunAsync();
 	}
 
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task InvalidDefinition_ShouldNotRaiseHiddenDiagnostic(string method)
 	{
 		await AnalyzerTestHelpers.CreateAnalyzerTest<MissingTransformResultMethodAnalyzer>(

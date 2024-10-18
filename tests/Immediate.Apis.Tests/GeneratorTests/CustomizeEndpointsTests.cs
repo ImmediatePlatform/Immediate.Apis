@@ -6,7 +6,7 @@ public sealed class CustomizeEndpointsTests
 	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
 	public async Task MapMethodCustomizeEndpointTest(string method)
 	{
-		var result = await GeneratorTestHelper.RunGenerator(
+		var result = GeneratorTestHelper.RunGenerator(
 			$$"""
 			using System.Threading;
 			using System.Threading.Tasks;
@@ -36,14 +36,15 @@ public sealed class CustomizeEndpointsTests
 			}
 			""");
 
-		_ = await Assert
-			.That(result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/')))
-			.IsEquivalentCollectionTo([
+		Assert.Equal(
+			[
 				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
 				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RoutesBuilder.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
-			]);
+			],
+			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
+		);
 
 		_ = await Verify(result).UseParameters(method);
 	}

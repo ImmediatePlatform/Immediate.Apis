@@ -29,9 +29,7 @@ public sealed class InvalidCodeTests
 			""");
 
 		Assert.Equal(
-			[
-				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlers.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
-			],
+			[],
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 

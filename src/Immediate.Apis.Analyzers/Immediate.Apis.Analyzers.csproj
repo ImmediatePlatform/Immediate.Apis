@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<PackageReference Include="DotNet.ReproducibleBuilds" PrivateAssets="All" />
 	<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="All" />
 	<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
-	<PackageReference Include="MinVer" PrivateAssets="all" />
   </ItemGroup>
 
   <PropertyGroup Label="MinVer">

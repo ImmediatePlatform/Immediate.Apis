@@ -8,12 +8,14 @@
 
   <PropertyGroup Label="Nuget">
 	<Title>Immediate.Apis</Title>
-	<Description>An implementation of the mediator pattern in .NET using source-generation.</Description>
+	<Description>A source generator to bind Immediate.Handlers handlers to minimal APIs.</Description>
 
 	<Authors>Immediate.Apis Developers</Authors>
+	<Copyright>© 2024 Immediate.Apis Developers</Copyright>
 
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<PackageReadmeFile>readme.md</PackageReadmeFile>
+	<PackageTags>csharp-sourcegenerator;mediator;mediator-pattern;minimal-apis</PackageTags>
 
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
 	<RepositoryUrl>https://github.com/viceroypenguin/Immediate.Apis</RepositoryUrl>
@@ -37,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+	<PackageReference Include="DotNet.ReproducibleBuilds" PrivateAssets="All" />
 	<PackageReference Include="Scriban" PrivateAssets="all" GeneratePathProperty="true" />
 	<PackageReference Include="MinVer" PrivateAssets="all" />
   </ItemGroup>

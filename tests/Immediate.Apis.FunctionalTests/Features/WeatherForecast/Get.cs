@@ -1,6 +1,7 @@
 using Immediate.Apis.Shared;
 using Immediate.Handlers.Shared;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Immediate.Apis.FunctionalTests.Features.WeatherForecast;
 
@@ -27,6 +28,8 @@ public static partial class Get
 		public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 	}
 
+	[ProducesResponseType<IReadOnlyList<Result>>(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	private static async ValueTask<IReadOnlyList<Result>> Handle(
 		Query _,
 		CancellationToken token

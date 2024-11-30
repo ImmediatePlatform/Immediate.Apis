@@ -17,6 +17,9 @@ namespace Microsoft.AspNetCore.Builder
 					{{~ if !string.empty method.http_method ~}}
 					["{{ method.http_method }}"],
 					{{~ end ~}} 
+					{{~ for a in method.attributes ~}}
+					[{{ a }}]
+					{{~ end ~}}
 					async (
 						[{{ method.parameter_attribute }}] {{ method.parameter_type }} parameters,
 						[FromServices] {{ method.class_full_name }}.Handler handler,

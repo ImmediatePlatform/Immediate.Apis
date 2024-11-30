@@ -1,5 +1,7 @@
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Immediate.Apis.Generators;
 
@@ -73,6 +75,10 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
+		var handleMethodAttributes = GetHandleMethodAttributes(handleMethod);
+
+		token.ThrowIfCancellationRequested();
+
 		var useCustomization = HasCustomizationMethod(symbol);
 
 		token.ThrowIfCancellationRequested();
@@ -85,6 +91,7 @@ public sealed partial class ImmediateApisGenerator
 		{
 			MapMethod = mapMethod,
 			HttpMethod = httpMethod,
+			Attributes = handleMethodAttributes,
 			ParameterAttribute = parameterAttribute,
 			Route = route,
 
@@ -217,4 +224,40 @@ public sealed partial class ImmediateApisGenerator
 			.Value
 			!.ToString();
 	}
+
+	private static EquatableReadOnlyList<string> GetHandleMethodAttributes(IMethodSymbol methodSymbol) =>
+		methodSymbol.GetAttributes()
+			.Select(GetAttributeString)
+			.ToEquatableReadOnlyList();
+
+	private static string GetAttributeString(AttributeData attributeData)
+	{
+		var @class = attributeData.AttributeClass!.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+		var parameters = new List<string>();
+
+		foreach (var tc in attributeData.ConstructorArguments)
+		{
+			if (GetTypedConstantString(tc) is { } str)
+				parameters.Add(str);
+		}
+
+		foreach (var na in attributeData.NamedArguments)
+		{
+			if (GetTypedConstantString(na.Value) is { } str)
+				parameters.Add($"{na.Key} = {str}");
+		}
+
+		return parameters.Count == 0
+			? @class
+			: $"{@class}({string.Join(", ", parameters)})";
+	}
+
+	[SuppressMessage("Style", "IDE0072:Add missing cases")]
+	private static string? GetTypedConstantString(TypedConstant tc) =>
+		tc.Kind switch
+		{
+			TypedConstantKind.Array => $"[{string.Join(", ", tc.Values.Select(GetTypedConstantString))}]",
+			_ => tc.ToCSharpString(),
+		};
 }

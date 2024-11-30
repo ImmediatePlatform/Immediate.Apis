@@ -6,6 +6,7 @@ public sealed partial class ImmediateApisGenerator
 	{
 		public required string MapMethod { get; init; }
 		public required string? HttpMethod { get; init; }
+		public required EquatableReadOnlyList<string> Attributes { get; init; }
 		public required string ParameterAttribute { get; init; }
 		public required string Route { get; init; }
 

@@ -1,4 +1,5 @@
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Immediate.Apis.Generators;
 
@@ -10,8 +11,8 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 		var methods = context.SyntaxProvider
 			.ForAttributeWithMetadataName(
 				"Immediate.Handlers.Shared.HandlerAttribute",
-				(_, _) => true,
-				TransformMethod
+				predicate: (node, _) => node is TypeDeclarationSyntax,
+				transform: TransformMethod
 			)
 			.Where(m => m != null);
 

@@ -63,10 +63,22 @@ public sealed partial class ImmediateApisGenerator
 
 		var @namespace = symbol.ContainingNamespace.ToString().NullIf("<global namespace>");
 		var @class = GetClass(symbol);
+
+		token.ThrowIfCancellationRequested();
+
 		var className = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+		token.ThrowIfCancellationRequested();
+
 		var classAsMethodName = symbol.ToString().Replace(".", "_");
+
+		token.ThrowIfCancellationRequested();
+
 		var parameterType = handleMethod.Parameters[0].Type;
 		var mapMethod = GetMapMethod(attribute);
+
+		token.ThrowIfCancellationRequested();
+
 		var httpMethod = GetHttpMethod(attribute);
 
 		token.ThrowIfCancellationRequested();
@@ -125,8 +137,8 @@ public sealed partial class ImmediateApisGenerator
 			return null;
 		}
 
-		// must have request type and cancellation token
-		if (handleMethod.Parameters.Length < 2)
+		// must have request type
+		if (handleMethod.Parameters.Length is 0)
 			return null;
 
 		return handleMethod;

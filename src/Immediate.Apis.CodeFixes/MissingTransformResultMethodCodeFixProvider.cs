@@ -57,7 +57,7 @@ public class MissingTransformResultMethodCodeFixProvider : CodeFixProvider
 		var handleMethodSymbol = handlerClassSymbol
 			.GetMembers()
 			.OfType<IMethodSymbol>()
-			.FirstOrDefault(x => x.Name == "Handle");
+			.FirstOrDefault(x => x.Name is "Handle" or "HandleAsync");
 
 		if (handleMethodSymbol is null)
 			return document;

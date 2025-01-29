@@ -12,7 +12,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace Immediate.Apis.CodeFixes;
 
 [ExportCodeFixProvider(LanguageNames.CSharp)]
-public class MissingCustomizeEndpointMethodCodeFixProvider : CodeFixProvider
+public sealed class MissingCustomizeEndpointMethodCodeFixProvider : CodeFixProvider
 {
 	public sealed override ImmutableArray<string> FixableDiagnosticIds { get; } =
 		ImmutableArray.Create([DiagnosticIds.IAPI0006MissingCustomizeEndpointMethod]);

@@ -82,7 +82,7 @@ public sealed class InvalidAuthorizeAttributeAnalyzer : DiagnosticAnalyzer
 			{
 				foreach (var argument in authorizeAttribute.NamedArguments)
 				{
-					if (argument.Key != "Policy")
+					if (argument.Key is not "Policy")
 					{
 						context.ReportDiagnostic(
 							Diagnostic.Create(

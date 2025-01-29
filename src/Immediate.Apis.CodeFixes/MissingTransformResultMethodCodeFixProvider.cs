@@ -11,7 +11,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace Immediate.Apis.CodeFixes;
 
 [ExportCodeFixProvider(LanguageNames.CSharp)]
-public class MissingTransformResultMethodCodeFixProvider : CodeFixProvider
+public sealed class MissingTransformResultMethodCodeFixProvider : CodeFixProvider
 {
 	public sealed override ImmutableArray<string> FixableDiagnosticIds { get; } =
 		ImmutableArray.Create([DiagnosticIds.IAPI0007MissingTransformResultMethod]);

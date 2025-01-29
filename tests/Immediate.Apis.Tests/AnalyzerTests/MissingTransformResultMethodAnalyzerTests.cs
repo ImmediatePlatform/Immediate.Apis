@@ -3,9 +3,6 @@ using Immediate.Apis.Analyzers;
 
 namespace Immediate.Apis.Tests.AnalyzerTests;
 
-// NB: CS0234 is due to lack of `Microsoft.AspNetCore.Http.Abstractions` library
-// TODO: figure out how to reference `Microsoft.AspNetCore.App.Ref`
-
 [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "Test names")]
 public sealed class MissingTransformResultMethodAnalyzerTests
 {

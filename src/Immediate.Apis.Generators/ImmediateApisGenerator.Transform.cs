@@ -48,7 +48,7 @@ public sealed partial class ImmediateApisGenerator
 			{
 				foreach (var argument in authorizeAttribute.NamedArguments)
 				{
-					if (argument.Key != "Policy")
+					if (argument.Key is not "Policy")
 						return null;
 
 					if (argument.Value.Value is not string ap)

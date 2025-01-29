@@ -56,7 +56,7 @@ public sealed class TransformResultUsageAnalyzer : DiagnosticAnalyzer
 		if (namedTypeSymbol
 			.GetMembers()
 			.OfType<IMethodSymbol>()
-			.Where(ims => ims.Name == "TransformResult")
+			.Where(ims => ims.Name is "TransformResult")
 			.ToList() is not [{ } transformResultMethod])
 		{
 			return;

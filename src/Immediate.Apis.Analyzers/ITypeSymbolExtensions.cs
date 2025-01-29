@@ -19,13 +19,16 @@ internal static class ITypeSymbolExtensions
 			},
 		};
 
-	public static bool IsMapMethodAttribute(this ITypeSymbol? typeSymbol, string method) =>
-		typeSymbol?.Name == $"Map{method}Attribute"
-		&& typeSymbol.ContainingNamespace.IsImmediateApisShared();
-
-	private static readonly string[] s_methods = ["Get", "Post", "Put", "Patch", "Delete"];
 	public static bool IsMapMethodAttribute(this ITypeSymbol? typeSymbol) =>
-		s_methods.Any(typeSymbol.IsMapMethodAttribute);
+		typeSymbol is
+		{
+			Name: "MapGetAttribute"
+				or "MapPostAttribute"
+				or "MapPutAttribute"
+				or "MapPatchAttribute"
+				or "MapDeleteAttribute",
+		}
+		&& typeSymbol.ContainingNamespace.IsImmediateApisShared();
 
 	public static bool IsMicrosoftAspNetCoreAuthorization(this INamespaceSymbol symbol) =>
 		symbol is

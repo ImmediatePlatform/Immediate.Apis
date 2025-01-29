@@ -56,7 +56,7 @@ public sealed class CustomizeEndpointUsageAnalyzer : DiagnosticAnalyzer
 		if (namedTypeSymbol
 			.GetMembers()
 			.OfType<IMethodSymbol>()
-			.Where(ims => ims.Name == "CustomizeEndpoint")
+			.Where(ims => ims.Name is "CustomizeEndpoint")
 			.ToList() is not [{ } customizeEndpointMethod])
 		{
 			return;

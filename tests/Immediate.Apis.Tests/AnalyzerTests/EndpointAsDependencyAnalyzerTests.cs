@@ -120,4 +120,46 @@ public sealed class EndpointAsDependencyAnalyzerTests
 			"""
 		).RunAsync();
 
+	[Test]
+	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	public async Task ServiceMethodDependsOnEndpointHandlerShouldWarn(string method) =>
+		await AnalyzerTestHelpers.CreateAnalyzerTest<EndpointAsDependencyAnalyzer, ImmediateHandlersGenerator>(
+			$$"""
+			using System.Threading;
+			using System.Threading.Tasks;
+			using Immediate.Apis.Shared;
+			using Immediate.Handlers.Shared;
+			using Microsoft.AspNetCore.Authorization;
+			using Microsoft.AspNetCore.Http;
+					
+			namespace Dummy;
+
+			[Handler]
+			[Map{{method}}("/test")]
+			[Authorize(Roles = "")]
+			public static partial class GetUsersQuery
+			{
+				public record Query;
+
+				private static async ValueTask<int> Handle(
+					Query _,
+					CancellationToken token)
+				{
+					return 0;
+				}
+			}
+
+			public sealed class InternalHandler
+			{
+				private sealed record Query;
+
+				private async ValueTask<int> Handle(
+					Query _,
+					{|IAPI0008:GetUsersQuery.Handler|} getUsersQuery,
+					CancellationToken token
+				) => 0;
+			}
+			"""
+		).RunAsync();
+
 }

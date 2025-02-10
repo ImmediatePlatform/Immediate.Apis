@@ -41,23 +41,7 @@ public sealed class EndpointAsDependencyAnalyzer : DiagnosticAnalyzer
 		var token = context.CancellationToken;
 		token.ThrowIfCancellationRequested();
 
-		if (context.Symbol is not
-			IMethodSymbol
-			{
-				Name: "Handle" or "HandleAsync",
-				ContainingType:
-				{
-					IsStatic: true
-				} containingType,
-				Parameters: { } parameters
-			})
-		{
-			return;
-		}
-
-		token.ThrowIfCancellationRequested();
-
-		if (!containingType.GetAttributes().Any(a => a.AttributeClass.IsHandlerAttribute()))
+		if (context.Symbol is not IMethodSymbol { Parameters: { } parameters })
 			return;
 
 		foreach (var parameter in parameters)

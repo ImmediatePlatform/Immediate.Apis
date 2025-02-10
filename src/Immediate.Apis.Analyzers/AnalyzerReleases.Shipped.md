@@ -11,3 +11,10 @@ IAPI0004 | ImmediateApis | Warning | CustomizeEndpointUsageAnalyzer
 IAPI0005 | ImmediateApis | Warning | TransformResultUsageAnalyzer
 IAPI0006 | ImmediateApis | Hidden | MissingCustomizeEndpointMethodAnalyzer
 IAPI0007 | ImmediateApis | Hidden | MissingTransformResultMethodAnalyzer
+
+## Release 1.6
+
+### New Rules
+Rule ID | Category | Severity | Notes
+--------|----------|----------|--------------------
+IAPI0008 | ImmediateApis | Info | EndpointAsDependencyAnalyzer

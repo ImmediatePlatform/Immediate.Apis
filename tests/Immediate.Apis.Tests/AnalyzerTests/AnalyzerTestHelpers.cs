@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
@@ -17,12 +18,7 @@ public static class AnalyzerTestHelpers
 			TestState =
 			{
 				Sources = { inputSource },
-				ReferenceAssemblies = new ReferenceAssemblies(
-					"net8.0",
-					new PackageIdentity(
-						"Microsoft.NETCore.App.Ref",
-						"8.0.0"),
-					Path.Combine("ref", "net8.0")),
+				ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
 			},
 		};
 
@@ -33,5 +29,39 @@ public static class AnalyzerTestHelpers
 			.AddRange(Utility.GetMetadataReferences());
 
 		return csTest;
+	}
+
+	public static CSharpAnalyzerTest<TAnalyzer, DefaultVerifier> CreateAnalyzerTest<TAnalyzer, TGenerator>(
+		[StringSyntax("c#-test")] string inputSource
+	)
+		where TAnalyzer : DiagnosticAnalyzer, new()
+		where TGenerator : IIncrementalGenerator, new()
+	{
+		var csTest = new CSharpGeneratorAnalyzerTest<TAnalyzer, TGenerator, DefaultVerifier>
+		{
+			TestBehaviors = TestBehaviors.SkipGeneratedSourcesCheck,
+			TestState =
+			{
+				Sources = { inputSource },
+				ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+			},
+		};
+
+		csTest.TestState.AdditionalReferences
+			.AddRange(Basic.Reference.Assemblies.AspNet80.References.All);
+
+		csTest.TestState.AdditionalReferences
+			.AddRange(Utility.GetMetadataReferences());
+
+		return csTest;
+	}
+
+	public sealed class CSharpGeneratorAnalyzerTest<TAnalyzer, TGenerator, TVerifier> : CSharpAnalyzerTest<TAnalyzer, TVerifier>
+		where TAnalyzer : DiagnosticAnalyzer, new()
+		where TGenerator : IIncrementalGenerator, new()
+		where TVerifier : IVerifier, new()
+	{
+		protected override IEnumerable<Type> GetSourceGenerators() =>
+			[typeof(TGenerator)];
 	}
 }

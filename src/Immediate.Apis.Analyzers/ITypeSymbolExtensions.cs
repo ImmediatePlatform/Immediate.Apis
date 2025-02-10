@@ -26,7 +26,8 @@ internal static class ITypeSymbolExtensions
 				or "MapPostAttribute"
 				or "MapPutAttribute"
 				or "MapPatchAttribute"
-				or "MapDeleteAttribute",
+				or "MapDeleteAttribute"
+				or "MapMethodAttribute",
 		}
 		&& typeSymbol.ContainingNamespace.IsImmediateApisShared();
 

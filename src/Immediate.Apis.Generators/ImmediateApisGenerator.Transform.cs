@@ -38,25 +38,27 @@ public sealed partial class ImmediateApisGenerator
 		var authorize = authorizeAttribute != null;
 		var authorizePolicy = string.Empty;
 
-		if (authorizeAttribute != null)
+		switch (authorizeAttribute)
 		{
-			if (authorizeAttribute.ConstructorArguments.Length > 0)
-			{
+			case { ConstructorArguments.Length: > 0 }:
 				authorizePolicy = (string)authorizeAttribute.ConstructorArguments[0].Value!;
-			}
-			else if (authorizeAttribute.NamedArguments.Length > 0)
+				break;
+
+			case { NamedArguments.Length: > 0 }:
 			{
 				foreach (var argument in authorizeAttribute.NamedArguments)
 				{
-					if (argument.Key is not "Policy")
-						return null;
-
-					if (argument.Value.Value is not string ap)
+					if (argument is not { Key: "Policy", Value.Value: string ap })
 						return null;
 
 					authorizePolicy = ap;
 				}
+
+				break;
 			}
+
+			default:
+				break;
 		}
 
 		token.ThrowIfCancellationRequested();
@@ -70,7 +72,7 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
-		var classAsMethodName = symbol.ToString().Replace(".", "_");
+		var classAsMethodName = symbol.ToString().Replace('.', '_');
 
 		token.ThrowIfCancellationRequested();
 

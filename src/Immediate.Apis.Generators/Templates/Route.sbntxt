@@ -29,7 +29,7 @@ namespace Microsoft.AspNetCore.Builder
 						var ret = await handler.HandleAsync(parameters, token);
 						{{~ if method.use_transform_method ~}}
 						return {{ method.class_full_name }}.TransformResult(ret);
-						{{~ else ~}}
+						{{~ else if method.has_return ~}}
 						return ret;
 						{{~ end ~}}
 					}

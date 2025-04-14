@@ -22,6 +22,7 @@ public sealed partial class ImmediateApisGenerator
 
 		public required bool UseCustomization { get; init; }
 		public required bool UseTransformMethod { get; init; }
+		public required bool HasReturn { get; init; }
 	}
 
 	public sealed record Class

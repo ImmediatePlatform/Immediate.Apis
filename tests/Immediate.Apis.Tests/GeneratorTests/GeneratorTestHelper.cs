@@ -1,5 +1,5 @@
 using Immediate.Apis.Generators;
-using Immediate.Handlers.Generators.ImmediateHandlers;
+using Immediate.Handlers.Generators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 

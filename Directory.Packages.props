@@ -9,7 +9,7 @@
 	<PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
 	<PackageVersion Include="DotNet.ReproducibleBuilds" Version="1.2.25" />
 	<PackageVersion Include="GitHubActionsTestLogger" Version="2.4.1" />
-	<PackageVersion Include="Immediate.Handlers" Version="2.2.0" />
+	<PackageVersion Include="Immediate.Handlers" Version="3.0.0" />
 	<PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="8.0.12" />
 	<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />
 	<PackageVersion Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
@@ -31,6 +31,6 @@
 
   <ItemGroup>
 	<GlobalPackageReference Include="PolySharp" Version="1.15.0" />
-	<GlobalPackageReference Include="Meziantou.Analyzer" Version="2.0.205" />
+	<GlobalPackageReference Include="Meziantou.Analyzer" Version="2.0.212" />
   </ItemGroup>
 </Project>

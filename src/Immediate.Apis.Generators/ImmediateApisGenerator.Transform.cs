@@ -135,8 +135,8 @@ public sealed partial class ImmediateApisGenerator
 		if (symbol
 				.GetMembers()
 				.OfType<IMethodSymbol>()
-				.Where(m => m.IsStatic)
 				.Where(m => m.Name is "Handle" or "HandleAsync")
+				.Take(2)
 				.ToList() is not [var handleMethod])
 		{
 			return null;

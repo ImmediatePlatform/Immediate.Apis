@@ -14,14 +14,16 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 				predicate: (node, _) => node is TypeDeclarationSyntax,
 				transform: TransformMethod
 			)
-			.Where(m => m != null);
+			.Where(m => m != null)
+			.WithTrackingName("Handlers");
 
 		var assemblyName = context.CompilationProvider
 			.Select((cp, _) => cp.AssemblyName!
 				.Replace(".", string.Empty)
 				.Replace(" ", string.Empty)
 				.Trim()
-			);
+			)
+			.WithTrackingName("AssemblyName");
 
 		var perMethodTemplate = Utility.GetTemplate("Route");
 		context.RegisterSourceOutput(

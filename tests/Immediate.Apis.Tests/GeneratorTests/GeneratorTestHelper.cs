@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Immediate.Apis.Generators;
 using Immediate.Handlers.Generators;
 using Microsoft.CodeAnalysis;
@@ -24,10 +25,38 @@ public static class GeneratorTestHelper
 			)
 		);
 
-		var generator = new ImmediateApisGenerator();
+		var clone = compilation.Clone().AddSyntaxTrees(CSharpSyntaxTree.ParseText("// dummy"));
 
-		var driver = CSharpGeneratorDriver
-			.Create(new ImmediateApisGenerator(), new ImmediateHandlersGenerator())
+		GeneratorDriver driver = CSharpGeneratorDriver.Create(
+			generators:
+			[
+				new ImmediateApisGenerator().AsSourceGenerator(),
+				new ImmediateHandlersGenerator().AsSourceGenerator(),
+			],
+			driverOptions: new GeneratorDriverOptions(default, trackIncrementalGeneratorSteps: true)
+		);
+
+		var result1 = RunGenerator(ref driver, compilation);
+		var result2 = RunGenerator(ref driver, clone);
+
+		foreach (var (_, step) in result2.Results[0].TrackedOutputSteps)
+			AssertSteps(step);
+
+		foreach (var step in TrackedSteps)
+		{
+			if (result2.Results[0].TrackedSteps.TryGetValue(step, out var outputs))
+				AssertSteps(outputs);
+		}
+
+		return result1;
+	}
+
+	private static GeneratorDriverRunResult RunGenerator(
+		ref GeneratorDriver driver,
+		Compilation compilation
+	)
+	{
+		driver = driver
 			.RunGeneratorsAndUpdateCompilation(
 				compilation,
 				out var outputCompilation,
@@ -42,5 +71,21 @@ public static class GeneratorTestHelper
 
 		Assert.Empty(diagnostics);
 		return driver.GetRunResult();
+	}
+
+	private static ReadOnlySpan<string> TrackedSteps =>
+		new string[]
+		{
+			"AssemblyName",
+			"Handlers",
+		};
+
+	private static void AssertSteps(
+		ImmutableArray<IncrementalGeneratorRunStep> steps
+	)
+	{
+		var outputs = steps.SelectMany(o => o.Outputs);
+
+		Assert.All(outputs, o => Assert.True(o.Reason is IncrementalStepRunReason.Unchanged or IncrementalStepRunReason.Cached));
 	}
 }

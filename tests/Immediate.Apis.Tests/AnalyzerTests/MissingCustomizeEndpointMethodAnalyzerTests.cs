@@ -6,8 +6,8 @@ namespace Immediate.Apis.Tests.AnalyzerTests;
 [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "Test names")]
 public sealed class MissingCustomizeEndpointMethodAnalyzerTests
 {
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task ValidDefinitionShouldRaiseHiddenDiagnostic(string method)
 	{
 		await AnalyzerTestHelpers.CreateAnalyzerTest<MissingCustomizeEndpointMethodAnalyzer>(
@@ -34,11 +34,11 @@ public sealed class MissingCustomizeEndpointMethodAnalyzerTests
 				}
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task ValidDefinition_WithExistingCustomizeEndpointMethod_ShouldNotRaiseHiddenDiagnostic(string method)
 	{
 		await AnalyzerTestHelpers.CreateAnalyzerTest<MissingCustomizeEndpointMethodAnalyzer>(
@@ -70,6 +70,6 @@ public sealed class MissingCustomizeEndpointMethodAnalyzerTests
 				}
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 	}
 }

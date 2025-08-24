@@ -4,8 +4,8 @@ namespace Immediate.Apis.Tests.AnalyzerTests;
 
 public sealed class CustomizeEndpointUsageAnalyzerTests
 {
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task ValidDefinitionShouldNotWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""
@@ -37,10 +37,10 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 				}
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MultipleDefinitionShouldNotWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""
@@ -75,10 +75,10 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 				}
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task InvalidAccessibilityShouldWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""
@@ -110,10 +110,10 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 				}
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task InstanceMethodShouldWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""
@@ -145,10 +145,10 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 				}
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task InvalidReturnShouldWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""
@@ -180,10 +180,10 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 				}
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task InvalidParameterTypeShouldWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""
@@ -214,5 +214,5 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 				}
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 }

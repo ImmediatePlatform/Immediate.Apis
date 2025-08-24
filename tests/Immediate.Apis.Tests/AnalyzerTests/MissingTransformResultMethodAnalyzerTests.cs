@@ -6,8 +6,8 @@ namespace Immediate.Apis.Tests.AnalyzerTests;
 [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "Test names")]
 public sealed class MissingTransformResultMethodAnalyzerTests
 {
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task ValidDefinitionHandleShouldRaiseHiddenDiagnostic(string method)
 	{
 		await AnalyzerTestHelpers.CreateAnalyzerTest<MissingTransformResultMethodAnalyzer>(
@@ -34,11 +34,11 @@ public sealed class MissingTransformResultMethodAnalyzerTests
 				}
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task ValidDefinitionHandleAsyncShouldRaiseHiddenDiagnostic(string method)
 	{
 		await AnalyzerTestHelpers.CreateAnalyzerTest<MissingTransformResultMethodAnalyzer>(
@@ -65,11 +65,11 @@ public sealed class MissingTransformResultMethodAnalyzerTests
 				}
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task ValidDefinition_WithExistingTransformResultMethod_ShouldNotRaiseHiddenDiagnostic(string method)
 	{
 		await AnalyzerTestHelpers.CreateAnalyzerTest<MissingTransformResultMethodAnalyzer>(
@@ -102,11 +102,11 @@ public sealed class MissingTransformResultMethodAnalyzerTests
 				}
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task InvalidDefinition_ShouldNotRaiseHiddenDiagnostic(string method)
 	{
 		await AnalyzerTestHelpers.CreateAnalyzerTest<MissingTransformResultMethodAnalyzer>(
@@ -127,6 +127,6 @@ public sealed class MissingTransformResultMethodAnalyzerTests
 				public record Query;
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 	}
 }

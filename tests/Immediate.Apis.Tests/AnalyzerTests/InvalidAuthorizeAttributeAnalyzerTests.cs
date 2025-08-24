@@ -4,7 +4,7 @@ namespace Immediate.Apis.Tests.AnalyzerTests;
 
 public sealed class InvalidAuthorizeAttributeAnalyzerTests
 {
-	[Test]
+	[Fact]
 	public async Task AuthorizeAloneShouldNotError() =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<InvalidAuthorizeAttributeAnalyzer>(
 			"""
@@ -30,10 +30,10 @@ public sealed class InvalidAuthorizeAttributeAnalyzerTests
 				}
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task AuthorizeRolesShouldError(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<InvalidAuthorizeAttributeAnalyzer>(
 			$$"""
@@ -60,10 +60,10 @@ public sealed class InvalidAuthorizeAttributeAnalyzerTests
 				}
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task AuthorizeAuthenticationSchemesShouldError(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<InvalidAuthorizeAttributeAnalyzer>(
 			$$"""
@@ -90,10 +90,10 @@ public sealed class InvalidAuthorizeAttributeAnalyzerTests
 				}
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task AuthorizeShouldNotError(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<InvalidAuthorizeAttributeAnalyzer>(
 			$$"""
@@ -120,10 +120,10 @@ public sealed class InvalidAuthorizeAttributeAnalyzerTests
 				}
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task AuthorizeConstructorShouldNotError(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<InvalidAuthorizeAttributeAnalyzer>(
 			$$"""
@@ -150,10 +150,10 @@ public sealed class InvalidAuthorizeAttributeAnalyzerTests
 				}
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task AuthorizePolicyShouldNotError(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<InvalidAuthorizeAttributeAnalyzer>(
 			$$"""
@@ -180,10 +180,10 @@ public sealed class InvalidAuthorizeAttributeAnalyzerTests
 				}
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task AuthorizeAndAllowAnonymousShouldWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<InvalidAuthorizeAttributeAnalyzer>(
 			$$"""
@@ -211,5 +211,5 @@ public sealed class InvalidAuthorizeAttributeAnalyzerTests
 				}
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 }

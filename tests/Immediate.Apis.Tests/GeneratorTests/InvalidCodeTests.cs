@@ -2,8 +2,8 @@ namespace Immediate.Apis.Tests.GeneratorTests;
 
 public sealed class InvalidCodeTests
 {
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MissingHandlerAttribute(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -36,8 +36,8 @@ public sealed class InvalidCodeTests
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MissingHandler(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -64,8 +64,8 @@ public sealed class InvalidCodeTests
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task InvalidHandler(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -97,8 +97,8 @@ public sealed class InvalidCodeTests
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task AuthorizeUsesAuthenticationSchemes(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -138,8 +138,8 @@ public sealed class InvalidCodeTests
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task AuthorizeUsesRoles(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(

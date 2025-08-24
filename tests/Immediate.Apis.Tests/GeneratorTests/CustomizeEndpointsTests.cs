@@ -2,8 +2,8 @@ namespace Immediate.Apis.Tests.GeneratorTests;
 
 public sealed class CustomizeEndpointsTests
 {
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodCustomizeEndpointTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(

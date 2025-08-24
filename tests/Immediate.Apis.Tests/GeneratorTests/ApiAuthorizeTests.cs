@@ -2,8 +2,8 @@ namespace Immediate.Apis.Tests.GeneratorTests;
 
 public sealed class ApiAuthorizeTests
 {
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodWithSimpleAuthorizeTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -45,8 +45,8 @@ public sealed class ApiAuthorizeTests
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodWithAuthorizeConstructorTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -88,8 +88,8 @@ public sealed class ApiAuthorizeTests
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodWithAuthorizeNamedPolicyArgumentTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(

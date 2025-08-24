@@ -5,8 +5,8 @@ namespace Immediate.Apis.Tests.AnalyzerTests;
 
 public sealed class EndpointAsDependencyAnalyzerTests
 {
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task HandlerMethodDependsOnEndpointHandlerShouldWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<EndpointAsDependencyAnalyzer, ImmediateHandlersGenerator>(
 			$$"""
@@ -46,9 +46,9 @@ public sealed class EndpointAsDependencyAnalyzerTests
 				) => 0;
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 
-	[Test]
+	[Fact]
 	public async Task HandlerMethodDependsOnNonEndpointHandlerShouldNotWarn() =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<EndpointAsDependencyAnalyzer, ImmediateHandlersGenerator>(
 			"""
@@ -86,9 +86,9 @@ public sealed class EndpointAsDependencyAnalyzerTests
 				) => 0;
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 
-	[Test]
+	[Fact]
 	public async Task HandlerMethodDependsOnNonHandlerShouldNotWarn() =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<EndpointAsDependencyAnalyzer, ImmediateHandlersGenerator>(
 			"""
@@ -118,10 +118,10 @@ public sealed class EndpointAsDependencyAnalyzerTests
 				) => 0;
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task ServiceMethodDependsOnEndpointHandlerShouldWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<EndpointAsDependencyAnalyzer, ImmediateHandlersGenerator>(
 			$$"""
@@ -160,6 +160,6 @@ public sealed class EndpointAsDependencyAnalyzerTests
 				) => 0;
 			}
 			"""
-		).RunAsync();
+		).RunAsync(TestContext.Current.CancellationToken);
 
 }

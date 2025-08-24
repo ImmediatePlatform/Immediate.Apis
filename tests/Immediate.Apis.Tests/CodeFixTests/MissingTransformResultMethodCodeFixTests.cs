@@ -7,8 +7,8 @@ namespace Immediate.Apis.Tests.CodeFixTests;
 [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "Test names")]
 public sealed class MissingTransformResultMethodCodeFixTests
 {
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task ValidDefinitionHandle_ShouldAddTransformResultMethod(string method)
 	{
 		await CodeFixTestHelper
@@ -66,11 +66,11 @@ public sealed class MissingTransformResultMethodCodeFixTests
 					}
 				}
 				"""
-			).RunAsync();
+			).RunAsync(TestContext.Current.CancellationToken);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task ValidDefinitionHandleAsync_ShouldAddTransformResultMethod(string method)
 	{
 		await CodeFixTestHelper
@@ -128,6 +128,6 @@ public sealed class MissingTransformResultMethodCodeFixTests
 					}
 				}
 				"""
-			).RunAsync();
+			).RunAsync(TestContext.Current.CancellationToken);
 	}
 }

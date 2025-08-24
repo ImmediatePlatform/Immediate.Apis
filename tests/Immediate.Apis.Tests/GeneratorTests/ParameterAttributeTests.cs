@@ -2,8 +2,8 @@ namespace Immediate.Apis.Tests.GeneratorTests;
 
 public sealed class ParameterAttributeTests
 {
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task IFormFileTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -47,8 +47,8 @@ public sealed class ParameterAttributeTests
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task AsParametersTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -91,8 +91,8 @@ public sealed class ParameterAttributeTests
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task FromBodyTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -135,8 +135,8 @@ public sealed class ParameterAttributeTests
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task FromFormTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -179,8 +179,8 @@ public sealed class ParameterAttributeTests
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task FromHeaderTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -223,8 +223,8 @@ public sealed class ParameterAttributeTests
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task FromQueryTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -267,8 +267,8 @@ public sealed class ParameterAttributeTests
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task FromRouteTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(

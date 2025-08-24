@@ -2,8 +2,8 @@ namespace Immediate.Apis.Tests.GeneratorTests;
 
 public sealed class SimpleApiTests
 {
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodHandleTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -43,8 +43,8 @@ public sealed class SimpleApiTests
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodHandleAsyncTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -84,8 +84,8 @@ public sealed class SimpleApiTests
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMultipleHandlersTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -141,7 +141,7 @@ public sealed class SimpleApiTests
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Test]
+	[Fact]
 	public async Task MapCustomMethodHandleTest()
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -181,7 +181,7 @@ public sealed class SimpleApiTests
 		_ = await Verify(result);
 	}
 
-	[Test]
+	[Fact]
 	public async Task MapCustomMethodHandleAsyncTest()
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -221,8 +221,8 @@ public sealed class SimpleApiTests
 		_ = await Verify(result);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodMissingCancellationToken(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -262,8 +262,8 @@ public sealed class SimpleApiTests
 		_ = await Verify(result).UseParameters(method);
 	}
 
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodWithoutReturnType(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(

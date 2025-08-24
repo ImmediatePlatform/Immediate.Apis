@@ -7,8 +7,8 @@ namespace Immediate.Apis.Tests.CodeFixTests;
 [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "Test names")]
 public sealed class MissingCustomizeEndpointMethodCodeFixTests
 {
-	[Test]
-	[MethodDataSource(typeof(Utility), nameof(Utility.Methods))]
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task ValidDefinition_ShouldAddCustomizeEndpointMethod(string method)
 	{
 		await CodeFixTestHelper
@@ -60,6 +60,6 @@ public sealed class MissingCustomizeEndpointMethodCodeFixTests
 					}
 				}
 				"""
-			).RunAsync();
+			).RunAsync(TestContext.Current.CancellationToken);
 	}
 }

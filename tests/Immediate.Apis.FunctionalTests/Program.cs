@@ -20,3 +20,5 @@ app.UseSwaggerUI();
 app.MapImmediateApisFunctionalTestsEndpoints();
 
 app.Run();
+
+public sealed partial class Program;

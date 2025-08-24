@@ -1,5 +1,5 @@
 using Immediate.Apis.Analyzers;
-using Immediate.Handlers.Generators.ImmediateHandlers;
+using Immediate.Handlers.Generators;
 
 namespace Immediate.Apis.Tests.AnalyzerTests;
 

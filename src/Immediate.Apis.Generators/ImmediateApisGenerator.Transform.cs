@@ -101,8 +101,6 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
-		var hasReturn = !handleMethod.ReturnType.IsValueTask();
-
 		return new()
 		{
 			MapMethod = mapMethod,
@@ -123,7 +121,7 @@ public sealed partial class ImmediateApisGenerator
 
 			UseCustomization = useCustomization,
 			UseTransformMethod = useTransformMethod,
-			HasReturn = hasReturn,
+			HasReturn = handleMethod.ReturnType.IsValueTask1(),
 		};
 	}
 

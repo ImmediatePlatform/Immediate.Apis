@@ -12,7 +12,7 @@ public sealed class CustomizeEndpointUsageAnalyzer : DiagnosticAnalyzer
 		new(
 			id: DiagnosticIds.IAPI0004CustomizeEndpointInvalid,
 			title: "`CustomizeEndpoint` requires a specific definition",
-			messageFormat: "`CustomizeEndpoint` must be `internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)`",
+			messageFormat: "`CustomizeEndpoint` must be `internal static void CustomizeEndpoint(RouteHandlerBuilder endpoint)`",
 			category: "ImmediateApis",
 			defaultSeverity: DiagnosticSeverity.Warning,
 			isEnabledByDefault: true,
@@ -69,7 +69,7 @@ public sealed class CustomizeEndpointUsageAnalyzer : DiagnosticAnalyzer
 				ReturnsVoid: true,
 				Parameters: [{ Type: { } paramType }],
 			}
-			&& paramType.IsIEndpointConventionBuilder())
+			&& (paramType.IsIEndpointConventionBuilder() || paramType.IsRouteHandlerBuilder()))
 		{
 			return;
 		}

@@ -53,7 +53,7 @@ public sealed class MissingCustomizeEndpointMethodCodeFixProvider : CodeFixProvi
 		var model = await document.GetSemanticModelAsync(cancellationToken);
 
 		var endpointConventionBuilderSymbol = model?.Compilation
-			.GetTypeByMetadataName("Microsoft.AspNetCore.Builder.IEndpointConventionBuilder")!;
+			.GetTypeByMetadataName("Microsoft.AspNetCore.Builder.RouteHandlerBuilder")!;
 
 		var referenceId = DocumentationCommentId.CreateReferenceId(endpointConventionBuilderSymbol);
 		var annotation = new SyntaxAnnotation("SymbolId", referenceId);
@@ -74,7 +74,7 @@ public sealed class MissingCustomizeEndpointMethodCodeFixProvider : CodeFixProvi
 						Parameter(
 								Identifier("endpoint"))
 							.WithType(
-								IdentifierName("IEndpointConventionBuilder")))))
+								IdentifierName("RouteHandlerBuilder")))))
 			.WithExpressionBody(
 				ArrowExpressionClause(
 					IdentifierName("endpoint")))

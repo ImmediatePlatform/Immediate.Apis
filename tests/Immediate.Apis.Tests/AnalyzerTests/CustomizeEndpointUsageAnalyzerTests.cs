@@ -41,6 +41,41 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 
 	[Theory]
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	public async Task ValidDefinition2ShouldNotWarn(string method) =>
+		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
+			$$"""
+			using System.Threading;
+			using System.Threading.Tasks;
+			using Immediate.Apis.Shared;
+			using Immediate.Handlers.Shared;
+			using Microsoft.AspNetCore.Authorization;
+			using Microsoft.AspNetCore.Http;
+					
+			namespace Dummy;
+
+			[Handler]
+			[Map{{method}}("/test")]
+			[Authorize(Roles = "")]
+			public static class GetUsersQuery
+			{
+				internal static void CustomizeEndpoint(Microsoft.AspNetCore.Builder.RouteHandlerBuilder endpoint)
+					=> endpoint
+						.WithDescription("");
+
+				public record Query;
+
+				private static async ValueTask<int> Handle(
+					Query _,
+					CancellationToken token)
+				{
+					return 0;
+				}
+			}
+			"""
+		).RunAsync(TestContext.Current.CancellationToken);
+
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task MultipleDefinitionShouldNotWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""

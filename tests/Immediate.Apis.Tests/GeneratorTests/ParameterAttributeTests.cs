@@ -91,9 +91,21 @@ public sealed class ParameterAttributeTests
 		_ = await Verify(result).UseParameters(method);
 	}
 
+	private static TheoryData<string> FromXxx() =>
+		[
+			"FromBody",
+			"FromForm",
+			"FromHeader",
+			"FromQuery",
+			"FromRoute",
+		];
+
+	public static IEnumerable<(string, string)> GetMethodFromMatrix() =>
+		Utility.Methods().SelectMany(_ => FromXxx(), (s1, s2) => (s1.Data, s2.Data));
+
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public async Task FromBodyTest(string method)
+	[MemberData(nameof(GetMethodFromMatrix))]
+	public async Task RequestParameterAttributeTest(string method, string source)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
 			$$"""
@@ -113,7 +125,7 @@ public sealed class ParameterAttributeTests
 				public record Query;
 
 				private static ValueTask<int> Handle(
-					[FromBody]
+					[{{source}}]
 					Query _,
 					CancellationToken token)
 				{
@@ -132,12 +144,12 @@ public sealed class ParameterAttributeTests
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
+		_ = await Verify(result).UseParameters(method, source);
 	}
 
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public async Task FromFormTest(string method)
+	[MemberData(nameof(GetMethodFromMatrix))]
+	public async Task RequestPropertyAttributeTest(string method, string source)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
 			$$"""
@@ -154,10 +166,13 @@ public sealed class ParameterAttributeTests
 			[Map{{method}}("/test")]
 			public static partial class GetUsersQuery
 			{
-				public record Query;
+				public record Query
+				{
+					[{{source}}]
+					public required int Test { get; init; }
+				}
 
 				private static ValueTask<int> Handle(
-					[FromForm]
 					Query _,
 					CancellationToken token)
 				{
@@ -176,138 +191,6 @@ public sealed class ParameterAttributeTests
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
-	}
-
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public async Task FromHeaderTest(string method)
-	{
-		var result = GeneratorTestHelper.RunGenerator(
-			$$"""
-			using System.Threading;
-			using System.Threading.Tasks;
-			using Microsoft.AspNetCore.Http;
-			using Microsoft.AspNetCore.Mvc;
-			using Immediate.Apis.Shared;
-			using Immediate.Handlers.Shared;
-			
-			namespace Dummy;
-
-			[Handler]
-			[Map{{method}}("/test")]
-			public static partial class GetUsersQuery
-			{
-				public record Query;
-
-				private static ValueTask<int> Handle(
-					[FromHeader]
-					Query _,
-					CancellationToken token)
-				{
-					return ValueTask.FromResult(0);
-				}
-			}
-			""");
-
-		Assert.Equal(
-			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RoutesBuilder.g.cs",
-				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
-				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
-			],
-			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
-		);
-
-		_ = await Verify(result).UseParameters(method);
-	}
-
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public async Task FromQueryTest(string method)
-	{
-		var result = GeneratorTestHelper.RunGenerator(
-			$$"""
-			using System.Threading;
-			using System.Threading.Tasks;
-			using Microsoft.AspNetCore.Http;
-			using Microsoft.AspNetCore.Mvc;
-			using Immediate.Apis.Shared;
-			using Immediate.Handlers.Shared;
-			
-			namespace Dummy;
-
-			[Handler]
-			[Map{{method}}("/test")]
-			public static partial class GetUsersQuery
-			{
-				public record Query;
-
-				private static ValueTask<int> Handle(
-					[FromQuery]
-					Query _,
-					CancellationToken token)
-				{
-					return ValueTask.FromResult(0);
-				}
-			}
-			""");
-
-		Assert.Equal(
-			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RoutesBuilder.g.cs",
-				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
-				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
-			],
-			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
-		);
-
-		_ = await Verify(result).UseParameters(method);
-	}
-
-	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public async Task FromRouteTest(string method)
-	{
-		var result = GeneratorTestHelper.RunGenerator(
-			$$"""
-			using System.Threading;
-			using System.Threading.Tasks;
-			using Microsoft.AspNetCore.Http;
-			using Microsoft.AspNetCore.Mvc;
-			using Immediate.Apis.Shared;
-			using Immediate.Handlers.Shared;
-			
-			namespace Dummy;
-
-			[Handler]
-			[Map{{method}}("/test")]
-			public static partial class GetUsersQuery
-			{
-				public record Query;
-
-				private static ValueTask<int> Handle(
-					[FromRoute]
-					Query _,
-					CancellationToken token)
-				{
-					return ValueTask.FromResult(0);
-				}
-			}
-			""");
-
-		Assert.Equal(
-			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RoutesBuilder.g.cs",
-				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
-				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
-			],
-			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
-		);
-
-		_ = await Verify(result).UseParameters(method);
+		_ = await Verify(result).UseParameters(method, source);
 	}
 }

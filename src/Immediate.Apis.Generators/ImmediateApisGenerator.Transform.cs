@@ -210,6 +210,12 @@ public sealed partial class ImmediateApisGenerator
 				if (p.Type.IsIFormFile())
 					return "FromForm";
 			}
+
+			foreach (var p in typeSymbol.GetMembers().OfType<IPropertySymbol>())
+			{
+				if (p.GetAttributes().Any(a => a.AttributeClass.IsFromXxxAttribute()))
+					return "AsParameters";
+			}
 		}
 
 		return httpMethod is "MapPatch" or "MapPost" or "MapPut"

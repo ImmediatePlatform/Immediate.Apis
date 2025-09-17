@@ -121,7 +121,7 @@ Additional customization of the endpoint registration can be done by adding a `C
 [Authorize(Policies.UserManagement)]
 public static partial class GetUsersQuery
 {
-    internal static void CustomizeGetFeaturesEndpoint(IEndpointConventionBuilder endpoint)
+    internal static void CustomizeGetFeaturesEndpoint(RouteHandlerBuilder endpoint)
         => endpoint
             .Produces<IEnumerable<User>>(StatusCodes.Status200OK)
             .ProducesValidationProblem()

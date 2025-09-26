@@ -22,15 +22,15 @@
 	<PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.8.0" />
 	<PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
 	<PackageVersion Include="MinVer" Version="6.0.0" />
-	<PackageVersion Include="Scriban" Version="6.2.1" />
-	<PackageVersion Include="Swashbuckle.AspNetCore" Version="9.0.3" />
+	<PackageVersion Include="Scriban" Version="6.4.0" />
+	<PackageVersion Include="Swashbuckle.AspNetCore" Version="9.0.4" />
 	<PackageVersion Include="Verify.SourceGenerators" Version="2.5.0" />
-	<PackageVersion Include="Verify.XunitV3" Version="30.7.3" />
+	<PackageVersion Include="Verify.XunitV3" Version="30.19.0" />
 	<PackageVersion Include="xunit.v3" Version="3.0.1" />
   </ItemGroup>
 
   <ItemGroup>
 	<GlobalPackageReference Include="PolySharp" Version="1.15.0" />
-	<GlobalPackageReference Include="Meziantou.Analyzer" Version="2.0.219" />
+	<GlobalPackageReference Include="Meziantou.Analyzer" Version="2.0.221" />
   </ItemGroup>
 </Project>

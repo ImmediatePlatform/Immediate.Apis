@@ -160,7 +160,7 @@ public sealed partial class ImmediateApisGenerator
 					ReturnsVoid: true,
 					Parameters: [{ Type: { } paramType }],
 				}
-				&& paramType.IsIEndpointConventionBuilder()
+				&& paramType.IsIEndpointConventionBuilderOrRouteHandlerBuilder()
 			);
 
 	private static bool HasTransformResultMethod(INamedTypeSymbol symbol, ITypeSymbol returnType)

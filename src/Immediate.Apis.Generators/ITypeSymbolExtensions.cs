@@ -48,11 +48,10 @@ internal static class ITypeSymbolExtensions
 		typeSymbol?.Name is "AuthorizeAttribute"
 		&& typeSymbol.ContainingNamespace.IsMicrosoftAspNetCoreAuthorization();
 
-	public static bool IsIEndpointConventionBuilder(this ITypeSymbol? typeSymbol) =>
-		// IErrorTypeSymbol is until we can reference AspNetCore framework
-		typeSymbol is IErrorTypeSymbol or
+	public static bool IsIEndpointConventionBuilderOrRouteHandlerBuilder(this ITypeSymbol? typeSymbol) =>
+		typeSymbol is
 		{
-			Name: "IEndpointConventionBuilder",
+			Name: "IEndpointConventionBuilder" or "RouteHandlerBuilder",
 			ContainingNamespace:
 			{
 				Name: "Builder",

@@ -8,9 +8,9 @@ namespace Immediate.Apis.FunctionalTests.Features.WeatherForecast;
 [Handler]
 [MapPost("/forecast")]
 [AllowAnonymous]
-public static partial class Post
+public sealed partial class Post
 {
-	internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
+	internal static void CustomizeEndpoint(RouteHandlerBuilder endpoint)
 		=> endpoint
 			.WithDescription("Gets the current weather forecast");
 
@@ -32,7 +32,8 @@ public static partial class Post
 		public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 	}
 
-	private static async ValueTask<IReadOnlyList<Result>> Handle(
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>")]
+	private async ValueTask<IReadOnlyList<Result>> Handle(
 		Query _,
 		CancellationToken token
 	)

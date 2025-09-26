@@ -14,6 +14,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			using Microsoft.AspNetCore.Authorization;
+			using Microsoft.AspNetCore.Builder;
 			using Microsoft.AspNetCore.Http;
 					
 			namespace Dummy;
@@ -23,7 +24,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			[Authorize(Roles = "")]
 			public static class GetUsersQuery
 			{
-				internal static void CustomizeEndpoint(Microsoft.AspNetCore.Builder.IEndpointConventionBuilder endpoint)
+				internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
 					=> endpoint
 						.WithDescription("");
 
@@ -49,6 +50,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			using Microsoft.AspNetCore.Authorization;
+			using Microsoft.AspNetCore.Builder;
 			using Microsoft.AspNetCore.Http;
 					
 			namespace Dummy;
@@ -58,13 +60,85 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			[Authorize(Roles = "")]
 			public static class GetUsersQuery
 			{
-				internal static void CustomizeEndpoint(Microsoft.AspNetCore.Builder.RouteHandlerBuilder endpoint)
+				internal static void CustomizeEndpoint(RouteHandlerBuilder endpoint)
 					=> endpoint
 						.WithDescription("");
 
 				public record Query;
 
 				private static async ValueTask<int> Handle(
+					Query _,
+					CancellationToken token)
+				{
+					return 0;
+				}
+			}
+			"""
+		).RunAsync(TestContext.Current.CancellationToken);
+
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	public async Task ValidDefinition3ShouldNotWarn(string method) =>
+		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
+			$$"""
+			using System.Threading;
+			using System.Threading.Tasks;
+			using Immediate.Apis.Shared;
+			using Immediate.Handlers.Shared;
+			using Microsoft.AspNetCore.Authorization;
+			using Microsoft.AspNetCore.Builder;
+			using Microsoft.AspNetCore.Http;
+					
+			namespace Dummy;
+
+			[Handler]
+			[Map{{method}}("/test")]
+			[Authorize(Roles = "")]
+			public sealed class GetUsersQuery
+			{
+				internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
+					=> endpoint
+						.WithDescription("");
+
+				public record Query;
+
+				private async ValueTask<int> Handle(
+					Query _,
+					CancellationToken token)
+				{
+					return 0;
+				}
+			}
+			"""
+		).RunAsync(TestContext.Current.CancellationToken);
+
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	public async Task ValidDefinition4ShouldNotWarn(string method) =>
+		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
+			$$"""
+			using System.Threading;
+			using System.Threading.Tasks;
+			using Immediate.Apis.Shared;
+			using Immediate.Handlers.Shared;
+			using Microsoft.AspNetCore.Authorization;
+			using Microsoft.AspNetCore.Builder;
+			using Microsoft.AspNetCore.Http;
+					
+			namespace Dummy;
+
+			[Handler]
+			[Map{{method}}("/test")]
+			[Authorize(Roles = "")]
+			public sealed class GetUsersQuery
+			{
+				internal static void CustomizeEndpoint(RouteHandlerBuilder endpoint)
+					=> endpoint
+						.WithDescription("");
+
+				public record Query;
+
+				private async ValueTask<int> Handle(
 					Query _,
 					CancellationToken token)
 				{

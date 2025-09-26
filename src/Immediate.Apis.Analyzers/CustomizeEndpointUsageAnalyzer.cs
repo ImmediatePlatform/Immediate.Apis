@@ -69,7 +69,7 @@ public sealed class CustomizeEndpointUsageAnalyzer : DiagnosticAnalyzer
 				ReturnsVoid: true,
 				Parameters: [{ Type: { } paramType }],
 			}
-			&& (paramType.IsIEndpointConventionBuilder() || paramType.IsRouteHandlerBuilder()))
+			&& paramType.IsIEndpointConventionBuilderOrRouteHandlerBuilder())
 		{
 			return;
 		}

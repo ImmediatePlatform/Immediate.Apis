@@ -73,29 +73,10 @@ internal static class ITypeSymbolExtensions
 			},
 		};
 
-	public static bool IsIEndpointConventionBuilder(this ITypeSymbol? typeSymbol) =>
+	public static bool IsIEndpointConventionBuilderOrRouteHandlerBuilder(this ITypeSymbol? typeSymbol) =>
 		typeSymbol is
 		{
-			Name: "IEndpointConventionBuilder",
-			ContainingNamespace:
-			{
-				Name: "Builder",
-				ContainingNamespace:
-				{
-					Name: "AspNetCore",
-					ContainingNamespace:
-					{
-						Name: "Microsoft",
-						ContainingNamespace.IsGlobalNamespace: true,
-					},
-				},
-			},
-		};
-
-	public static bool IsRouteHandlerBuilder(this ITypeSymbol? typeSymbol) =>
-		typeSymbol is
-		{
-			Name: "RouteHandlerBuilder",
+			Name: "IEndpointConventionBuilder" or "RouteHandlerBuilder",
 			ContainingNamespace:
 			{
 				Name: "Builder",

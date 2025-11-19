@@ -69,7 +69,7 @@ public sealed class TransformResultUsageAnalyzer : DiagnosticAnalyzer
 
 		var syntax = (MethodDeclarationSyntax)transformResultMethod
 			.DeclaringSyntaxReferences[0]
-			.GetSyntax();
+			.GetSyntax(token);
 
 		context.ReportDiagnostic(
 			Diagnostic.Create(

@@ -76,7 +76,7 @@ public sealed class CustomizeEndpointUsageAnalyzer : DiagnosticAnalyzer
 
 		var syntax = (MethodDeclarationSyntax)customizeEndpointMethod
 			.DeclaringSyntaxReferences[0]
-			.GetSyntax();
+			.GetSyntax(token);
 
 		context.ReportDiagnostic(
 			Diagnostic.Create(

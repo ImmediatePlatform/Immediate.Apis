@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<Compile Include="../Common/*.cs" Link="Common/%(Filename).cs" />
+  </ItemGroup>
+
+  <ItemGroup>
 	<PackageReference Include="DotNet.ReproducibleBuilds" PrivateAssets="All" />
 	<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="All" />
 	<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />

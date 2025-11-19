@@ -73,7 +73,7 @@ public sealed class MissingTransformResultMethodAnalyzer : DiagnosticAnalyzer
 
 		var syntax = (ClassDeclarationSyntax)namedTypeSymbol
 			.DeclaringSyntaxReferences[0]
-			.GetSyntax();
+			.GetSyntax(token);
 
 		context.ReportDiagnostic(
 			Diagnostic.Create(

@@ -62,40 +62,30 @@ public sealed class InvalidAuthorizeAttributeAnalyzer : DiagnosticAnalyzer
 
 		token.ThrowIfCancellationRequested();
 
-		var allowAnonymous = attributes.Any(a => a.AttributeClass.IsAllowAnonymous());
+		if (attributes.FirstOrDefault(a => a.AttributeClass.IsAuthorize()) is not { } authorizeAttribute)
+			return;
 
-		var authorizeAttribute = attributes.FirstOrDefault(a => a.AttributeClass.IsAuthorize());
-
-		if (authorizeAttribute is not null)
+		if (attributes.Any(a => a.AttributeClass.IsAllowAnonymous()))
 		{
-			if (allowAnonymous)
-			{
-				context.ReportDiagnostic(
-					Diagnostic.Create(
-						UsedBothAuthorizeAndAnonymous,
-						namedTypeSymbol.Locations[0]
-					)
-				);
-			}
+			context.ReportDiagnostic(
+				Diagnostic.Create(
+					UsedBothAuthorizeAndAnonymous,
+					namedTypeSymbol.Locations[0]
+				)
+			);
+		}
 
-			if (authorizeAttribute.NamedArguments.Length > 0)
-			{
-				foreach (var argument in authorizeAttribute.NamedArguments)
-				{
-					if (argument.Key is not "Policy")
-					{
-						context.ReportDiagnostic(
-							Diagnostic.Create(
-								InvalidAuthorizeParameter,
-								authorizeAttribute.ApplicationSyntaxReference
-									?.GetSyntax()
-									.GetLocation(),
-								argument.Key
-							)
-						);
-					}
-				}
-			}
+		foreach (var argument in authorizeAttribute.NamedArguments.Where(a => a.Key is not "Policy"))
+		{
+			context.ReportDiagnostic(
+				Diagnostic.Create(
+					InvalidAuthorizeParameter,
+					authorizeAttribute.ApplicationSyntaxReference
+						?.GetSyntax(token)
+						.GetLocation(),
+					argument.Key
+				)
+			);
 		}
 	}
 }

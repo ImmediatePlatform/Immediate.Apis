@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Immediate.Apis.FunctionalTests.Features.WeatherForecast;
 
 [Handler]
-[MapGet("/forecast/{id:int}")]
+[MapGet("/forecast/{id:int}", "/forecast/{id:int}/secondary")]
 [AllowAnonymous]
 public static partial class Get
 {

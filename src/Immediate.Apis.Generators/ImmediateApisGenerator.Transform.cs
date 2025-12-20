@@ -27,7 +27,8 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
-		if (attribute.ConstructorArguments.FirstOrDefault().Value is not string route)
+		var routes = GetRoutes(attribute);
+		if (routes.Count == 0)
 			return null;
 
 		token.ThrowIfCancellationRequested();
@@ -107,7 +108,7 @@ public sealed partial class ImmediateApisGenerator
 			HttpMethod = httpMethod,
 			Attributes = handleMethodAttributes,
 			ParameterAttribute = parameterAttribute,
-			Route = route,
+			Routes = routes,
 
 			Namespace = @namespace,
 			Class = @class,
@@ -240,10 +241,25 @@ public sealed partial class ImmediateApisGenerator
 		if (attributeName is not "MapMethodAttribute")
 			return null;
 
+		if (attributeData.ConstructorArguments.Length < 2)
+			return null;
+
+		var secondArgument = attributeData.ConstructorArguments[1];
+
+		// If second argument is an array, it's the new constructor (method at [0])
+		if (secondArgument.Kind == TypedConstantKind.Array)
+		{
+			return attributeData
+				.ConstructorArguments[0]
+				.Value
+				?.ToString();
+		}
+
+		// Otherwise it's the old constructor (method at [1])
 		return attributeData
 			.ConstructorArguments[1]
 			.Value
-			!.ToString();
+			?.ToString();
 	}
 
 	private static EquatableReadOnlyList<string> GetHandleMethodAttributes(IMethodSymbol methodSymbol) =>
@@ -281,4 +297,60 @@ public sealed partial class ImmediateApisGenerator
 			TypedConstantKind.Array => $"[{string.Join(", ", tc.Values.Select(GetTypedConstantString))}]",
 			_ => tc.ToCSharpString(),
 		};
+
+	private static EquatableReadOnlyList<string> GetRoutes(AttributeData attributeData)
+	{
+		var attributeName = attributeData.AttributeClass!.Name;
+
+		if (attributeName is "MapMethodAttribute")
+		{
+			// MapMethodAttribute has two constructors:
+			// 1. Old: MapMethodAttribute(string route, string method) - route at [0], method at [1]
+			// 2. New: MapMethodAttribute(string method, params string[] routes) - method at [0], routes at [1]
+
+			if (attributeData.ConstructorArguments.Length < 2)
+				return new EquatableReadOnlyList<string>([]);
+
+			var secondArgument = attributeData.ConstructorArguments[1];
+
+			// If second argument is an array, it's the new constructor (routes at [1])
+			if (secondArgument.Kind == TypedConstantKind.Array)
+			{
+				var routes = new List<string>();
+				foreach (var routeValue in secondArgument.Values)
+				{
+					if (routeValue.Value is string route)
+						routes.Add(route);
+				}
+
+				return routes.ToEquatableReadOnlyList();
+			}
+			// Otherwise it's the old constructor (route at [0])
+
+			if (attributeData.ConstructorArguments[0].Value is string oldCtorRoute)
+			{
+				return new EquatableReadOnlyList<string>([oldCtorRoute]);
+			}
+
+			return new EquatableReadOnlyList<string>([]);
+		}
+
+		// For derived attributes (MapGet, MapPost, etc.), routes are in constructor argument [0]
+		if (attributeData.ConstructorArguments.Length == 0)
+			return new EquatableReadOnlyList<string>([]);
+
+		var routesArgument = attributeData.ConstructorArguments[0];
+
+		if (routesArgument.Kind != TypedConstantKind.Array)
+			return new EquatableReadOnlyList<string>([]);
+
+		var derivedAttrRoutes = new List<string>();
+		foreach (var routeValue in routesArgument.Values)
+		{
+			if (routeValue.Value is string route)
+				derivedAttrRoutes.Add(route);
+		}
+
+		return derivedAttrRoutes.ToEquatableReadOnlyList();
+	}
 }

@@ -4,5 +4,5 @@ namespace Immediate.Apis.Shared;
 
 /// <inheritdoc />
 public sealed class MapGetAttribute(
-	[StringSyntax("Route")] string route
-) : MapMethodAttribute(route, "GET");
+	[StringSyntax("Route")] params string[] routes
+) : MapMethodAttribute("GET", routes);

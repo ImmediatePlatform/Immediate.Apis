@@ -4,5 +4,5 @@ namespace Immediate.Apis.Shared;
 
 /// <inheritdoc />
 public sealed class MapDeleteAttribute(
-	[StringSyntax("Route")] string route
-) : MapMethodAttribute(route, "DELETE");
+	[StringSyntax("Route")] params string[] routes
+) : MapMethodAttribute("DELETE", routes);

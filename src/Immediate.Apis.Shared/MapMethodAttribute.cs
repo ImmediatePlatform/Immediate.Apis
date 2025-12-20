@@ -23,6 +23,9 @@ public class MapMethodAttribute : Attribute
 	///		The HTTP method that the handler should be registered with
 	/// </param>
 	[SuppressMessage("Design", "CA1019:Define accessors for attribute arguments")]
+	[Obsolete("Kept for binary compatibility. Do not use directly.")]
+	[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+	[System.Runtime.CompilerServices.OverloadResolutionPriority(-1)]
 	public MapMethodAttribute(string route, string method)
 	{
 		Routes = [route];

@@ -25,7 +25,8 @@ namespace Microsoft.AspNetCore.Builder
 						return ret;
 					}
 				);
-			_ = endpoint = app
+
+			endpoint = app
 				.MapPatch(
 					"/route2",
 					async (
@@ -38,7 +39,8 @@ namespace Microsoft.AspNetCore.Builder
 						return ret;
 					}
 				);
-			_ = endpoint = app
+
+			endpoint = app
 				.MapPatch(
 					"/route3",
 					async (
@@ -51,7 +53,8 @@ namespace Microsoft.AspNetCore.Builder
 						return ret;
 					}
 				);
-			_ = endpoint = app
+
+			endpoint = app
 				.MapPatch(
 					"/route4",
 					async (
@@ -64,7 +67,8 @@ namespace Microsoft.AspNetCore.Builder
 						return ret;
 					}
 				);
-			_ = endpoint = app
+
+			endpoint = app
 				.MapPatch(
 					"/route5",
 					async (
@@ -77,7 +81,8 @@ namespace Microsoft.AspNetCore.Builder
 						return ret;
 					}
 				);
-			_ = endpoint = app
+
+			endpoint = app
 				.MapPatch(
 					"/route6",
 					async (
@@ -90,7 +95,8 @@ namespace Microsoft.AspNetCore.Builder
 						return ret;
 					}
 				);
-			_ = endpoint = app
+
+			endpoint = app
 				.MapPatch(
 					"/route7",
 					async (
@@ -103,7 +109,8 @@ namespace Microsoft.AspNetCore.Builder
 						return ret;
 					}
 				);
-			_ = endpoint = app
+
+			endpoint = app
 				.MapPatch(
 					"/route8",
 					async (
@@ -116,7 +123,8 @@ namespace Microsoft.AspNetCore.Builder
 						return ret;
 					}
 				);
-			_ = endpoint = app
+
+			endpoint = app
 				.MapPatch(
 					"/route9",
 					async (
@@ -129,7 +137,8 @@ namespace Microsoft.AspNetCore.Builder
 						return ret;
 					}
 				);
-			_ = endpoint = app
+
+			endpoint = app
 				.MapPatch(
 					"/route10",
 					async (
@@ -142,6 +151,7 @@ namespace Microsoft.AspNetCore.Builder
 						return ret;
 					}
 				);
+
 		}
 	}
 }

@@ -26,7 +26,8 @@ namespace Microsoft.AspNetCore.Builder
 						return ret;
 					}
 				);
-			_ = endpoint = app
+
+			endpoint = app
 				.MapMethods(
 					"/health",
 					["HEAD"],
@@ -40,6 +41,7 @@ namespace Microsoft.AspNetCore.Builder
 						return ret;
 					}
 				);
+
 		}
 	}
 }

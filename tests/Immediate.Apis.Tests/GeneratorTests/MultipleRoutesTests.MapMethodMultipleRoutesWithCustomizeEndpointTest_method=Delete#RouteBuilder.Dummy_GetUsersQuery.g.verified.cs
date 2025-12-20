@@ -27,7 +27,8 @@ namespace Microsoft.AspNetCore.Builder
 				);
 
 			global::Dummy.GetUsersQuery.CustomizeEndpoint(endpoint);
-			_ = endpoint = app
+
+			endpoint = app
 				.MapDelete(
 					"/v1/users",
 					async (
@@ -42,6 +43,7 @@ namespace Microsoft.AspNetCore.Builder
 				);
 
 			global::Dummy.GetUsersQuery.CustomizeEndpoint(endpoint);
+
 		}
 	}
 }

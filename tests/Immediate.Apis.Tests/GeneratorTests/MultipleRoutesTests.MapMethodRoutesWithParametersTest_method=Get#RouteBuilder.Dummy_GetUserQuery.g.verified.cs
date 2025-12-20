@@ -25,7 +25,8 @@ namespace Microsoft.AspNetCore.Builder
 						return ret;
 					}
 				);
-			_ = endpoint = app
+
+			endpoint = app
 				.MapGet(
 					"/v1/users/{id}",
 					async (
@@ -38,6 +39,7 @@ namespace Microsoft.AspNetCore.Builder
 						return ret;
 					}
 				);
+
 		}
 	}
 }

@@ -241,25 +241,18 @@ public sealed partial class ImmediateApisGenerator
 		if (attributeName is not "MapMethodAttribute")
 			return null;
 
-		if (attributeData.ConstructorArguments.Length < 2)
-			return null;
-
-		var secondArgument = attributeData.ConstructorArguments[1];
-
-		// If second argument is an array, it's the new constructor (method at [0])
-		if (secondArgument.Kind == TypedConstantKind.Array)
+		if (
+			attributeData.ConstructorArguments is not
+			[
+			{ Value: { } method },
+			{ Kind: TypedConstantKind.Array },
+			]
+		)
 		{
-			return attributeData
-				.ConstructorArguments[0]
-				.Value
-				?.ToString();
+			return null;
 		}
 
-		// Otherwise it's the old constructor (method at [1])
-		return attributeData
-			.ConstructorArguments[1]
-			.Value
-			?.ToString();
+		return method.ToString();
 	}
 
 	private static EquatableReadOnlyList<string> GetHandleMethodAttributes(IMethodSymbol methodSymbol) =>

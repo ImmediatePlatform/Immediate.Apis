@@ -25,7 +25,8 @@ namespace Microsoft.AspNetCore.Builder
 						return ret;
 					}
 				);
-			_ = endpoint = app
+
+			endpoint = app
 				.MapPatch(
 					"/v1/users",
 					async (
@@ -38,7 +39,8 @@ namespace Microsoft.AspNetCore.Builder
 						return ret;
 					}
 				);
-			_ = endpoint = app
+
+			endpoint = app
 				.MapPatch(
 					"/users",
 					async (
@@ -51,6 +53,7 @@ namespace Microsoft.AspNetCore.Builder
 						return ret;
 					}
 				);
+
 		}
 	}
 }

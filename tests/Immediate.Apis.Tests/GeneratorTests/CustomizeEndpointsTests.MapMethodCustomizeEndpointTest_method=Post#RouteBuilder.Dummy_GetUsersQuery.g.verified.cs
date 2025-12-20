@@ -27,6 +27,7 @@ namespace Microsoft.AspNetCore.Builder
 				);
 
 			global::Dummy.GetUsersQuery.CustomizeEndpoint(endpoint);
+
 		}
 	}
 }

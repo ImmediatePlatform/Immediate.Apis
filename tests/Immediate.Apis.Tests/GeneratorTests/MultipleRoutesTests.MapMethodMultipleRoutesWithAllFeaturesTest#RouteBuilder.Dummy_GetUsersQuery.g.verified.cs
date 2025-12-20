@@ -29,7 +29,8 @@ namespace Microsoft.AspNetCore.Builder
 			_ = endpoint.RequireAuthorization("AdminPolicy");
 
 			global::Dummy.GetUsersQuery.CustomizeEndpoint(endpoint);
-			_ = endpoint = app
+
+			endpoint = app
 				.MapGet(
 					"/v1/users",
 					async (
@@ -46,6 +47,7 @@ namespace Microsoft.AspNetCore.Builder
 			_ = endpoint.RequireAuthorization("AdminPolicy");
 
 			global::Dummy.GetUsersQuery.CustomizeEndpoint(endpoint);
+
 		}
 	}
 }

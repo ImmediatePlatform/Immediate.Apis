@@ -27,7 +27,8 @@ namespace Microsoft.AspNetCore.Builder
 				);
 
 			_ = endpoint.RequireAuthorization("AdminPolicy");
-			_ = endpoint = app
+
+			endpoint = app
 				.MapPut(
 					"/v1/users",
 					async (
@@ -42,6 +43,7 @@ namespace Microsoft.AspNetCore.Builder
 				);
 
 			_ = endpoint.RequireAuthorization("AdminPolicy");
+
 		}
 	}
 }

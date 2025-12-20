@@ -27,7 +27,8 @@ namespace Microsoft.AspNetCore.Builder
 				);
 
 			_ = endpoint.AllowAnonymous();
-			_ = endpoint = app
+
+			endpoint = app
 				.MapGet(
 					"/api/public",
 					async (
@@ -42,6 +43,7 @@ namespace Microsoft.AspNetCore.Builder
 				);
 
 			_ = endpoint.AllowAnonymous();
+
 		}
 	}
 }

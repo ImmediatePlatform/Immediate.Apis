@@ -25,7 +25,8 @@ namespace Microsoft.AspNetCore.Builder
 						return global::Dummy.GetUsersQuery.TransformResult(ret);
 					}
 				);
-			_ = endpoint = app
+
+			endpoint = app
 				.MapGet(
 					"/v1/users",
 					async (
@@ -38,6 +39,7 @@ namespace Microsoft.AspNetCore.Builder
 						return global::Dummy.GetUsersQuery.TransformResult(ret);
 					}
 				);
+
 		}
 	}
 }

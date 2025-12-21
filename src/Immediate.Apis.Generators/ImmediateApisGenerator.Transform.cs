@@ -318,12 +318,6 @@ public sealed partial class ImmediateApisGenerator
 
 				return routes.ToEquatableReadOnlyList();
 			}
-			// Otherwise it's the old constructor (route at [0])
-
-			if (attributeData.ConstructorArguments[0].Value is string oldCtorRoute)
-			{
-				return new EquatableReadOnlyList<string>([oldCtorRoute]);
-			}
 
 			return new EquatableReadOnlyList<string>([]);
 		}

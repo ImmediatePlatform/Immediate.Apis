@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -57,7 +58,19 @@ namespace {{ method.namespace }}
 {
 {{ end }}
 	/// <remarks><see cref="{{ method.parameter_type }}" /> registered using <c>[{{ method.parameter_attribute }}]</c></remarks>
-	partial {{ method.class.type }} {{ method.class.name }};
+	partial {{ method.class.type }} {{ method.class.name }}
+	{
+		public static IReadOnlyList<string> Routes { get; } =
+		[
+			{{~ for route in method.routes ~}}
+			"{{ route }}",
+			{{~ end ~}}
+		];
+		{{~ if method.routes.count == 1 ~}}
+
+		public static string Route = "{{ method.routes[0] }}";
+		{{~ end ~}}
+	}
 {{ if method.namespace -}}
 }
 {{ end -}}

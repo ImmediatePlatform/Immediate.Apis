@@ -293,51 +293,25 @@ public sealed partial class ImmediateApisGenerator
 
 	private static EquatableReadOnlyList<string> GetRoutes(AttributeData attributeData)
 	{
-		var attributeName = attributeData.AttributeClass!.Name;
-
-		if (attributeName is "MapMethodAttribute")
+		return attributeData switch
 		{
-			// MapMethodAttribute has two constructors:
-			// 1. Old: MapMethodAttribute(string route, string method) - route at [0], method at [1]
-			// 2. New: MapMethodAttribute(string method, params string[] routes) - method at [0], routes at [1]
-
-			if (attributeData.ConstructorArguments.Length < 2)
-				return new EquatableReadOnlyList<string>([]);
-
-			var secondArgument = attributeData.ConstructorArguments[1];
-
-			// If second argument is an array, it's the new constructor (routes at [1])
-			if (secondArgument.Kind == TypedConstantKind.Array)
 			{
-				var routes = new List<string>();
-				foreach (var routeValue in secondArgument.Values)
-				{
-					if (routeValue.Value is string route)
-						routes.Add(route);
-				}
+				AttributeClass.Name: "MapMethodAttribute",
+				ConstructorArguments:
+				[
+				_,
+				{ Kind: TypedConstantKind.Array, Values: var arr },
+				],
+			} => new([.. arr.Select(a => a.Value).OfType<string>()]),
 
-				return routes.ToEquatableReadOnlyList();
-			}
+			{
+				ConstructorArguments:
+				[
+				{ Kind: TypedConstantKind.Array, Values: var arr },
+				],
+			} => new([.. arr.Select(a => a.Value).OfType<string>()]),
 
-			return new EquatableReadOnlyList<string>([]);
-		}
-
-		// For derived attributes (MapGet, MapPost, etc.), routes are in constructor argument [0]
-		if (attributeData.ConstructorArguments.Length == 0)
-			return new EquatableReadOnlyList<string>([]);
-
-		var routesArgument = attributeData.ConstructorArguments[0];
-
-		if (routesArgument.Kind != TypedConstantKind.Array)
-			return new EquatableReadOnlyList<string>([]);
-
-		var derivedAttrRoutes = new List<string>();
-		foreach (var routeValue in routesArgument.Values)
-		{
-			if (routeValue.Value is string route)
-				derivedAttrRoutes.Add(route);
-		}
-
-		return derivedAttrRoutes.ToEquatableReadOnlyList();
+			_ => [],
+		};
 	}
 }

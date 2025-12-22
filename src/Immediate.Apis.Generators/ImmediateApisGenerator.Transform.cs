@@ -27,7 +27,8 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
-		if (attribute.ConstructorArguments.FirstOrDefault().Value is not string route)
+		var routes = GetRoutes(attribute);
+		if (routes.Count == 0)
 			return null;
 
 		token.ThrowIfCancellationRequested();
@@ -107,7 +108,7 @@ public sealed partial class ImmediateApisGenerator
 			HttpMethod = httpMethod,
 			Attributes = handleMethodAttributes,
 			ParameterAttribute = parameterAttribute,
-			Route = route,
+			Routes = routes,
 
 			Namespace = @namespace,
 			Class = @class,
@@ -240,10 +241,18 @@ public sealed partial class ImmediateApisGenerator
 		if (attributeName is not "MapMethodAttribute")
 			return null;
 
-		return attributeData
-			.ConstructorArguments[1]
-			.Value
-			!.ToString();
+		if (
+			attributeData.ConstructorArguments is not
+			[
+			{ Value: { } method },
+			{ Kind: TypedConstantKind.Array },
+			]
+		)
+		{
+			return null;
+		}
+
+		return method.ToString();
 	}
 
 	private static EquatableReadOnlyList<string> GetHandleMethodAttributes(IMethodSymbol methodSymbol) =>
@@ -281,4 +290,28 @@ public sealed partial class ImmediateApisGenerator
 			TypedConstantKind.Array => $"[{string.Join(", ", tc.Values.Select(GetTypedConstantString))}]",
 			_ => tc.ToCSharpString(),
 		};
+
+	private static EquatableReadOnlyList<string> GetRoutes(AttributeData attributeData)
+	{
+		return attributeData switch
+		{
+			{
+				AttributeClass.Name: "MapMethodAttribute",
+				ConstructorArguments:
+				[
+				_,
+				{ Kind: TypedConstantKind.Array, Values: var arr },
+				],
+			} => new([.. arr.Select(a => a.Value).OfType<string>()]),
+
+			{
+				ConstructorArguments:
+				[
+				{ Kind: TypedConstantKind.Array, Values: var arr },
+				],
+			} => new([.. arr.Select(a => a.Value).OfType<string>()]),
+
+			_ => [],
+		};
+	}
 }

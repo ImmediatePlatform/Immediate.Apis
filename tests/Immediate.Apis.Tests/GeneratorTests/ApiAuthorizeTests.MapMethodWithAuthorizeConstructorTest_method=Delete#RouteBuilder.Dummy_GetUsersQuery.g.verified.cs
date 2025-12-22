@@ -27,6 +27,7 @@ namespace Microsoft.AspNetCore.Builder
 				);
 
 			_ = endpoint.RequireAuthorization("TestPolicy");
+
 		}
 	}
 }

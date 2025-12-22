@@ -11,12 +11,13 @@ namespace Microsoft.AspNetCore.Builder
 	{
 		private static void Map{{ method.class_as_method_name }}Endpoint(IEndpointRouteBuilder app)
 		{
-			var endpoint = app
+			{{~ for route in method.routes ~}}
+			{{ if for.first }}var {{ end }}endpoint = app
 				.{{ method.map_method }}(
-					"{{ method.route }}",
+					"{{ route }}",
 					{{~ if !string.empty method.http_method ~}}
 					["{{ method.http_method }}"],
-					{{~ end ~}} 
+					{{~ end ~}}
 					{{~ for a in method.attributes ~}}
 					[{{ a }}]
 					{{~ end ~}}
@@ -44,6 +45,8 @@ namespace Microsoft.AspNetCore.Builder
 			{{~ if method.use_customization ~}}
 
 			{{ method.class_full_name }}.CustomizeEndpoint(endpoint);
+			{{~ end ~}}
+
 			{{~ end ~}}
 		}
 	}

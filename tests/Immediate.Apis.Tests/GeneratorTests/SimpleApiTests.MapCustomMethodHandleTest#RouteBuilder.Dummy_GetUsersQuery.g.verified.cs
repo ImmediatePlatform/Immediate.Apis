@@ -14,8 +14,8 @@ namespace Microsoft.AspNetCore.Builder
 		{
 			var endpoint = app
 				.MapMethods(
-					"/test",
-					["HEAD"],
+					"HEAD",
+					["/test"],
 					async (
 						[AsParameters] global::Dummy.GetUsersQuery.Query parameters,
 						[FromServices] global::Dummy.GetUsersQuery.Handler handler,
@@ -26,6 +26,7 @@ namespace Microsoft.AspNetCore.Builder
 						return ret;
 					}
 				);
+
 		}
 	}
 }

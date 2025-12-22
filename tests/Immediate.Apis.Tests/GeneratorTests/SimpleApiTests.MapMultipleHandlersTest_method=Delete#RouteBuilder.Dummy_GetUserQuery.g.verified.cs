@@ -1,4 +1,5 @@
 ﻿//HintName: RouteBuilder.Dummy_GetUserQuery.g.cs
+using System.Collections.Generic;
 using System.Threading;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -34,5 +35,13 @@ namespace Dummy
 {
 
 	/// <remarks><see cref="global::Dummy.GetUserQuery.Query" /> registered using <c>[AsParameters]</c></remarks>
-	partial class GetUserQuery;
+	partial class GetUserQuery
+	{
+		public static IReadOnlyList<string> Routes { get; } =
+		[
+			"/test",
+		];
+
+		public static string Route { get; } = "/test";
+	}
 }

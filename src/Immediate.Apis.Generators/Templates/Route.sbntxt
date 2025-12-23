@@ -68,7 +68,7 @@ namespace {{ method.namespace }}
 		];
 		{{~ if method.routes.count == 1 ~}}
 
-		public static string Route = "{{ method.routes[0] }}";
+		public static string Route { get; } = "{{ method.routes[0] }}";
 		{{~ end ~}}
 	}
 {{ if method.namespace -}}

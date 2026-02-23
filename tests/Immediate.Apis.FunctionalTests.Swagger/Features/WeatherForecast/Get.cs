@@ -3,7 +3,7 @@ using Immediate.Handlers.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Immediate.Apis.FunctionalTests.Features.WeatherForecast;
+namespace Immediate.Apis.FunctionalTests.Swagger.Features.WeatherForecast;
 
 [Handler]
 [MapGet("/forecast/{id:int}", "/forecast/{id:int}/secondary")]

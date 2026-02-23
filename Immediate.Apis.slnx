@@ -20,6 +20,7 @@
     <Project Path="src/Immediate.Apis/Immediate.Apis.csproj" />
   </Folder>
   <Folder Name="/Tests/">
+    <Project Path="tests/Immediate.Apis.FunctionalTests.Scalar/Immediate.Apis.FunctionalTests.Scalar.csproj" />
     <Project Path="tests/Immediate.Apis.FunctionalTests.Swagger/Immediate.Apis.FunctionalTests.Swagger.csproj" />
     <Project Path="tests/Immediate.Apis.Tests/Immediate.Apis.Tests.csproj" />
   </Folder>

@@ -1,0 +1,6 @@
+@Immediate.Apis.FunctionalTests_HostAddress = http://localhost:5233
+
+GET {{Immediate.Apis.FunctionalTests_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

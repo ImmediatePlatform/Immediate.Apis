@@ -11,7 +11,7 @@ internal static class Utility
 			.GetExecutingAssembly()
 			.GetManifestResourceStream(
 				$"Immediate.Apis.Generators.Templates.{name}.sbntxt"
-			)!;
+			);
 
 		using var reader = new StreamReader(stream);
 		return Template.Parse(reader.ReadToEnd());

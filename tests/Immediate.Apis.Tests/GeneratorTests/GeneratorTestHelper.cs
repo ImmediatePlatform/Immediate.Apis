@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using Immediate.Apis.Generators;
 using Immediate.Handlers.Generators;
 using Microsoft.CodeAnalysis;
@@ -8,7 +9,7 @@ namespace Immediate.Apis.Tests.GeneratorTests;
 
 public static class GeneratorTestHelper
 {
-	public static GeneratorDriverRunResult RunGenerator(string source)
+	public static GeneratorDriverRunResult RunGenerator([StringSyntax("c#-test")] string source)
 	{
 		var syntaxTree = CSharpSyntaxTree.ParseText(source);
 

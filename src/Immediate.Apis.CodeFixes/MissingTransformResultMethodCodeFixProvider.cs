@@ -71,7 +71,7 @@ public sealed class MissingTransformResultMethodCodeFixProvider : CodeFixProvide
 
 		if (handleMethodSyntax.ReturnType is not GenericNameSyntax
 			{
-				TypeArgumentList.Arguments: [{ } returnType]
+				TypeArgumentList.Arguments: [{ } returnType],
 			})
 		{
 			return document;

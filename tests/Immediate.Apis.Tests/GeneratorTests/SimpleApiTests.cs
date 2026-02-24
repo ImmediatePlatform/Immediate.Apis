@@ -145,7 +145,7 @@ public sealed class SimpleApiTests
 	public async Task MapCustomMethodHandleTest()
 	{
 		var result = GeneratorTestHelper.RunGenerator(
-			$$"""
+			"""
 			using System.Threading;
 			using System.Threading.Tasks;
 			using Immediate.Apis.Shared;
@@ -185,7 +185,7 @@ public sealed class SimpleApiTests
 	public async Task MapCustomMethodHandleAsyncTest()
 	{
 		var result = GeneratorTestHelper.RunGenerator(
-			$$"""
+			"""
 			using System.Threading;
 			using System.Threading.Tasks;
 			using Immediate.Apis.Shared;

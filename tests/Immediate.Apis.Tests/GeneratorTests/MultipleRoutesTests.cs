@@ -129,7 +129,7 @@ public sealed class MultipleRoutesTests
 	public async Task MapCustomMethodMultipleRoutesTest()
 	{
 		var result = GeneratorTestHelper.RunGenerator(
-			$$"""
+			"""
 			using System.Threading;
 			using System.Threading.Tasks;
 			using Immediate.Apis.Shared;
@@ -394,7 +394,7 @@ public sealed class MultipleRoutesTests
 	public async Task MapMethodMultipleRoutesWithAllFeaturesTest()
 	{
 		var result = GeneratorTestHelper.RunGenerator(
-			$$"""
+			"""
 			using System.Threading;
 			using System.Threading.Tasks;
 			using Immediate.Apis.Shared;
@@ -567,7 +567,7 @@ public sealed class MultipleRoutesTests
 	public async Task MapMethodDifferentRouteStructuresTest()
 	{
 		var result = GeneratorTestHelper.RunGenerator(
-			$$"""
+			"""
 			using System.Threading;
 			using System.Threading.Tasks;
 			using Immediate.Apis.Shared;

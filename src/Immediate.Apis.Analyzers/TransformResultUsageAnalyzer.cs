@@ -107,8 +107,8 @@ public sealed class TransformResultUsageAnalyzer : DiagnosticAnalyzer
 				ReturnsVoid: false,
 				ReturnType: INamedTypeSymbol
 				{
-					TypeArguments: [{ } handleType]
-				}
+					TypeArguments: [{ } handleType],
+				},
 			}])
 		{
 			return true;

@@ -13,7 +13,7 @@
 
   <ItemGroup>
 	<PackageReference Include="Immediate.Handlers" />
-	<PackageReference Include="Microsoft.AspNetCore.OpenApi" VersionOverride="10.0.3" />
+	<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
 	<PackageReference Include="Scalar.AspNetCore" />
   </ItemGroup>
 

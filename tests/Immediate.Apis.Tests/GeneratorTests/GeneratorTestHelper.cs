@@ -27,8 +27,8 @@ public static class GeneratorTestHelper
 			syntaxTrees: [syntaxTree],
 			references:
 			[
-				.. Basic.Reference.Assemblies.AspNet80.References.All,
-				.. Utility.GetMetadataReferences(),
+				..Utility.NetCoreAssemblies,
+				..Utility.GetMetadataReferences(),
 			],
 			options: new(
 				outputKind: OutputKind.DynamicallyLinkedLibrary,

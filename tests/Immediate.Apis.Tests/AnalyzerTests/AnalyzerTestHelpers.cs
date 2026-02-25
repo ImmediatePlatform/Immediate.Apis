@@ -18,12 +18,9 @@ public static class AnalyzerTestHelpers
 			TestState =
 			{
 				Sources = { inputSource },
-				ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+				ReferenceAssemblies = Utility.ReferenceAssemblies,
 			},
 		};
-
-		csTest.TestState.AdditionalReferences
-			.AddRange(Basic.Reference.Assemblies.AspNet80.References.All);
 
 		csTest.TestState.AdditionalReferences
 			.AddRange(Utility.GetMetadataReferences());
@@ -43,12 +40,9 @@ public static class AnalyzerTestHelpers
 			TestState =
 			{
 				Sources = { inputSource },
-				ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+				ReferenceAssemblies = Utility.ReferenceAssemblies,
 			},
 		};
-
-		csTest.TestState.AdditionalReferences
-			.AddRange(Basic.Reference.Assemblies.AspNet80.References.All);
 
 		csTest.TestState.AdditionalReferences
 			.AddRange(Utility.GetMetadataReferences());

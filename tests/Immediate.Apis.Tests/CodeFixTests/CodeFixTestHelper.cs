@@ -34,18 +34,10 @@ public static class CodeFixTestHelper
 			{
 				Sources = { inputSource },
 				AnalyzerConfigFiles = { { ("/.editorconfig", EditorConfig) } },
-				ReferenceAssemblies = new ReferenceAssemblies(
-					"net8.0",
-					new PackageIdentity(
-						"Microsoft.NETCore.App.Ref",
-						"8.0.0"),
-					Path.Combine("ref", "net8.0")),
+				ReferenceAssemblies = Utility.ReferenceAssemblies,
 			},
 			FixedState = { MarkupHandling = MarkupMode.IgnoreFixable, Sources = { fixedSource } },
 		};
-
-		csTest.TestState.AdditionalReferences
-			.AddRange(Basic.Reference.Assemblies.AspNet80.References.All);
 
 		csTest.TestState.AdditionalReferences
 			.AddRange(Utility.GetMetadataReferences());

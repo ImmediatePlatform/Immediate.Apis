@@ -26,7 +26,9 @@ public sealed class InvalidCodeTests
 					return ValueTask.FromResult(0);
 				}
 			}
-			""");
+			""",
+			skippedSteps: ["Handlers"]
+		);
 
 		Assert.Equal(
 			[],
@@ -54,7 +56,9 @@ public sealed class InvalidCodeTests
 			{
 				public record Query;
 			}
-			""");
+			""",
+			skippedSteps: ["Handlers"]
+		);
 
 		Assert.Equal(
 			[],
@@ -87,7 +91,9 @@ public sealed class InvalidCodeTests
 					return ValueTask.FromResult(0);
 				}
 			}
-			""");
+			""",
+			skippedSteps: ["Handlers"]
+		);
 
 		Assert.Equal(
 			[],
@@ -125,7 +131,9 @@ public sealed class InvalidCodeTests
 					return ValueTask.FromResult(0);
 				}
 			}
-			""");
+			""",
+			skippedSteps: ["Handlers"]
+		);
 
 		Assert.Equal(
 			[
@@ -166,7 +174,9 @@ public sealed class InvalidCodeTests
 					return ValueTask.FromResult(0);
 				}
 			}
-			""");
+			""",
+			skippedSteps: ["Handlers"]
+		);
 
 		Assert.Equal(
 			[

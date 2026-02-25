@@ -9,9 +9,18 @@ namespace Immediate.Apis.Tests.GeneratorTests;
 
 public static class GeneratorTestHelper
 {
-	public static GeneratorDriverRunResult RunGenerator([StringSyntax("c#-test")] string source)
+	public static GeneratorDriverRunResult RunGenerator(
+		[StringSyntax("c#-test")] string source,
+		LanguageVersion languageVersion = LanguageVersion.CSharp13
+	)
 	{
-		var syntaxTree = CSharpSyntaxTree.ParseText(source);
+		var options = CSharpParseOptions.Default.WithLanguageVersion(languageVersion);
+
+		var syntaxTree = CSharpSyntaxTree.ParseText(
+			source,
+			options,
+			cancellationToken: TestContext.Current.CancellationToken
+		);
 
 		var compilation = CSharpCompilation.Create(
 			assemblyName: "Tests",
@@ -22,11 +31,21 @@ public static class GeneratorTestHelper
 				.. Utility.GetMetadataReferences(),
 			],
 			options: new(
-				outputKind: OutputKind.DynamicallyLinkedLibrary
+				outputKind: OutputKind.DynamicallyLinkedLibrary,
+				specificDiagnosticOptions:
+				[
+					KeyValuePair.Create("CS0618", ReportDiagnostic.Suppress),
+				]
 			)
 		);
 
-		var clone = compilation.Clone().AddSyntaxTrees(CSharpSyntaxTree.ParseText("// dummy"));
+		var clone = compilation.Clone().AddSyntaxTrees(
+			CSharpSyntaxTree.ParseText(
+				"// dummy",
+				options,
+				cancellationToken: TestContext.Current.CancellationToken
+			)
+		);
 
 		GeneratorDriver driver = CSharpGeneratorDriver.Create(
 			generators:
@@ -34,6 +53,7 @@ public static class GeneratorTestHelper
 				new ImmediateApisGenerator().AsSourceGenerator(),
 				new ImmediateHandlersGenerator().AsSourceGenerator(),
 			],
+			parseOptions: options,
 			driverOptions: new GeneratorDriverOptions(default, trackIncrementalGeneratorSteps: true)
 		);
 
@@ -61,12 +81,13 @@ public static class GeneratorTestHelper
 			.RunGeneratorsAndUpdateCompilation(
 				compilation,
 				out var outputCompilation,
-				out var diagnostics
+				out var diagnostics,
+				cancellationToken: TestContext.Current.CancellationToken
 			);
 
 		Assert.Empty(
 			outputCompilation
-				.GetDiagnostics()
+				.GetDiagnostics(TestContext.Current.CancellationToken)
 				.Where(d => d.Severity is DiagnosticSeverity.Error or DiagnosticSeverity.Warning)
 		);
 

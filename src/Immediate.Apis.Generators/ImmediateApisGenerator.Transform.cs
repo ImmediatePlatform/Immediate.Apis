@@ -311,6 +311,13 @@ public sealed partial class ImmediateApisGenerator
 				],
 			} => new([.. arr.Select(a => a.Value).OfType<string>()]),
 
+			{
+				ConstructorArguments:
+				[
+				{ Kind: TypedConstantKind.Primitive, Value: string str },
+				],
+			} => new([str]),
+
 			_ => [],
 		};
 	}

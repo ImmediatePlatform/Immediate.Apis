@@ -7,10 +7,12 @@ public sealed class MapPutAttribute(
 	[StringSyntax("Route")] params string[] routes
 ) : MapMethodAttribute("PUT", routes)
 {
-	/// <inheritdoc />
-	[Obsolete("Kept for binary compatibility. Do not use directly.")]
-	[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-	[System.Runtime.CompilerServices.OverloadResolutionPriority(-1)]
+	/// <summary>
+	///		Applied to a class to indicate that minimal APIs registration for a <c>PUT</c> endpoint should be generated
+	/// </summary>
+	/// <param name="route">
+	///		The route that the handler should be registered with
+	/// </param>
 	[SuppressMessage("Design", "CA1019:Define accessors for attribute arguments")]
 	public MapPutAttribute(string route) : this([route]) { }
 }

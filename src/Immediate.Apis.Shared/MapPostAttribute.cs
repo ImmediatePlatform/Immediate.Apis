@@ -7,10 +7,12 @@ public sealed class MapPostAttribute(
 	[StringSyntax("Route")] params string[] routes
 ) : MapMethodAttribute("POST", routes)
 {
-	/// <inheritdoc />
-	[Obsolete("Kept for binary compatibility. Do not use directly.")]
-	[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-	[System.Runtime.CompilerServices.OverloadResolutionPriority(-1)]
+	/// <summary>
+	///		Applied to a class to indicate that minimal APIs registration for a <c>POST</c> endpoint should be generated
+	/// </summary>
+	/// <param name="route">
+	///		The route that the handler should be registered with
+	/// </param>
 	[SuppressMessage("Design", "CA1019:Define accessors for attribute arguments")]
 	public MapPostAttribute(string route) : this([route]) { }
 }

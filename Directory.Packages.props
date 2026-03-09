@@ -17,7 +17,7 @@
 	<PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.5.2" />
 	<PackageVersion Include="MinVer" Version="7.0.0" />
 	<PackageVersion Include="Scalar.AspNetCore" Version="2.12.54" />
-	<PackageVersion Include="Scriban" Version="6.5.3" />
+	<PackageVersion Include="Scriban" Version="6.5.5" />
 	<PackageVersion Include="Swashbuckle.AspNetCore" Version="10.1.4" />
 	<PackageVersion Include="Verify.SourceGenerators" Version="2.5.0" />
 	<PackageVersion Include="Verify.XunitV3" Version="31.13.2" />

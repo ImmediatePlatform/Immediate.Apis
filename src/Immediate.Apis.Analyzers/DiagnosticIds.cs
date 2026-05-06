@@ -10,4 +10,5 @@ internal static class DiagnosticIds
 	public const string IAPI0006MissingCustomizeEndpointMethod = "IAPI0006";
 	public const string IAPI0007MissingTransformResultMethod = "IAPI0007";
 	public const string IAPI0008HandlerShouldNotDependOnEndpoint = "IAPI0008";
+	public const string IAPI0009EndpointHasBeenSpecifiedMultipleTimes = "IAPI0009";
 }

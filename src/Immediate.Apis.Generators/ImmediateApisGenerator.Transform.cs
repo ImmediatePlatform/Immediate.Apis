@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -19,16 +18,15 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
-		if (GetMethodAttribute(attributes) is not { } attribute)
+		if (attributes.GetMethodAttribute() is not { } attribute)
 			return null;
 
-		if (GetValidHandleMethod(symbol) is not { } handleMethod)
+		if (attribute.GetRoutes() is not { Count: > 0 } routes)
 			return null;
 
 		token.ThrowIfCancellationRequested();
 
-		var routes = GetRoutes(attribute);
-		if (routes.Count == 0)
+		if (GetValidHandleMethod(symbol) is not { } handleMethod)
 			return null;
 
 		token.ThrowIfCancellationRequested();
@@ -70,34 +68,16 @@ public sealed partial class ImmediateApisGenerator
 		token.ThrowIfCancellationRequested();
 
 		var className = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-
-		token.ThrowIfCancellationRequested();
-
 		var classAsMethodName = symbol.ToString().Replace('.', '_');
+		var parameterType = handleMethod.Parameters[0].Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
 		token.ThrowIfCancellationRequested();
 
-		var parameterType = handleMethod.Parameters[0].Type;
-		var mapMethod = GetMapMethod(attribute);
-
-		token.ThrowIfCancellationRequested();
-
-		var httpMethod = GetHttpMethod(attribute);
-
-		token.ThrowIfCancellationRequested();
-
+		var mapMethod = attribute.GetMapMethodName();
+		var httpMethod = attribute.GetMapMethodMethod();
 		var parameterAttribute = GetParameterAttribute(handleMethod.Parameters[0], mapMethod);
-
-		token.ThrowIfCancellationRequested();
-
 		var handleMethodAttributes = GetHandleMethodAttributes(handleMethod);
-
-		token.ThrowIfCancellationRequested();
-
 		var useCustomization = HasCustomizationMethod(symbol);
-
-		token.ThrowIfCancellationRequested();
-
 		var useTransformMethod = HasTransformResultMethod(symbol, handleMethod.ReturnType);
 
 		token.ThrowIfCancellationRequested();
@@ -108,13 +88,13 @@ public sealed partial class ImmediateApisGenerator
 			HttpMethod = httpMethod,
 			Attributes = handleMethodAttributes,
 			ParameterAttribute = parameterAttribute,
-			Routes = routes,
+			Routes = new(routes),
 
 			Namespace = @namespace,
 			Class = @class,
 			ClassFullName = className,
 			ClassAsMethodName = classAsMethodName,
-			ParameterType = parameterType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+			ParameterType = parameterType,
 
 			AllowAnonymous = allowAnonymous,
 			Authorize = authorize,
@@ -125,9 +105,6 @@ public sealed partial class ImmediateApisGenerator
 			HasReturn = handleMethod.ReturnType.IsValueTask1(),
 		};
 	}
-
-	private static AttributeData? GetMethodAttribute(ImmutableArray<AttributeData> attributes) =>
-		attributes.FirstOrDefault(a => a.AttributeClass.IsMapMethodAttribute());
 
 	private static IMethodSymbol? GetValidHandleMethod(INamedTypeSymbol symbol)
 	{
@@ -224,37 +201,6 @@ public sealed partial class ImmediateApisGenerator
 			: "AsParameters";
 	}
 
-	private static string GetMapMethod(AttributeData attributeData)
-	{
-		var attributeName = attributeData.AttributeClass!.Name;
-
-		if (attributeName is "MapMethodAttribute")
-			return "MapMethods";
-
-		return attributeName[..^9];
-	}
-
-	private static string? GetHttpMethod(AttributeData attributeData)
-	{
-		var attributeName = attributeData.AttributeClass!.Name;
-
-		if (attributeName is not "MapMethodAttribute")
-			return null;
-
-		if (
-			attributeData.ConstructorArguments is not
-			[
-			{ Value: { } method },
-			{ Kind: TypedConstantKind.Array },
-			]
-		)
-		{
-			return null;
-		}
-
-		return method.ToString();
-	}
-
 	private static EquatableReadOnlyList<string> GetHandleMethodAttributes(IMethodSymbol methodSymbol) =>
 		methodSymbol.GetAttributes()
 			.Select(GetAttributeString)
@@ -290,35 +236,4 @@ public sealed partial class ImmediateApisGenerator
 			TypedConstantKind.Array => $"[{string.Join(", ", tc.Values.Select(GetTypedConstantString))}]",
 			_ => tc.ToCSharpString(),
 		};
-
-	private static EquatableReadOnlyList<string> GetRoutes(AttributeData attributeData)
-	{
-		return attributeData switch
-		{
-			{
-				AttributeClass.Name: "MapMethodAttribute",
-				ConstructorArguments:
-				[
-				_,
-				{ Kind: TypedConstantKind.Array, Values: var arr },
-				],
-			} => new([.. arr.Select(a => a.Value).OfType<string>()]),
-
-			{
-				ConstructorArguments:
-				[
-				{ Kind: TypedConstantKind.Array, Values: var arr },
-				],
-			} => new([.. arr.Select(a => a.Value).OfType<string>()]),
-
-			{
-				ConstructorArguments:
-				[
-				{ Kind: TypedConstantKind.Primitive, Value: string str },
-				],
-			} => new([str]),
-
-			_ => [],
-		};
-	}
 }

@@ -21,6 +21,7 @@
   <PropertyGroup Label="Enabled Polyfills">
 	<!--https://github.com/meziantou/Meziantou.Polyfill?tab=readme-ov-file#supported-polyfills-->
 	<Polyfill></Polyfill>
+	<Polyfill>$(Polyfill)|T:System.Diagnostics.CodeAnalysis</Polyfill>
 	<Polyfill>$(Polyfill)|T:System.Index</Polyfill>
 	<Polyfill>$(Polyfill)|T:System.Range</Polyfill>
 	<Polyfill>$(Polyfill)|T:System.Runtime.CompilerServices.CallerArgumentExpressionAttribute</Polyfill>
@@ -29,7 +30,8 @@
 	<Polyfill>$(Polyfill)|T:System.Runtime.CompilerServices.OverloadResolutionPriorityAttribute</Polyfill>
 	<Polyfill>$(Polyfill)|T:System.Runtime.CompilerServices.RequiredMemberAttribute</Polyfill>
 	<Polyfill>$(Polyfill)|T:System.Runtime.CompilerServices.SkipLocalsInitAttribute</Polyfill>
-	<Polyfill>$(Polyfill)|T:System.Diagnostics.CodeAnalysis</Polyfill>
+	<Polyfill>$(Polyfill)|T:System.Threading.Lock</Polyfill>
+	<Polyfill>$(Polyfill)|M:System.ArgumentNullException.ThrowIfNull(System.Object,System.String)</Polyfill>
 	<MeziantouPolyfill_IncludedPolyfills>$(Polyfill)</MeziantouPolyfill_IncludedPolyfills>
   </PropertyGroup>
 

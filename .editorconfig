@@ -195,12 +195,12 @@ csharp_style_expression_bodied_constructors = false:none
 csharp_style_expression_bodied_operators = false:none
 
 # Prefer local method constructs to have a block body
-csharp_style_expression_bodied_local_functions = true:suggestion
+csharp_style_expression_bodied_local_functions = when_on_single_line:suggestion
 
 # Prefer property-like constructs to have an expression-body
-csharp_style_expression_bodied_properties = true:suggestion
-csharp_style_expression_bodied_indexers = true:suggestion
-csharp_style_expression_bodied_accessors = true:suggestion
+csharp_style_expression_bodied_properties = when_on_single_line:suggestion
+csharp_style_expression_bodied_indexers = when_on_single_line:suggestion
+csharp_style_expression_bodied_accessors = when_on_single_line:suggestion
 
 # Space preferences
 csharp_space_after_cast = false

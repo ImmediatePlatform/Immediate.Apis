@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 
@@ -122,6 +123,40 @@ internal static class ITypeSymbolExtensions
 			Name: "IFormFile",
 			ContainingNamespace.IsMicrosoftAspNetCoreHttp: true,
 		};
+
+	public static AttributeData? GetMethodAttribute(this ImmutableArray<AttributeData> attributes) =>
+		attributes.FirstOrDefault(a => a.AttributeClass.IsMapMethodAttribute());
+
+	public static IReadOnlyList<string> GetRoutes(this AttributeData attributeData)
+	{
+		return attributeData switch
+		{
+			{
+				AttributeClass.Name: "MapMethodAttribute",
+				ConstructorArguments:
+				[
+				_,
+				{ Kind: TypedConstantKind.Array, Values: var arr },
+				],
+			} => [.. arr.Select(a => a.Value).OfType<string>()],
+
+			{
+				ConstructorArguments:
+				[
+				{ Kind: TypedConstantKind.Array, Values: var arr },
+				],
+			} => [.. arr.Select(a => a.Value).OfType<string>()],
+
+			{
+				ConstructorArguments:
+				[
+				{ Kind: TypedConstantKind.Primitive, Value: string str },
+				],
+			} => [str],
+
+			_ => [],
+		};
+	}
 
 	extension(INamespaceSymbol namespaceSymbol)
 	{

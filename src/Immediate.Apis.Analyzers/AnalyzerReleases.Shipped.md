@@ -18,3 +18,10 @@ IAPI0007 | ImmediateApis | Hidden | MissingTransformResultMethodAnalyzer
 Rule ID | Category | Severity | Notes
 --------|----------|----------|--------------------
 IAPI0008 | ImmediateApis | Info | EndpointAsDependencyAnalyzer
+
+## Release 4.3
+
+### New Rules
+Rule ID | Category | Severity | Notes
+--------|----------|----------|--------------------
+IAPI0009 | ImmediateApis | Warning | DuplicateEndpointAnalyzer

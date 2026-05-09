@@ -158,6 +158,14 @@ internal static class ITypeSymbolExtensions
 		};
 	}
 
+	public static bool IsRouteGroupAttribute(this ITypeSymbol? typeSymbol) =>
+	typeSymbol is INamedTypeSymbol
+	{
+		Arity: 0,
+		Name: "RouteGroupAttribute",
+		ContainingNamespace.IsImmediateApisShared: true,
+	};
+
 	extension(INamespaceSymbol namespaceSymbol)
 	{
 		public bool IsImmediateApisShared =>

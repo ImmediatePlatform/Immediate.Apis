@@ -82,6 +82,16 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
+		var hasRouteGroup = false;
+		string? routeGroup = null;
+		if (GetRouteGroupAttribute(attributes) is { } routeGroupAttribute)
+		{
+			hasRouteGroup = true;
+			routeGroup = GetRouteGroup(routeGroupAttribute);
+		}
+
+		token.ThrowIfCancellationRequested();
+
 		return new()
 		{
 			MapMethod = mapMethod,
@@ -103,6 +113,9 @@ public sealed partial class ImmediateApisGenerator
 			UseCustomization = useCustomization,
 			UseTransformMethod = useTransformMethod,
 			HasReturn = handleMethod.ReturnType.IsValueTask1(),
+
+			HasRouteGroup = hasRouteGroup,
+			RouteGroupName = routeGroup,
 		};
 	}
 
@@ -236,4 +249,22 @@ public sealed partial class ImmediateApisGenerator
 			TypedConstantKind.Array => $"[{string.Join(", ", tc.Values.Select(GetTypedConstantString))}]",
 			_ => tc.ToCSharpString(),
 		};
+
+    private static AttributeData? GetRouteGroupAttribute(ImmutableArray<AttributeData> attributes) =>
+		attributes.FirstOrDefault(a => a.AttributeClass.IsRouteGroupAttribute());
+
+    private static string? GetRouteGroup(AttributeData attribute)
+    {
+        if (attribute.AttributeClass.IsRouteGroupAttribute())
+        {
+            if (attribute.ConstructorArguments.Length == 1 &&
+                attribute.ConstructorArguments[0].Kind == TypedConstantKind.Primitive &&
+                attribute.ConstructorArguments[0].Value is string routeGroup)
+            {
+                return routeGroup;
+            }
+        }
+
+        return null;
+    }
 }

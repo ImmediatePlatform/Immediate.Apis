@@ -50,4 +50,25 @@ public sealed partial class ImmediateApisGenerator
 		token.ThrowIfCancellationRequested();
 		context.AddSource("RoutesBuilder.g.cs", source);
 	}
+
+	private static void RenderRouteGroup(
+		SourceProductionContext context,
+		RouteGroup group,
+		string assemblyName,
+		Template template)
+	{
+		var token = context.CancellationToken;
+
+		token.ThrowIfCancellationRequested();
+
+		var source = template.Render(new
+		{
+			Assembly = assemblyName,
+			Methods = group.Methods,
+			Group = group.Name,
+		});
+
+		token.ThrowIfCancellationRequested();
+		context.AddSource($"RouteGroupBuilder.{group.Name}.g.cs", source);
+	}
 }

@@ -169,3 +169,40 @@ public static partial class GetUsersQuery
     }
 }
 ```
+
+#### Group endpoints into a common route group
+
+You can register your endpoints within a RouteGroupBuilder (`app.MapGroup(...)`) by adding the `RouteGroup` attribute to your handler:
+
+```cs
+[Handler]
+[MapGet("/")]
+[RouteGroup("UserManagement")]
+public static partial class GetUsersQuery
+{
+    internal static Results<Ok<IEnumerable<User>>, NotFound> TransformResult(IEnumerable<User> result)
+    {
+        return TypedResults.Ok(result);
+    }
+
+    public record Query;
+
+    private static ValueTask<IEnumerable<User>> HandleAsync(
+        Query _,
+        UsersService usersService,
+        CancellationToken token
+    )
+    {
+        return usersService.GetUsers();
+    }
+}
+```
+
+Then, register and customize the route group builder in your `Program.cs` like so:
+
+```cs
+app.MapApplicationUserManagementEndpoints("/users")
+	.RequireAuthorization(Policies.UserManagement);
+```
+
+Endpoints decorated with this attribute will no longer be mapped by the .MapApplicationEndpoints() method.

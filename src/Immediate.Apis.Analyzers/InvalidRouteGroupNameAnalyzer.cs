@@ -11,7 +11,7 @@ public sealed class InvalidRouteGroupNameAnalyzer : DiagnosticAnalyzer
 		new(
 			id: DiagnosticIds.IAPI0010InvalidRouteGroupName,
 			title: "Invalid route group name",
-			messageFormat: "Route group name '{0}' is not a valid identifier part",
+			messageFormat: "Route group name `{0}` is not a valid identifier part",
 			category: "ImmediateApis",
 			defaultSeverity: DiagnosticSeverity.Error,
 			isEnabledByDefault: true,

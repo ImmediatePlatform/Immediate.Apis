@@ -84,10 +84,10 @@ public sealed partial class ImmediateApisGenerator
 
 		var hasRouteGroup = false;
 		string? routeGroup = null;
-		if (GetRouteGroupAttribute(attributes) is { } routeGroupAttribute)
+		if (attributes.GetRouteGroupAttribute() is { } routeGroupAttribute)
 		{
 			hasRouteGroup = true;
-			routeGroup = GetRouteGroup(routeGroupAttribute);
+			routeGroup = routeGroupAttribute.GetRouteGroup();
 		}
 
 		token.ThrowIfCancellationRequested();
@@ -250,21 +250,4 @@ public sealed partial class ImmediateApisGenerator
 			_ => tc.ToCSharpString(),
 		};
 
-    private static AttributeData? GetRouteGroupAttribute(ImmutableArray<AttributeData> attributes) =>
-		attributes.FirstOrDefault(a => a.AttributeClass.IsRouteGroupAttribute());
-
-    private static string? GetRouteGroup(AttributeData attribute)
-    {
-        if (attribute.AttributeClass.IsRouteGroupAttribute())
-        {
-            if (attribute.ConstructorArguments.Length == 1 &&
-                attribute.ConstructorArguments[0].Kind == TypedConstantKind.Primitive &&
-                attribute.ConstructorArguments[0].Value is string routeGroup)
-            {
-                return routeGroup;
-            }
-        }
-
-        return null;
-    }
 }

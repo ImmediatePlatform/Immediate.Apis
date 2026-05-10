@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -44,7 +43,7 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 
 		var groupedMethodsTemplate = Utility.GetTemplate("RouteGroup");
 		var methodGroups = methods
-			.Where(m => RouteGroupUtility.IsValidRouteGroupName(m!.RouteGroupName))
+			.Where(m => m!.HasRouteGroup && RouteGroupUtility.IsValidRouteGroupName(m!.RouteGroupName))
 			.WithTrackingName("GroupedMethods")
 			.Collect()
 			.SelectMany((methods, _) =>

@@ -34,5 +34,19 @@ internal static class AttributeDataExtensions
 
 				_ => null,
 			};
+
+		public string? GetRouteGroup() =>
+			attributeData switch
+			{
+				{
+					AttributeClass.Name: "RouteGroupAttribute",
+					ConstructorArguments:
+					[
+					{ Value: { } routeGroup },
+					],
+				} => routeGroup.ToString(),
+
+				_ => null,
+			};
 	}
 }

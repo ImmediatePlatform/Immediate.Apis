@@ -24,7 +24,6 @@ public sealed partial class ImmediateApisGenerator
 		public required bool UseTransformMethod { get; init; }
 		public required bool HasReturn { get; init; }
 
-
 		public required bool HasRouteGroup { get; init; }
 		public required string? RouteGroupName { get; init; }
 	}

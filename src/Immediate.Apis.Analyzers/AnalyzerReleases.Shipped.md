@@ -25,10 +25,3 @@ IAPI0008 | ImmediateApis | Info | EndpointAsDependencyAnalyzer
 Rule ID | Category | Severity | Notes
 --------|----------|----------|--------------------
 IAPI0009 | ImmediateApis | Warning | DuplicateEndpointAnalyzer
-
-## Release ?
-
-### New Rules
-Rule ID | Category | Severity | Notes
---------|----------|----------|--------------------
-IAPI0010 | ImmediateApis | Error | InvalidRouteGroupNameAnalyzer

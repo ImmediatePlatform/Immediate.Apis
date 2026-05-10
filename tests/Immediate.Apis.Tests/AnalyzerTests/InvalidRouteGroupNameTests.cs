@@ -46,7 +46,7 @@ public sealed class InvalidRouteGroupNameTests
 
 			[Handler]
 			[MapGet("/test")]
-			[{|IAPI0009:RouteGroup("{{groupName}}")|}]
+			[{|IAPI0010:RouteGroup("{{groupName}}")|}]
 			public static partial class GetUsersQuery
 			{
 				public record Query;

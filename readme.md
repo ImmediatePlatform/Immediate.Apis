@@ -205,4 +205,4 @@ app.MapApplicationUserManagementEndpoints("/users")
 	.RequireAuthorization(Policies.UserManagement);
 ```
 
-Endpoints decorated with this attribute will no longer be mapped by the .MapApplicationEndpoints() method.
+Endpoints decorated with this attribute will no longer be mapped by the `MapApplicationEndpoints()` method.

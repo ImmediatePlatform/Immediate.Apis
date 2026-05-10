@@ -62,7 +62,8 @@ public sealed class InvalidRouteGroupNameAnalyzer : DiagnosticAnalyzer
 				InvalidRouteGroupName,
 				routeGroupAttribute.ApplicationSyntaxReference
 					?.GetSyntax(token)
-					.GetLocation(),
+					?.GetLocation()
+					?? namedTypeSymbol.Locations.FirstOrDefault(),
 				routeGroupAttribute.ConstructorArguments[0].Value
 			));
 	}

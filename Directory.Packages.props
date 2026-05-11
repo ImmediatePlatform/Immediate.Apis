@@ -49,7 +49,7 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
-	<PackageVersion Include="Basic.Reference.Assemblies.AspNet80" Version="1.8.6" />
+	<PackageVersion Include="Basic.Reference.Assemblies.AspNet80" Version="1.8.7" />
 	<PackageVersion Include="Basic.Reference.Assemblies.Net80" Version="1.8.6" />
 	<PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="8.0.12" />
 	<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />

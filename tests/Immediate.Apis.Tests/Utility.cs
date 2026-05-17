@@ -1,5 +1,13 @@
+using System.Reflection;
+using Immediate.Apis.Shared;
+using Immediate.Handlers.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 namespace Immediate.Apis.Tests;
 
@@ -35,16 +43,27 @@ internal static class Utility
 	public static IEnumerable<MetadataReference> GetMetadataReferences() =>
 	[
 		.. AspNetCoreAssemblies,
-		MetadataReference.CreateFromFile("./Immediate.Handlers.Shared.dll"),
-		MetadataReference.CreateFromFile("./Immediate.Apis.Shared.dll"),
-		MetadataReference.CreateFromFile("./Microsoft.Extensions.DependencyInjection.dll"),
-		MetadataReference.CreateFromFile("./Microsoft.Extensions.DependencyInjection.Abstractions.dll"),
-		MetadataReference.CreateFromFile("./Microsoft.AspNetCore.Authorization.dll"),
-		MetadataReference.CreateFromFile("./Microsoft.AspNetCore.Metadata.dll"),
-		MetadataReference.CreateFromFile("./Microsoft.Extensions.Logging.Abstractions.dll"),
-		MetadataReference.CreateFromFile("./Microsoft.Extensions.Options.dll"),
-		MetadataReference.CreateFromFile("./Microsoft.Extensions.Primitives.dll"),
+
+		MetadataReference.CreateFromFile(GetAssemblyLocation(typeof(HandlerAttribute))),
+		MetadataReference.CreateFromFile(GetAssemblyLocation(typeof(MapMethodAttribute))),
+
+		MetadataReference.CreateFromFile(GetAssemblyLocation(typeof(IServiceCollection))),
+		MetadataReference.CreateFromFile(GetAssemblyLocation(typeof(ServiceCollection))),
+		MetadataReference.CreateFromFile(GetAssemblyLocation(typeof(ILogger))),
+		MetadataReference.CreateFromFile(GetAssemblyLocation(typeof(IOptions<>))),
+		MetadataReference.CreateFromFile(GetAssemblyLocation(typeof(ChangeToken))),
+
+		MetadataReference.CreateFromFile(GetAssemblyLocation(typeof(AuthorizeAttribute))),
+		MetadataReference.CreateFromFile(GetAssemblyLocation(typeof(IAllowAnonymous))),
 	];
+
+	private static string GetAssemblyLocation(this Type type)
+	{
+		if (Assembly.GetAssembly(type) is not { Location: { } location })
+			throw new InvalidOperationException("Missing assembly");
+
+		return location;
+	}
 
 	public static TheoryData<string> Methods() =>
 		[

@@ -11,7 +11,7 @@ public sealed class DuplicateEndpointAnalyzer : DiagnosticAnalyzer
 		new(
 			id: DiagnosticIds.IAPI0009EndpointHasBeenSpecifiedMultipleTimes,
 			title: "Endpoint has been specified multiple times",
-			messageFormat: "Endpoint `{0} {1}` {2}has been specified multiple times: {3}",
+			messageFormat: "Endpoint `{0} {1}`{2}has been specified multiple times: {3}",
 			category: "ImmediateApis",
 			defaultSeverity: DiagnosticSeverity.Warning,
 			isEnabledByDefault: true,
@@ -80,7 +80,7 @@ public sealed class DuplicateEndpointAnalyzer : DiagnosticAnalyzer
 									location.AttributeData.ApplicationSyntaxReference?.GetSyntax(context.CancellationToken).GetLocation(),
 									endpointGroup.Key.Verb,
 									endpointGroup.Key.Route,
-									endpointGroup.Key.RouteGroup is not null ? $"in route group `{endpointGroup.Key.RouteGroup}` " : string.Empty,
+									endpointGroup.Key.RouteGroup is not null ? $"in route group `{endpointGroup.Key.RouteGroup}` " : " ",
 									classes
 								)
 							);

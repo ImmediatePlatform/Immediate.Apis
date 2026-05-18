@@ -24,7 +24,6 @@ public sealed partial class ImmediateApisGenerator
 		public required bool UseTransformMethod { get; init; }
 		public required bool HasReturn { get; init; }
 
-		public required bool HasRouteGroup { get; init; }
 		public required string? RouteGroupName { get; init; }
 	}
 
@@ -36,7 +35,7 @@ public sealed partial class ImmediateApisGenerator
 
 	private sealed record RouteGroup
 	{
-		public required string Name { get; init; }
-		public required EquatableReadOnlyList<Method?> Methods { get; init; }
+		public required string? Name { get; init; }
+		public required EquatableReadOnlyList<Method> Methods { get; init; }
 	}
 }

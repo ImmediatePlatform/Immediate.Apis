@@ -48,16 +48,16 @@ public sealed class InvalidRouteGroupNameAnalyzer : DiagnosticAnalyzer
 		token.ThrowIfCancellationRequested();
 
 		if (attributes.FirstOrDefault(a => a.AttributeClass.IsRouteGroupAttribute()) is not
-		{
-			ConstructorArguments: [{ } argument],
-		} routeGroupAttribute)
+			{
+				ConstructorArguments: [{ Value: var argumentValue }],
+			} routeGroupAttribute)
 		{
 			return;
 		}
 
 		token.ThrowIfCancellationRequested();
 
-		if (RouteGroupUtility.IsValidRouteGroupName(argument.Value as string))
+		if (RouteGroupUtility.IsValidRouteGroupName(argumentValue as string))
 			return;
 
 		token.ThrowIfCancellationRequested();
@@ -69,7 +69,8 @@ public sealed class InvalidRouteGroupNameAnalyzer : DiagnosticAnalyzer
 					?.GetSyntax(token)
 					?.GetLocation(),
 				routeGroupAttribute.ConstructorArguments[0].Value
-			));
+			)
+		);
 	}
 }
 

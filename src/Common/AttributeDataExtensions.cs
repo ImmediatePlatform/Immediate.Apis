@@ -42,9 +42,9 @@ internal static class AttributeDataExtensions
 					AttributeClass.Name: "RouteGroupAttribute",
 					ConstructorArguments:
 					[
-					{ Value: { } routeGroup },
+					{ Value: string routeGroup },
 					],
-				} => routeGroup.ToString(),
+				} => routeGroup,
 
 				_ => null,
 			};

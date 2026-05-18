@@ -29,7 +29,8 @@ public sealed class RouteGroupTests
 					return ValueTask.FromResult(0);
 				}
 			}
-			""");
+			"""
+		);
 
 		Assert.Equal(
 			[
@@ -71,7 +72,9 @@ public sealed class RouteGroupTests
 					return ValueTask.FromResult(0);
 				}
 			}
-			""");
+			""",
+			skippedSteps: ["GroupedMethods"]
+		);
 
 		Assert.Equal(
 			[

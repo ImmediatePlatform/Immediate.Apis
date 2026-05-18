@@ -14,7 +14,7 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 				predicate: (node, _) => node is TypeDeclarationSyntax,
 				transform: TransformMethod
 			)
-			.Where(m => m != null)
+			.WhereNotNull()
 			.WithTrackingName("Handlers");
 
 		var assemblyName = context.CompilationProvider
@@ -31,31 +31,23 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 			(spc, m) => RenderMethod(spc, m.Left!, m.Right, perMethodTemplate)
 		);
 
-		var ungroupedMethodsTemplate = Utility.GetTemplate("Routes");
-		context.RegisterSourceOutput(
-			methods
-				.Where(m => !m!.HasRouteGroup)
-				.WithTrackingName("UngroupedMethods")
-				.Collect()
-				.Combine(assemblyName),
-			(spc, m) => RenderMethods(spc, m.Left!, m.Right, ungroupedMethodsTemplate)
-		);
-
-		var groupedMethodsTemplate = Utility.GetTemplate("RouteGroup");
-		var methodGroups = methods
-			.Where(m => m!.HasRouteGroup && RouteGroupUtility.IsValidRouteGroupName(m!.RouteGroupName))
-			.WithTrackingName("GroupedMethods")
+		var allGroups = methods
 			.Collect()
-			.SelectMany((methods, _) =>
-				methods
-					.GroupBy(m => m!.RouteGroupName, StringComparer.Ordinal)
-					.Select(g => new RouteGroup { Name = g.Key!, Methods = g.ToEquatableReadOnlyList() })
+			.SelectMany(
+				(g, _) => g
+					.GroupBy(
+						m => m.RouteGroupName,
+						(k, g) => new RouteGroup { Name = k, Methods = g.ToEquatableReadOnlyList() },
+						StringComparer.Ordinal
+					)
 			)
-			.WithTrackingName("RouteGroups");
+			.Where(x => x.Name is null || RouteGroupUtility.IsValidRouteGroupName(x.Name))
+			.WithTrackingName("GroupedMethods");
 
+		var allMethodsTemplate = Utility.GetTemplate("Routes");
 		context.RegisterSourceOutput(
-			methodGroups.Combine(assemblyName),
-			(spc, m) => RenderRouteGroup(spc, m.Left, m.Right, groupedMethodsTemplate)
+			allGroups.Combine(assemblyName),
+			(spc, m) => RenderRouteGroup(spc, m.Left, m.Right, allMethodsTemplate)
 		);
 	}
 }

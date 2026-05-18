@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -79,16 +80,7 @@ public sealed partial class ImmediateApisGenerator
 		var handleMethodAttributes = GetHandleMethodAttributes(handleMethod);
 		var useCustomization = HasCustomizationMethod(symbol);
 		var useTransformMethod = HasTransformResultMethod(symbol, handleMethod.ReturnType);
-
-		token.ThrowIfCancellationRequested();
-
-		var hasRouteGroup = false;
-		string? routeGroup = null;
-		if (attributes.GetRouteGroupAttribute() is { } routeGroupAttribute)
-		{
-			hasRouteGroup = true;
-			routeGroup = routeGroupAttribute.GetRouteGroup();
-		}
+		var routeGroup = GetRouteGroupName(attributes);
 
 		token.ThrowIfCancellationRequested();
 
@@ -114,7 +106,6 @@ public sealed partial class ImmediateApisGenerator
 			UseTransformMethod = useTransformMethod,
 			HasReturn = handleMethod.ReturnType.IsValueTask1(),
 
-			HasRouteGroup = hasRouteGroup,
 			RouteGroupName = routeGroup,
 		};
 	}
@@ -250,4 +241,12 @@ public sealed partial class ImmediateApisGenerator
 			_ => tc.ToCSharpString(),
 		};
 
+	private static string? GetRouteGroupName(ImmutableArray<AttributeData> attributes)
+	{
+		return attributes.GetRouteGroupAttribute() switch
+		{
+			{ } attribute => attribute.GetRouteGroup(),
+			_ => null,
+		};
+	}
 }

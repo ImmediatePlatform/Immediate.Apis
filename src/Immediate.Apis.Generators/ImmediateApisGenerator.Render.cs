@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Scriban;
 
@@ -27,30 +26,6 @@ public sealed partial class ImmediateApisGenerator
 		context.AddSource($"RouteBuilder.{method.ClassAsMethodName}.g.cs", source);
 	}
 
-	private static void RenderMethods(
-		SourceProductionContext context,
-		ImmutableArray<Method> methods,
-		string assemblyName,
-		Template template
-	)
-	{
-		if (methods.Length == 0)
-			return;
-
-		var token = context.CancellationToken;
-
-		token.ThrowIfCancellationRequested();
-
-		var source = template.Render(new
-		{
-			Assembly = assemblyName,
-			Methods = methods,
-		});
-
-		token.ThrowIfCancellationRequested();
-		context.AddSource("RoutesBuilder.g.cs", source);
-	}
-
 	private static void RenderRouteGroup(
 		SourceProductionContext context,
 		RouteGroup group,
@@ -64,8 +39,8 @@ public sealed partial class ImmediateApisGenerator
 		var source = template.Render(new
 		{
 			Assembly = assemblyName,
-			Methods = group.Methods,
-			Group = group.Name,
+			group.Name,
+			group.Methods,
 		});
 
 		token.ThrowIfCancellationRequested();

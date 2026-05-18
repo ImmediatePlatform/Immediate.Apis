@@ -11,7 +11,7 @@ public sealed class DuplicateEndpointAnalyzer : DiagnosticAnalyzer
 		new(
 			id: DiagnosticIds.IAPI0009EndpointHasBeenSpecifiedMultipleTimes,
 			title: "Endpoint has been specified multiple times",
-			messageFormat: "Endpoint `{0} {1}` has been specified multiple times: {2}",
+			messageFormat: "Endpoint `{0} {1}`{2}has been specified multiple times: {3}",
 			category: "ImmediateApis",
 			defaultSeverity: DiagnosticSeverity.Warning,
 			isEnabledByDefault: true,
@@ -34,14 +34,15 @@ public sealed class DuplicateEndpointAnalyzer : DiagnosticAnalyzer
 
 		context.RegisterCompilationStartAction(context =>
 		{
-			var endpoints = new List<(string Verb, string Route, string ClassName, AttributeData AttributeData)>();
+			var endpoints = new List<(string Verb, string Route, string ClassName, AttributeData AttributeData, string? RouteGroup)>();
 			var @lock = new Lock();
 
 			context.RegisterSymbolAction(
 				context =>
 				{
+					var attributes = context.Symbol.GetAttributes();
 					if (
-						context.Symbol.GetAttributes().GetMethodAttribute() is { } attribute
+						attributes.GetMethodAttribute() is { } attribute
 						&& attribute.GetHttpMethod() is { } method
 						&& attribute.GetRoutes() is { Count: > 0 } routes
 					)
@@ -54,7 +55,8 @@ public sealed class DuplicateEndpointAnalyzer : DiagnosticAnalyzer
 										method.ToUpperInvariant(),
 										r,
 										context.Symbol.Name,
-										attribute
+										attribute,
+										attributes.GetRouteGroupAttribute()?.GetRouteGroup()
 									))
 							);
 						}
@@ -66,7 +68,7 @@ public sealed class DuplicateEndpointAnalyzer : DiagnosticAnalyzer
 			context.RegisterCompilationEndAction(
 				context =>
 				{
-					foreach (var endpointGroup in endpoints.GroupBy(x => (x.Verb, x.Route)).Where(g => g.Skip(1).Any()))
+					foreach (var endpointGroup in endpoints.GroupBy(x => (x.Verb, x.Route, x.RouteGroup)).Where(g => g.Skip(1).Any()))
 					{
 						var classes = string.Join(", ", endpointGroup.Select(l => l.ClassName));
 
@@ -78,6 +80,7 @@ public sealed class DuplicateEndpointAnalyzer : DiagnosticAnalyzer
 									location.AttributeData.ApplicationSyntaxReference?.GetSyntax(context.CancellationToken).GetLocation(),
 									endpointGroup.Key.Verb,
 									endpointGroup.Key.Route,
+									endpointGroup.Key.RouteGroup is not null ? $"in route group `{endpointGroup.Key.RouteGroup}` " : " ",
 									classes
 								)
 							);

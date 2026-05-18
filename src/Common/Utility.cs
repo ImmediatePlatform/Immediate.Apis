@@ -1,0 +1,12 @@
+using Microsoft.CodeAnalysis;
+
+namespace Immediate.Apis;
+
+internal static class Utility
+{
+	public static string? NullIf(this string value, string check) =>
+		value.Equals(check, StringComparison.Ordinal) ? null : value;
+
+	public static IncrementalValuesProvider<T> WhereNotNull<T>(this IncrementalValuesProvider<T?> values)
+		where T : class => values.Where(x => x is not null)!;
+}

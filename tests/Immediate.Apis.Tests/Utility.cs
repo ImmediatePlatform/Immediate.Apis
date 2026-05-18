@@ -73,4 +73,21 @@ internal static class Utility
 			"Put",
 			"Delete",
 		];
+
+	public static TheoryData<string> ValidRouteGroupNames =>
+		[
+			"_TestGroup",
+			"Test_Group",
+			"Test123Group",
+			"123TestGroup",
+		];
+
+	public static TheoryData<string> InvalidRouteGroupNames =>
+		[
+			"",
+			"Test.Group",
+			"Test Group",
+			"Test@Group",
+			"Test#Group",
+		];
 }

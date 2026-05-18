@@ -14,7 +14,7 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 				predicate: (node, _) => node is TypeDeclarationSyntax,
 				transform: TransformMethod
 			)
-			.Where(m => m != null)
+			.WhereNotNull()
 			.WithTrackingName("Handlers");
 
 		var assemblyName = context.CompilationProvider
@@ -31,10 +31,23 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 			(spc, m) => RenderMethod(spc, m.Left!, m.Right, perMethodTemplate)
 		);
 
+		var allGroups = methods
+			.Collect()
+			.SelectMany(
+				(g, _) => g
+					.GroupBy(
+						m => m.RouteGroupName,
+						(k, g) => new RouteGroup { Name = k, Methods = g.ToEquatableReadOnlyList() },
+						StringComparer.Ordinal
+					)
+			)
+			.Where(x => x.Name is null || RouteGroupUtility.IsValidRouteGroupName(x.Name))
+			.WithTrackingName("GroupedMethods");
+
 		var allMethodsTemplate = Utility.GetTemplate("Routes");
 		context.RegisterSourceOutput(
-			methods.Collect().Combine(assemblyName),
-			(spc, m) => RenderMethods(spc, m.Left!, m.Right, allMethodsTemplate)
+			allGroups.Combine(assemblyName),
+			(spc, m) => RenderRouteGroup(spc, m.Left, m.Right, allMethodsTemplate)
 		);
 	}
 }

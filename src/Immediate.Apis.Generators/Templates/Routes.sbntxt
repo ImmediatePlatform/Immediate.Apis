@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using System.Diagnostics.CodeAnalysis;
 
 #pragma warning disable CS1591
 
@@ -7,14 +8,17 @@ namespace Microsoft.AspNetCore.Builder;
 
 public static partial class {{ assembly }}RoutesBuilder
 {
-	public static IEndpointRouteBuilder Map{{ assembly }}Endpoints(
-		this IEndpointRouteBuilder app
+	public static RouteGroupBuilder Map{{ assembly }}{{ name }}Endpoints(
+		this IEndpointRouteBuilder app,
+		[StringSyntax("Route")] string prefix{{ if name == null }} = ""{{ end }}
 	)
 	{
+		var group = app.MapGroup(prefix);
+
 		{{~ for m in methods ~}}
-		Map{{ m.class_as_method_name }}Endpoint(app);
+		Map{{ m.class_as_method_name }}Endpoint(group);
 		{{~ end ~}}
 
-		return app;
+		return group;
 	}
 }

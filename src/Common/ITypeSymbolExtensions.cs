@@ -158,6 +158,17 @@ internal static class ITypeSymbolExtensions
 		};
 	}
 
+	public static AttributeData? GetRouteGroupAttribute(this ImmutableArray<AttributeData> attributes) =>
+		attributes.FirstOrDefault(a => a.AttributeClass.IsRouteGroupAttribute());
+
+	public static bool IsRouteGroupAttribute(this ITypeSymbol? typeSymbol) =>
+		typeSymbol is INamedTypeSymbol
+		{
+			Arity: 0,
+			Name: "RouteGroupAttribute",
+			ContainingNamespace.IsImmediateApisShared: true,
+		};
+
 	extension(INamespaceSymbol namespaceSymbol)
 	{
 		public bool IsImmediateApisShared =>

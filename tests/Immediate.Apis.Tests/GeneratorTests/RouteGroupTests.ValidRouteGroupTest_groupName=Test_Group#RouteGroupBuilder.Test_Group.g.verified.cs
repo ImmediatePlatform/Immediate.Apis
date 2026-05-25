@@ -11,7 +11,7 @@ public static partial class TestsRoutesBuilder
 {
 	public static RouteGroupBuilder MapTestsTest_GroupEndpoints(
 		this IEndpointRouteBuilder app,
-		[StringSyntax("Route")] string prefix
+		[StringSyntax("Route")] string prefix = ""
 	)
 	{
 		var group = app.MapGroup(prefix);

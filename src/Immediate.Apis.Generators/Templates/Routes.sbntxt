@@ -10,7 +10,7 @@ public static partial class {{ assembly }}RoutesBuilder
 {
 	public static RouteGroupBuilder Map{{ assembly }}{{ name }}Endpoints(
 		this IEndpointRouteBuilder app,
-		[StringSyntax("Route")] string prefix{{ if name == null }} = ""{{ end }}
+		[StringSyntax("Route")] string prefix = ""
 	)
 	{
 		var group = app.MapGroup(prefix);

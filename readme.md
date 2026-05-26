@@ -205,11 +205,4 @@ app.MapApplicationUserManagementEndpoints("/users")
 	.RequireAuthorization(Policies.UserManagement);
 ```
 
-The route prefix argument is optional and defaults to an empty string, so you can omit it and specify the full route on each handler instead:
-
-```cs
-app.MapApplicationUserManagementEndpoints()
-	.RequireAuthorization(Policies.UserManagement);
-```
-
 Endpoints decorated with this attribute will no longer be mapped by the `MapApplicationEndpoints()` method.

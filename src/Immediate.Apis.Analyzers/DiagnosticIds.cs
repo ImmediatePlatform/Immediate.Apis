@@ -12,4 +12,5 @@ internal static class DiagnosticIds
 	public const string IAPI0008HandlerShouldNotDependOnEndpoint = "IAPI0008";
 	public const string IAPI0009EndpointHasBeenSpecifiedMultipleTimes = "IAPI0009";
 	public const string IAPI0010InvalidRouteGroupName = "IAPI0010";
+	public const string IAPI0011InvalidRoutesBuilderName = "IAPI0011";
 }

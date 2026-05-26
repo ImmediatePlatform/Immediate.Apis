@@ -55,6 +55,16 @@ In your `Program.cs`, add a call to `app.MapXxxEndpoints()`, where `Xxx` is the 
 * For a project named `Web`, it will be `app.MapWebEndpoints()`
 * For a project named `Application.Web`, it will be `app.MapApplicationWebEndpoints()`
 
+#### Customizing the generated builder name
+
+By default `Xxx` is derived from the assembly name (with `.` and spaces removed). To use a different name, apply the `RoutesBuilderName` attribute at the assembly level:
+
+```cs
+[assembly: Immediate.Apis.Shared.RoutesBuilderName("Api")]
+```
+
+This generates an `ApiRoutesBuilder` class with `app.MapApiEndpoints()` (and `app.MapApiXxxEndpoints()` for each route group), independent of the assembly name. The value must be a valid C# identifier.
+
 ### Customizing the endpoints
 #### AsParameters
 

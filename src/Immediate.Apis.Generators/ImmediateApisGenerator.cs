@@ -18,11 +18,21 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 			.WithTrackingName("Handlers");
 
 		var assemblyName = context.CompilationProvider
-			.Select((cp, _) => cp.AssemblyName!
-				.Replace(".", string.Empty)
-				.Replace(" ", string.Empty)
-				.Trim()
-			)
+			.Select((cp, _) =>
+			{
+				if (cp.Assembly.GetAttributes()
+						.FirstOrDefault(a => a.AttributeClass.IsRoutesBuilderNameAttribute())
+						is { ConstructorArguments: [{ Value: string configuredName }] }
+					&& RoutesBuilderNameUtility.IsValidRoutesBuilderName(configuredName))
+				{
+					return configuredName;
+				}
+
+				return cp.AssemblyName!
+					.Replace(".", string.Empty)
+					.Replace(" ", string.Empty)
+					.Trim();
+			})
 			.WithTrackingName("AssemblyName");
 
 		var perMethodTemplate = Utility.GetTemplate("Route");

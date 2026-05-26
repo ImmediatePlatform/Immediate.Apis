@@ -169,6 +169,14 @@ internal static class ITypeSymbolExtensions
 			ContainingNamespace.IsImmediateApisShared: true,
 		};
 
+	public static bool IsRoutesBuilderNameAttribute(this ITypeSymbol? typeSymbol) =>
+		typeSymbol is INamedTypeSymbol
+		{
+			Arity: 0,
+			Name: "RoutesBuilderNameAttribute",
+			ContainingNamespace.IsImmediateApisShared: true,
+		};
+
 	extension(INamespaceSymbol namespaceSymbol)
 	{
 		public bool IsImmediateApisShared =>

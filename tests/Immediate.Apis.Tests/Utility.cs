@@ -90,4 +90,20 @@ internal static class Utility
 			"Test@Group",
 			"Test#Group",
 		];
+
+	public static TheoryData<string> ValidRoutesBuilderNames =>
+		[
+			"_Test",
+			"Test_Name",
+			"Test123",
+		];
+
+	public static TheoryData<string> InvalidRoutesBuilderNames =>
+		[
+			"",
+			"123Test",
+			"Test.Name",
+			"Test Name",
+			"Test@Name",
+		];
 }

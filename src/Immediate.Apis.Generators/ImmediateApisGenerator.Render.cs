@@ -20,6 +20,7 @@ public sealed partial class ImmediateApisGenerator
 		{
 			Assembly = assemblyName,
 			Method = method,
+			Version = ThisAssembly.InformationalVersion,
 		});
 
 		token.ThrowIfCancellationRequested();
@@ -41,6 +42,7 @@ public sealed partial class ImmediateApisGenerator
 			Assembly = assemblyName,
 			group.Name,
 			group.Methods,
+			Version = ThisAssembly.InformationalVersion,
 		});
 
 		token.ThrowIfCancellationRequested();

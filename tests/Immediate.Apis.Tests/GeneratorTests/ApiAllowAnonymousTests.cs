@@ -1,9 +1,11 @@
+using static Immediate.Apis.Tests.Utility;
+
 namespace Immediate.Apis.Tests.GeneratorTests;
 
 public sealed class ApiAllowAnonymousTests
 {
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodWithAllowAnonymousTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -34,14 +36,14 @@ public sealed class ApiAllowAnonymousTests
 
 		Assert.Equal(
 			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteGroupBuilder..g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteGroupBuilder..g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
 			],
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(method);
 	}
 }

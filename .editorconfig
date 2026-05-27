@@ -317,6 +317,7 @@ dotnet_diagnostic.MA0004.severity = none
 dotnet_diagnostic.MA0048.severity = none
 dotnet_diagnostic.MA0051.severity = none
 dotnet_diagnostic.MA0053.severity = warning
+dotnet_diagnostic.MA0190.severity = none                # MA0190: Use partial property instead of partial method for GeneratedRegex
 
 [src/Immediate.Apis.Shared/*.cs]
 

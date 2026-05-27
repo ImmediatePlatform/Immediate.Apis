@@ -1,9 +1,11 @@
+using static Immediate.Apis.Tests.Utility;
+
 namespace Immediate.Apis.Tests.GeneratorTests;
 
 public sealed class MultipleRoutesTests
 {
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodMultipleRoutesTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -32,19 +34,19 @@ public sealed class MultipleRoutesTests
 
 		Assert.Equal(
 			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteGroupBuilder..g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteGroupBuilder..g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
 			],
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(method);
 	}
 
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodThreeRoutesTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -73,19 +75,19 @@ public sealed class MultipleRoutesTests
 
 		Assert.Equal(
 			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteGroupBuilder..g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteGroupBuilder..g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
 			],
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(method);
 	}
 
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodManyRoutesTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -114,15 +116,15 @@ public sealed class MultipleRoutesTests
 
 		Assert.Equal(
 			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteGroupBuilder..g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteGroupBuilder..g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
 			],
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(method);
 	}
 
 	[Fact]
@@ -154,19 +156,19 @@ public sealed class MultipleRoutesTests
 
 		Assert.Equal(
 			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteGroupBuilder..g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteGroupBuilder..g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
 			],
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result);
+		_ = await VerifyIgnoreImmediateHandlers(result);
 	}
 
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodMultipleRoutesWithAuthorizeTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -197,19 +199,19 @@ public sealed class MultipleRoutesTests
 
 		Assert.Equal(
 			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteGroupBuilder..g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteGroupBuilder..g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
 			],
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(method);
 	}
 
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodMultipleRoutesWithAllowAnonymousTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -240,19 +242,19 @@ public sealed class MultipleRoutesTests
 
 		Assert.Equal(
 			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteGroupBuilder..g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteGroupBuilder..g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
 			],
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(method);
 	}
 
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodMultipleRoutesWithCustomizeEndpointTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -288,19 +290,19 @@ public sealed class MultipleRoutesTests
 
 		Assert.Equal(
 			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteGroupBuilder..g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteGroupBuilder..g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
 			],
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(method);
 	}
 
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodMultipleRoutesWithCustomizeEndpoint2Test(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -336,19 +338,19 @@ public sealed class MultipleRoutesTests
 
 		Assert.Equal(
 			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteGroupBuilder..g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteGroupBuilder..g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
 			],
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(method);
 	}
 
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodMultipleRoutesWithTransformResultTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -379,15 +381,15 @@ public sealed class MultipleRoutesTests
 
 		Assert.Equal(
 			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteGroupBuilder..g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteGroupBuilder..g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
 			],
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(method);
 	}
 
 	[Fact]
@@ -429,19 +431,19 @@ public sealed class MultipleRoutesTests
 
 		Assert.Equal(
 			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteGroupBuilder..g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteGroupBuilder..g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
 			],
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result);
+		_ = await VerifyIgnoreImmediateHandlers(result);
 	}
 
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodSingleRouteTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -470,19 +472,19 @@ public sealed class MultipleRoutesTests
 
 		Assert.Equal(
 			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteGroupBuilder..g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteGroupBuilder..g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
 			],
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(method);
 	}
 
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodRoutesWithParametersTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -511,19 +513,19 @@ public sealed class MultipleRoutesTests
 
 		Assert.Equal(
 			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUserQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteGroupBuilder..g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUserQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteGroupBuilder..g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUserQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
 			],
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(method);
 	}
 
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
 	public async Task MapMethodRoutesWithConstraintsTest(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -552,15 +554,15 @@ public sealed class MultipleRoutesTests
 
 		Assert.Equal(
 			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUserQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteGroupBuilder..g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUserQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteGroupBuilder..g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUserQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
 			],
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(method);
 	}
 
 	[Fact]
@@ -592,14 +594,14 @@ public sealed class MultipleRoutesTests
 
 		Assert.Equal(
 			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteGroupBuilder..g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteGroupBuilder..g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
 			],
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result);
+		_ = await VerifyIgnoreImmediateHandlers(result);
 	}
 }

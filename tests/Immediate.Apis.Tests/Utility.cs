@@ -1,4 +1,6 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using Immediate.Apis.Shared;
 using Immediate.Handlers.Shared;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +13,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace Immediate.Apis.Tests;
 
-internal static class Utility
+internal static partial class Utility
 {
 #if NET8_0
 	public static ReferenceAssemblies ReferenceAssemblies => ReferenceAssemblies.Net.Net80;
@@ -90,4 +92,11 @@ internal static class Utility
 			"Test@Group",
 			"Test#Group",
 		];
+
+	public static SettingsTask VerifyIgnoreImmediateHandlers(GeneratorDriverRunResult result, [CallerFilePath] string sourceFile = "") =>
+		Verify(result, sourceFile: sourceFile)
+			.IgnoreGeneratedResult(gsr => ImmediateHandlersHintName().IsMatch(Path.GetFileName(gsr.HintName)));
+
+	[GeneratedRegex(@"IH\..*\.g\.cs", RegexOptions.ExplicitCapture, matchTimeoutMilliseconds: 100)]
+	private static partial Regex ImmediateHandlersHintName();
 }

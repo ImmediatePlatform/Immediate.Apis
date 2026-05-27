@@ -23,7 +23,7 @@ public sealed partial class ImmediateApisGenerator
 		});
 
 		token.ThrowIfCancellationRequested();
-		context.AddSource($"RouteBuilder.{method.ClassAsMethodName}.g.cs", source);
+		context.AddSource($"IA.RouteBuilder.{method.ClassAsMethodName}.g.cs", source);
 	}
 
 	private static void RenderRouteGroup(
@@ -44,6 +44,6 @@ public sealed partial class ImmediateApisGenerator
 		});
 
 		token.ThrowIfCancellationRequested();
-		context.AddSource($"RouteGroupBuilder.{group.Name}.g.cs", source);
+		context.AddSource($"IA.RouteGroupBuilder.{group.Name}.g.cs", source);
 	}
 }

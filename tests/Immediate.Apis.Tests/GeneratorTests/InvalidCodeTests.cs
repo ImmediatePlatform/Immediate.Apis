@@ -1,9 +1,11 @@
+using static Immediate.Apis.Tests.Utility;
+
 namespace Immediate.Apis.Tests.GeneratorTests;
 
 public sealed class InvalidCodeTests
 {
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
 	public async Task MissingHandlerAttribute(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -35,11 +37,11 @@ public sealed class InvalidCodeTests
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(method);
 	}
 
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
 	public async Task MissingHandler(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -65,11 +67,11 @@ public sealed class InvalidCodeTests
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(method);
 	}
 
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
 	public async Task InvalidHandler(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -100,11 +102,11 @@ public sealed class InvalidCodeTests
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(method);
 	}
 
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
 	public async Task AuthorizeUsesAuthenticationSchemes(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -143,11 +145,11 @@ public sealed class InvalidCodeTests
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(method);
 	}
 
 	[Theory]
-	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
 	public async Task AuthorizeUsesRoles(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -186,6 +188,6 @@ public sealed class InvalidCodeTests
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(method);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(method);
 	}
 }

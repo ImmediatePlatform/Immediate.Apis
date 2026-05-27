@@ -8,6 +8,8 @@ public static class ModuleInitializer
 	public static void Init()
 	{
 		VerifierSettings.AutoVerify(includeBuildServer: false);
+		UseSourceFileRelativeDirectory("Snapshots");
+
 		VerifySourceGenerators.Initialize();
 	}
 }

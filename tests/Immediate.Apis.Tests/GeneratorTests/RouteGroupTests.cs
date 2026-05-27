@@ -1,9 +1,11 @@
+using static Immediate.Apis.Tests.Utility;
+
 namespace Immediate.Apis.Tests.GeneratorTests;
 
 public sealed class RouteGroupTests
 {
 	[Theory]
-	[MemberData(nameof(Utility.ValidRouteGroupNames), MemberType = typeof(Utility))]
+	[MemberData(nameof(ValidRouteGroupNames), MemberType = typeof(Utility))]
 	public async Task ValidRouteGroupTest(string groupName)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -34,19 +36,19 @@ public sealed class RouteGroupTests
 
 		Assert.Equal(
 			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
-				$@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteGroupBuilder.{groupName}.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				$@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteGroupBuilder.{groupName}.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
 			],
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(groupName);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(groupName);
 	}
 
 	[Theory]
-	[MemberData(nameof(Utility.InvalidRouteGroupNames), MemberType = typeof(Utility))]
+	[MemberData(nameof(InvalidRouteGroupNames), MemberType = typeof(Utility))]
 	public async Task InvalidRouteGroupTest(string groupName)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
@@ -78,13 +80,13 @@ public sealed class RouteGroupTests
 
 		Assert.Equal(
 			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
 			],
 			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
 		);
 
-		_ = await Verify(result).UseParameters(groupName);
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(groupName);
 	}
 }

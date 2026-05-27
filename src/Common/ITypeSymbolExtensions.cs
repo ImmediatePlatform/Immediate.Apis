@@ -169,6 +169,26 @@ internal static class ITypeSymbolExtensions
 			ContainingNamespace.IsImmediateApisShared: true,
 		};
 
+	public static bool IsImmediateAssemblyIdentifierAttribute(this ITypeSymbol? typeSymbol) =>
+		typeSymbol is INamedTypeSymbol
+		{
+			Arity: 0,
+			Name: "ImmediateAssemblyIdentifierAttribute",
+			ContainingNamespace:
+			{
+				Name: "Shared",
+				ContainingNamespace:
+				{
+					Name: "Handlers",
+					ContainingNamespace:
+					{
+						Name: "Immediate",
+						ContainingNamespace.IsGlobalNamespace: true,
+					},
+				},
+			},
+		};
+
 	extension(INamespaceSymbol namespaceSymbol)
 	{
 		public bool IsImmediateApisShared =>

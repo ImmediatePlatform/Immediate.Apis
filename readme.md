@@ -51,9 +51,12 @@ public static partial class GetUsersQuery
 
 ### Registering the endpoints
 
-In your `Program.cs`, add a call to `app.MapXxxEndpoints()`, where `Xxx` is the shortened form of the project name.
+In your `Program.cs`, add a call to `app.MapXxxEndpoints()`, where `Xxx` is the application identifier.
+By default, this is the short form of the assembly name. For example:
 * For a project named `Web`, it will be `app.MapWebEndpoints()`
 * For a project named `Application.Web`, it will be `app.MapApplicationWebEndpoints()`
+
+However, this name can be overridden using `[assembly: ImmediateAssemblyIdentifierAttribute("SomeIdentifier")]`.
 
 ### Customizing the endpoints
 #### AsParameters

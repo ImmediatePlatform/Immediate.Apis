@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFrameworks>net8.0;net9.0;net10.0;net11.0</TargetFrameworks>
-	<NoWarn>$(NoWarn);NU1903</NoWarn>
 	<OutputType>Exe</OutputType>
   </PropertyGroup>
 
@@ -50,7 +48,7 @@
 	<ProjectReference Include="../../src/Immediate.Apis.Analyzers/Immediate.Apis.Analyzers.csproj" />
 	<ProjectReference Include="../../src/Immediate.Apis.CodeFixes/Immediate.Apis.CodeFixes.csproj" />
 	<ProjectReference Include="../../src/Immediate.Apis.Generators/Immediate.Apis.Generators.csproj" />
-	<Reference Include="$(PkgImmediate_Handlers)/analyzers/roslyn4.8/dotnet/cs/Immediate.Handlers.Generators.dll" />
+	<Reference Include="$(PkgImmediate_Handlers)/analyzers/dotnet/roslyn4.8/cs/Immediate.Handlers.Generators.dll" />
   </ItemGroup>
 
 </Project>

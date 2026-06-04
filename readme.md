@@ -17,15 +17,7 @@ Immediate.Apis is a source generator for minimal APIs, for
 
 ## Installing Immediate.Apis
 
-You can install [Immediate.Apis with NuGet](https://www.nuget.org/packages/Immediate.Apis):
-
-    Install-Package Immediate.Apis
-    
-Or via the .NET Core command line interface:
-
     dotnet add package Immediate.Apis
-
-Either commands, from Package Manager Console or .NET Core CLI, will download and install Immediate.Handlers.
 
 ## Using Immediate.Apis
 ### Creating an Endpoint

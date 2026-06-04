@@ -11,7 +11,7 @@
 	<Description>A source generator to bind Immediate.Handlers handlers to minimal APIs.</Description>
 
 	<Authors>Immediate.Apis Developers</Authors>
-	<Copyright>© 2024 Immediate.Apis Developers</Copyright>
+	<Copyright>© 2024-2026 Immediate.Apis Developers</Copyright>
 
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<PackageReadmeFile>readme.md</PackageReadmeFile>
@@ -30,14 +30,14 @@
 	-->
   <ItemGroup>
 	<None Include="../../readme.md" Pack="true" PackagePath="/" />
-	<None Include="../Immediate.Apis.Analyzers/bin/$(Configuration)/netstandard2.0/Immediate.Apis.Analyzers.dll" Pack="true" PackagePath="analyzers/roslyn4.8/dotnet/cs" Visible="true" />
-	<None Include="../Immediate.Apis.CodeFixes/bin/$(Configuration)/netstandard2.0/Immediate.Apis.CodeFixes.dll" Pack="true" PackagePath="analyzers/roslyn4.8/dotnet/cs" Visible="true" />
-	<None Include="../Immediate.Apis.Generators/bin/$(Configuration)/netstandard2.0/Immediate.Apis.Generators.dll" Pack="true" PackagePath="analyzers/roslyn4.8/dotnet/cs" Visible="true" />
+	<None Include="../Immediate.Apis.Analyzers/bin/$(Configuration)/netstandard2.0/Immediate.Apis.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/roslyn4.8/cs" Visible="true" />
+	<None Include="../Immediate.Apis.CodeFixes/bin/$(Configuration)/netstandard2.0/Immediate.Apis.CodeFixes.dll" Pack="true" PackagePath="analyzers/dotnet/roslyn4.8/cs" Visible="true" />
+	<None Include="../Immediate.Apis.Generators/bin/$(Configuration)/netstandard2.0/Immediate.Apis.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/roslyn4.8/cs" Visible="true" />
 
 	<TfmSpecificPackageFile
 	  Include="$(PkgScriban)/lib/netstandard2.0/Scriban.dll"
 	  Pack="true"
-	  PackagePath="analyzers/roslyn4.8/dotnet/cs"
+	  PackagePath="analyzers/dotnet/roslyn4.8/cs"
 	  Condition=" '$(TargetFramework)' == 'net8.0' " />
 
 	<TfmSpecificPackageFile
@@ -52,9 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="DotNet.ReproducibleBuilds" PrivateAssets="All" />
 	<PackageReference Include="Scriban" PrivateAssets="all" GeneratePathProperty="true" />
-	<PackageReference Include="MinVer" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

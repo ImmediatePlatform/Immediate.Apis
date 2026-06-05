@@ -1,15 +1,16 @@
 # Immediate.Apis
 
 [![NuGet](https://img.shields.io/nuget/v/Immediate.Apis.svg?style=plastic)](https://www.nuget.org/packages/Immediate.Apis/)
-[![GitHub release](https://img.shields.io/github/release/viceroypenguin/Immediate.Apis.svg)](https://GitHub.com/viceroypenguin/Immediate.Apis/releases/)
-[![GitHub license](https://img.shields.io/github/license/viceroypenguin/Immediate.Apis.svg)](https://github.com/viceroypenguin/Immediate.Apis/blob/master/license.txt) 
-[![GitHub issues](https://img.shields.io/github/issues/viceroypenguin/Immediate.Apis.svg)](https://GitHub.com/viceroypenguin/Immediate.Apis/issues/) 
-[![GitHub issues-closed](https://img.shields.io/github/issues-closed/viceroypenguin/Immediate.Apis.svg)](https://GitHub.com/viceroypenguin/Immediate.Apis/issues?q=is%3Aissue+is%3Aclosed) 
-[![GitHub Actions](https://github.com/viceroypenguin/Immediate.Apis/actions/workflows/build.yml/badge.svg)](https://github.com/viceroypenguin/Immediate.Apis/actions)
+[![GitHub release](https://img.shields.io/github/release/ImmediatePlatform/Immediate.Apis.svg)](https://GitHub.com/ImmediatePlatform/Immediate.Apis/releases/)
+[![GitHub license](https://img.shields.io/github/license/ImmediatePlatform/Immediate.Apis.svg)](https://github.com/ImmediatePlatform/Immediate.Apis/blob/master/license.txt) 
+[![GitHub issues](https://img.shields.io/github/issues/ImmediatePlatform/Immediate.Apis.svg)](https://GitHub.com/ImmediatePlatform/Immediate.Apis/issues/) 
+[![GitHub issues-closed](https://img.shields.io/github/issues-closed/ImmediatePlatform/Immediate.Apis.svg)](https://GitHub.com/ImmediatePlatform/Immediate.Apis/issues?q=is%3Aissue+is%3Aclosed) 
+[![GitHub Actions](https://github.com/ImmediatePlatform/Immediate.Apis/actions/workflows/build.yml/badge.svg)](https://github.com/ImmediatePlatform/Immediate.Apis/actions)
+[![Coverage Status](https://coveralls.io/repos/github/ImmediatePlatform/Immediate.Apis/badge.svg)](https://coveralls.io/github/ImmediatePlatform/Immediate.Apis)
 ---
 
 Immediate.Apis is a source generator for minimal APIs, for
-[`Immediate.Handlers`](https://github.com/viceroypenguin/Immediate.Handlers) handlers. Simply add a `[MapGet]` to the
+[`Immediate.Handlers`](https://github.com/ImmediatePlatform/Immediate.Handlers) handlers. Simply add a `[MapGet]` to the
 `[Handler]` class and an endpoint will automatically be added.
 
 #### Examples

@@ -12,7 +12,7 @@ namespace Microsoft.AspNetCore.Builder;
 public static partial class ApisServiceCollectionExtensions
 {
 	[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Immediate.Apis", "{{ version }}")]
-	public static RouteGroupBuilder Map{{ assembly }}{{ name }}Endpoints(
+	public static RouteGroupBuilder Map{{ assembly }}Endpoints(
 		this IEndpointRouteBuilder app,
 		[StringSyntax("Route")] string prefix = ""
 	)

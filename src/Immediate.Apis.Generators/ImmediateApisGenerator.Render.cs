@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Scriban;
 
@@ -27,12 +28,16 @@ public sealed partial class ImmediateApisGenerator
 		context.AddSource($"IA.RouteBuilder.{method.ClassAsMethodName}.g.cs", source);
 	}
 
-	private static void RenderRouteGroup(
+	private static void RenderMethods(
 		SourceProductionContext context,
-		RouteGroup group,
+		ImmutableArray<Method> methods,
 		string assemblyName,
-		Template template)
+		Template template
+	)
 	{
+		if (methods.Length == 0)
+			return;
+
 		var token = context.CancellationToken;
 
 		token.ThrowIfCancellationRequested();
@@ -40,12 +45,11 @@ public sealed partial class ImmediateApisGenerator
 		var source = template.Render(new
 		{
 			Assembly = assemblyName,
-			group.Name,
-			group.Methods,
+			Methods = methods,
 			Version = ThisAssembly.InformationalVersion,
 		});
 
 		token.ThrowIfCancellationRequested();
-		context.AddSource($"IA.RouteGroupBuilder.{group.Name}.g.cs", source);
+		context.AddSource("IA.RouteGroupBuilder.g.cs", source);
 	}
 }

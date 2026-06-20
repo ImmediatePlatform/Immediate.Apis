@@ -23,19 +23,11 @@ public sealed partial class ImmediateApisGenerator
 		public required bool UseCustomization { get; init; }
 		public required bool UseTransformMethod { get; init; }
 		public required bool HasReturn { get; init; }
-
-		public required string? RouteGroupName { get; init; }
 	}
 
 	public sealed record Class
 	{
 		public required string Type { get; init; }
 		public required string Name { get; init; }
-	}
-
-	private sealed record RouteGroup
-	{
-		public required string? Name { get; init; }
-		public required EquatableReadOnlyList<Method> Methods { get; init; }
 	}
 }

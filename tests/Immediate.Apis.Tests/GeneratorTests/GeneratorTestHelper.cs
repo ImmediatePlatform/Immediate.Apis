@@ -137,7 +137,6 @@ public static class GeneratorTestHelper
 		{
 			"AssemblyName",
 			"Handlers",
-			"GroupedMethods",
 		};
 
 	private static void AssertSteps(

@@ -32,3 +32,10 @@ IAPI0009 | ImmediateApis | Warning | DuplicateEndpointAnalyzer
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
 IAPI0010 | ImmediateApis | Error | InvalidRouteGroupNameAnalyzer
+
+## Release 6.0
+
+### Removed Rules
+Rule ID | Category | Severity | Notes
+--------|----------|----------|-------
+IAPI0010 | ImmediateApis | Error | InvalidRouteGroupNameAnalyzer

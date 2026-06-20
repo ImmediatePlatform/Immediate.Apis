@@ -29,7 +29,7 @@ public sealed class InvalidCodeTests
 				}
 			}
 			""",
-			skippedSteps: ["AssemblyName", "Handlers", "GroupedMethods"]
+			skippedSteps: ["Handlers"]
 		);
 
 		Assert.Equal(
@@ -59,7 +59,7 @@ public sealed class InvalidCodeTests
 				public record Query;
 			}
 			""",
-			skippedSteps: ["AssemblyName", "Handlers", "GroupedMethods"]
+			skippedSteps: ["Handlers"]
 		);
 
 		Assert.Equal(
@@ -94,7 +94,7 @@ public sealed class InvalidCodeTests
 				}
 			}
 			""",
-			skippedSteps: ["AssemblyName", "Handlers", "GroupedMethods"]
+			skippedSteps: ["Handlers"]
 		);
 
 		Assert.Equal(
@@ -134,7 +134,7 @@ public sealed class InvalidCodeTests
 				}
 			}
 			""",
-			skippedSteps: ["AssemblyName", "Handlers", "GroupedMethods"]
+			skippedSteps: ["Handlers"]
 		);
 
 		Assert.Equal(
@@ -177,7 +177,7 @@ public sealed class InvalidCodeTests
 				}
 			}
 			""",
-			skippedSteps: ["AssemblyName", "Handlers", "GroupedMethods"]
+			skippedSteps: ["Handlers"]
 		);
 
 		Assert.Equal(

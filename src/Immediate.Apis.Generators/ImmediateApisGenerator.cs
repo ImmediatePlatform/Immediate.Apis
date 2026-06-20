@@ -25,26 +25,13 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 		var perMethodTemplate = Utility.GetTemplate("Route");
 		context.RegisterSourceOutput(
 			methods.Combine(assemblyName),
-			(spc, m) => RenderMethod(spc, m.Left!, m.Right, perMethodTemplate)
+			(spc, m) => RenderMethod(spc, m.Left, m.Right, perMethodTemplate)
 		);
-
-		var allGroups = methods
-			.Collect()
-			.SelectMany(
-				(g, _) => g
-					.GroupBy(
-						m => m.RouteGroupName,
-						(k, g) => new RouteGroup { Name = k, Methods = g.ToEquatableReadOnlyList() },
-						StringComparer.Ordinal
-					)
-			)
-			.Where(x => x.Name is null || RouteGroupUtility.IsValidRouteGroupName(x.Name))
-			.WithTrackingName("GroupedMethods");
 
 		var allMethodsTemplate = Utility.GetTemplate("Routes");
 		context.RegisterSourceOutput(
-			allGroups.Combine(assemblyName),
-			(spc, m) => RenderRouteGroup(spc, m.Left, m.Right, allMethodsTemplate)
+			methods.Collect().Combine(assemblyName),
+			(spc, m) => RenderMethods(spc, m.Left, m.Right, allMethodsTemplate)
 		);
 	}
 }

@@ -32,9 +32,9 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
-		var allowAnonymous = attributes.Any(a => a.AttributeClass.IsAllowAnonymous());
+		var allowAnonymous = attributes.Any(a => a.AttributeClass.IsAllowAnonymousAttribute);
 
-		var authorizeAttribute = attributes.FirstOrDefault(a => a.AttributeClass.IsAuthorize());
+		var authorizeAttribute = attributes.FirstOrDefault(a => a.AttributeClass.IsAuthorizeAttribute);
 		var authorize = authorizeAttribute != null;
 		var authorizePolicy = string.Empty;
 
@@ -104,7 +104,7 @@ public sealed partial class ImmediateApisGenerator
 
 			UseCustomization = useCustomization,
 			UseTransformMethod = useTransformMethod,
-			HasReturn = handleMethod.ReturnType.IsValueTask1(),
+			HasReturn = handleMethod.ReturnType.IsValueTask1,
 
 			RouteGroupName = routeGroup,
 		};
@@ -142,11 +142,11 @@ public sealed partial class ImmediateApisGenerator
 					ReturnsVoid: true,
 					Parameters: [{ Type: { } paramType }],
 				}
-				&& paramType.IsIEndpointConventionBuilderOrRouteHandlerBuilder()
+				&& paramType.IsIEndpointConventionBuilderOrRouteHandlerBuilder
 			);
 
 	private static bool HasTransformResultMethod(INamedTypeSymbol symbol, ITypeSymbol returnType)
-		=> returnType.IsValueTask1()
+		=> returnType.IsValueTask1
 			&& returnType is INamedTypeSymbol { TypeArguments: [{ } returnInnerType] }
 			&& symbol
 				.GetMembers()
@@ -181,7 +181,7 @@ public sealed partial class ImmediateApisGenerator
 	{
 		foreach (var a in parameterSymbol.GetAttributes())
 		{
-			if (a.AttributeClass.IsBindingParameterAttribute())
+			if (a.AttributeClass.IsBindingParameterAttribute)
 				return a.AttributeClass.Name[..^9];
 		}
 
@@ -189,13 +189,13 @@ public sealed partial class ImmediateApisGenerator
 		{
 			foreach (var p in typeSymbol.GetMembers().OfType<IPropertySymbol>())
 			{
-				if (p.Type.IsIFormFile())
+				if (p.Type.IsIFormFile)
 					return "FromForm";
 			}
 
 			foreach (var p in typeSymbol.GetMembers().OfType<IPropertySymbol>())
 			{
-				if (p.GetAttributes().Any(a => a.AttributeClass.IsFromXxxAttribute()))
+				if (p.GetAttributes().Any(a => a.AttributeClass.IsFromXxxAttribute))
 					return "AsParameters";
 			}
 		}
@@ -248,5 +248,5 @@ public sealed partial class ImmediateApisGenerator
 			{ } attribute => attribute.GetRouteGroup(),
 			_ => null,
 		};
-	}
+}
 }

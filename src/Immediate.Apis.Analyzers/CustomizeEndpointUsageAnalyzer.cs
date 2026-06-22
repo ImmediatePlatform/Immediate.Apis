@@ -46,7 +46,7 @@ public sealed class CustomizeEndpointUsageAnalyzer : DiagnosticAnalyzer
 
 		if (!namedTypeSymbol
 				.GetAttributes()
-				.Any(x => x.AttributeClass.IsMapMethodAttribute()))
+				.Any(x => x.AttributeClass.IsMapMethodAttribute))
 		{
 			return;
 		}
@@ -69,7 +69,7 @@ public sealed class CustomizeEndpointUsageAnalyzer : DiagnosticAnalyzer
 				ReturnsVoid: true,
 				Parameters: [{ Type: { } paramType }],
 			}
-			&& paramType.IsIEndpointConventionBuilderOrRouteHandlerBuilder())
+			&& paramType.IsIEndpointConventionBuilderOrRouteHandlerBuilder)
 		{
 			return;
 		}

@@ -46,7 +46,7 @@ public sealed class MissingTransformResultMethodAnalyzer : DiagnosticAnalyzer
 
 		if (!namedTypeSymbol
 				.GetAttributes()
-				.Any(x => x.AttributeClass.IsMapMethodAttribute()))
+				.Any(x => x.AttributeClass.IsMapMethodAttribute))
 		{
 			return;
 		}

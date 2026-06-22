@@ -60,10 +60,10 @@ public sealed class EndpointAsDependencyAnalyzer : DiagnosticAnalyzer
 				continue;
 			}
 
-			if (!parameterHandlerContainingType.GetAttributes().Any(a => a.AttributeClass.IsHandlerAttribute()))
+			if (!parameterHandlerContainingType.GetAttributes().Any(a => a.AttributeClass.IsHandlerAttribute))
 				continue;
 
-			if (!parameterHandlerContainingType.GetAttributes().Any(a => a.AttributeClass.IsMapMethodAttribute()))
+			if (!parameterHandlerContainingType.GetAttributes().Any(a => a.AttributeClass.IsMapMethodAttribute))
 				continue;
 
 			var parameterSyntax = (ParameterSyntax)parameter.DeclaringSyntaxReferences.First().GetSyntax(token);

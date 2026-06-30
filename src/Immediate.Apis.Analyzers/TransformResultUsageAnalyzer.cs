@@ -1,6 +1,5 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Immediate.Apis.Analyzers;
@@ -53,67 +52,43 @@ public sealed class TransformResultUsageAnalyzer : DiagnosticAnalyzer
 
 		token.ThrowIfCancellationRequested();
 
-		if (namedTypeSymbol
-			.GetMembers()
-			.OfType<IMethodSymbol>()
-			.Where(ims => ims.Name is "TransformResult")
-			.ToList() is not [{ } transformResultMethod])
-		{
+		if (namedTypeSymbol.GetValidHandleMethod() is not { ReturnType: { } returnType })
 			return;
-		}
 
-		if (IsValidTransformMethod(transformResultMethod, namedTypeSymbol))
+		foreach (var transformResultMethod in namedTypeSymbol.GetMembers().OfType<IMethodSymbol>().Where(ims => ims.Name is "TransformResult"))
 		{
-			return;
+			if (IsValidTransformMethod(transformResultMethod, returnType))
+				continue;
+
+			context.ReportDiagnostic(
+				Diagnostic.Create(
+					MustBeValidDefinition,
+					transformResultMethod.Locations[0]
+				)
+			);
 		}
-
-		var syntax = (MethodDeclarationSyntax)transformResultMethod
-			.DeclaringSyntaxReferences[0]
-			.GetSyntax(token);
-
-		context.ReportDiagnostic(
-			Diagnostic.Create(
-				MustBeValidDefinition,
-				syntax
-					.Identifier
-					.GetLocation()
-			)
-		);
 	}
 
-	private static bool IsValidTransformMethod(IMethodSymbol transformResultMethod, INamedTypeSymbol namedTypeSymbol)
+	private static bool IsValidTransformMethod(IMethodSymbol transformResultMethod, ITypeSymbol returnType)
 	{
 		if (transformResultMethod is not
 			{
 				DeclaredAccessibility: Accessibility.Internal,
 				IsStatic: true,
 				ReturnsVoid: false,
-				Parameters: [{ Type: { } paramType }],
 			})
 		{
 			return false;
 		}
 
-		if (namedTypeSymbol
-			.GetMembers()
-			.OfType<IMethodSymbol>()
-			.Where(ims => ims is
-			{
-				Name: "Handle" or "HandleAsync",
-				IsStatic: true,
-			})
-			.ToList() is not [
-			{
-				ReturnsVoid: false,
-				ReturnType: INamedTypeSymbol
-				{
-					TypeArguments: [{ } handleType],
-				},
-			}])
-		{
-			return true;
-		}
-
-		return SymbolEqualityComparer.IncludeNullability.Equals(handleType, paramType);
+		return (
+			returnType is INamedTypeSymbol { IsValueTask1: true, TypeArguments: [{ } returnInnerType] }
+			&& transformResultMethod is { Parameters: [{ Type: { } paramType }] }
+			&& SymbolEqualityComparer.IncludeNullability.Equals(returnInnerType, paramType)
+		)
+		|| (
+			returnType is INamedTypeSymbol { IsValueTask: true }
+			&& transformResultMethod is { Parameters: [] }
+		);
 	}
 }

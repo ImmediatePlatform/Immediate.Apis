@@ -36,7 +36,7 @@ public sealed class TransformResultUsageAnalyzerTests
 
 	[Theory]
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public async Task MultipleDefinitionShouldNotWarn(string method) =>
+	public async Task MultipleDefinitionShouldWarnOnInvalid(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<TransformResultUsageAnalyzer>(
 			$$"""
 			using System.Threading;
@@ -50,7 +50,7 @@ public sealed class TransformResultUsageAnalyzerTests
 			[Map{{method}}("/test")]
 			public static class GetUsersQuery
 			{
-				internal static double TransformResult(double value) => value;
+				internal static double {|IAPI0005:TransformResult|}(double value) => value;
 				internal static double TransformResult(int value) => value;
 			
 				public record Query;
@@ -180,6 +180,64 @@ public sealed class TransformResultUsageAnalyzerTests
 					CancellationToken token)
 				{
 					return 0;
+				}
+			}
+			"""
+		).RunAsync(TestContext.Current.CancellationToken);
+
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	public async Task VoidHandlerReturnShouldNotWarn(string method) =>
+		await AnalyzerTestHelpers.CreateAnalyzerTest<TransformResultUsageAnalyzer>(
+			$$"""
+			using System.Threading;
+			using System.Threading.Tasks;
+			using Immediate.Apis.Shared;
+			using Immediate.Handlers.Shared;
+					
+			namespace Dummy;
+
+			[Handler]
+			[Map{{method}}("/test")]
+			public static class GetUsersQuery
+			{
+				internal static int TransformResult() => 5;
+			
+				public record Query;
+
+				private static async ValueTask Handle(
+					Query _,
+					CancellationToken token)
+				{
+				}
+			}
+			"""
+		).RunAsync(TestContext.Current.CancellationToken);
+
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	public async Task VoidHandlerReturnWithParameterShouldWarn(string method) =>
+		await AnalyzerTestHelpers.CreateAnalyzerTest<TransformResultUsageAnalyzer>(
+			$$"""
+			using System.Threading;
+			using System.Threading.Tasks;
+			using Immediate.Apis.Shared;
+			using Immediate.Handlers.Shared;
+					
+			namespace Dummy;
+
+			[Handler]
+			[Map{{method}}("/test")]
+			public static class GetUsersQuery
+			{
+				internal static int {|IAPI0005:TransformResult|}(int value) => value;
+			
+				public record Query;
+
+				private static async ValueTask Handle(
+					Query _,
+					CancellationToken token)
+				{
 				}
 			}
 			"""

@@ -27,7 +27,7 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
-		if (GetValidHandleMethod(symbol) is not { } handleMethod)
+		if (symbol.GetValidHandleMethod() is not { } handleMethod)
 			return null;
 
 		token.ThrowIfCancellationRequested();
@@ -110,25 +110,6 @@ public sealed partial class ImmediateApisGenerator
 		};
 	}
 
-	private static IMethodSymbol? GetValidHandleMethod(INamedTypeSymbol symbol)
-	{
-		if (symbol
-				.GetMembers()
-				.OfType<IMethodSymbol>()
-				.Where(m => m.Name is "Handle" or "HandleAsync")
-				.Take(2)
-				.ToList() is not [var handleMethod])
-		{
-			return null;
-		}
-
-		// must have request type
-		if (handleMethod.Parameters.Length is 0)
-			return null;
-
-		return handleMethod;
-	}
-
 	private static bool HasCustomizationMethod(INamedTypeSymbol symbol)
 		=> symbol
 			.GetMembers()
@@ -146,8 +127,9 @@ public sealed partial class ImmediateApisGenerator
 			);
 
 	private static bool HasTransformResultMethod(INamedTypeSymbol symbol, ITypeSymbol returnType)
-		=> returnType.IsValueTask1
-			&& returnType is INamedTypeSymbol { TypeArguments: [{ } returnInnerType] }
+	{
+		return (
+			returnType is INamedTypeSymbol { IsValueTask1: true, TypeArguments: [{ } returnInnerType] }
 			&& symbol
 				.GetMembers()
 				.OfType<IMethodSymbol>()
@@ -161,7 +143,25 @@ public sealed partial class ImmediateApisGenerator
 						Parameters: [{ Type: { } paramType }],
 					}
 					&& SymbolEqualityComparer.IncludeNullability.Equals(returnInnerType, paramType)
-				);
+				)
+		)
+		|| (
+			returnType is INamedTypeSymbol { IsValueTask: true }
+			&& symbol
+				.GetMembers()
+				.OfType<IMethodSymbol>()
+				.Any(m =>
+					m is
+					{
+						Name: "TransformResult",
+						IsStatic: true,
+						DeclaredAccessibility: Accessibility.Internal,
+						ReturnsVoid: false,
+						Parameters: [],
+					}
+				)
+		);
+	}
 
 	private static Class GetClass(INamedTypeSymbol symbol) =>
 		new()
@@ -248,5 +248,5 @@ public sealed partial class ImmediateApisGenerator
 			{ } attribute => attribute.GetRouteGroup(),
 			_ => null,
 		};
-}
+	}
 }

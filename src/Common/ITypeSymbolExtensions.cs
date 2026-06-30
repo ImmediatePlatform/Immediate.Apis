@@ -7,7 +7,6 @@ internal static class ITypeSymbolExtensions
 {
 	extension([NotNullWhen(true)] ITypeSymbol? typeSymbol)
 	{
-
 		public bool IsMapMethodAttribute =>
 			typeSymbol is INamedTypeSymbol
 			{
@@ -52,24 +51,20 @@ internal static class ITypeSymbolExtensions
 				ContainingNamespace.IsMicrosoftAspNetCoreBuilder: true,
 			};
 
+		public bool IsValueTask =>
+			typeSymbol is INamedTypeSymbol
+			{
+				Arity: 0,
+				Name: "ValueTask",
+				ContainingNamespace.IsSystemThreadingTasks: true,
+			};
+
 		public bool IsValueTask1 =>
 			typeSymbol is INamedTypeSymbol
 			{
 				Arity: 1,
 				Name: "ValueTask",
-				ContainingNamespace:
-				{
-					Name: "Tasks",
-					ContainingNamespace:
-					{
-						Name: "Threading",
-						ContainingNamespace:
-						{
-							Name: "System",
-							ContainingNamespace.IsGlobalNamespace: true,
-						},
-					},
-				},
+				ContainingNamespace.IsSystemThreadingTasks: true,
 			};
 
 		public bool IsBindingParameterAttribute =>
@@ -117,6 +112,28 @@ internal static class ITypeSymbolExtensions
 				Name: "ImmediateAssemblyIdentifierAttribute",
 				ContainingNamespace.IsImmediateHandlersShared: true,
 			};
+	}
+
+	extension(INamedTypeSymbol namedTypeSymbol)
+	{
+		public IMethodSymbol? GetValidHandleMethod()
+		{
+			if (namedTypeSymbol
+					.GetMembers()
+					.OfType<IMethodSymbol>()
+					.Where(m => m.Name is "Handle" or "HandleAsync")
+					.Take(2)
+					.ToList() is not [var handleMethod])
+			{
+				return null;
+			}
+
+			// must have request type
+			if (handleMethod.Parameters.Length is 0)
+				return null;
+
+			return handleMethod;
+		}
 	}
 
 	extension(INamespaceSymbol namespaceSymbol)
@@ -206,6 +223,21 @@ internal static class ITypeSymbolExtensions
 					ContainingNamespace:
 					{
 						Name: "Microsoft",
+						ContainingNamespace.IsGlobalNamespace: true,
+					},
+				},
+			};
+
+		public bool IsSystemThreadingTasks =>
+			namespaceSymbol is
+			{
+				Name: "Tasks",
+				ContainingNamespace:
+				{
+					Name: "Threading",
+					ContainingNamespace:
+					{
+						Name: "System",
 						ContainingNamespace.IsGlobalNamespace: true,
 					},
 				},

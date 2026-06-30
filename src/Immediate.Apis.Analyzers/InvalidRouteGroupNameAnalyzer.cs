@@ -47,7 +47,7 @@ public sealed class InvalidRouteGroupNameAnalyzer : DiagnosticAnalyzer
 
 		token.ThrowIfCancellationRequested();
 
-		if (attributes.FirstOrDefault(a => a.AttributeClass.IsRouteGroupAttribute()) is not
+		if (attributes.FirstOrDefault(a => a.AttributeClass.IsRouteGroupAttribute) is not
 			{
 				ConstructorArguments: [{ Value: var argumentValue }],
 			} routeGroupAttribute)

@@ -27,14 +27,14 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
-		if (GetValidHandleMethod(symbol) is not { } handleMethod)
+		if (symbol.GetValidHandleMethod() is not { } handleMethod)
 			return null;
 
 		token.ThrowIfCancellationRequested();
 
-		var allowAnonymous = attributes.Any(a => a.AttributeClass.IsAllowAnonymous());
+		var allowAnonymous = attributes.Any(a => a.AttributeClass.IsAllowAnonymousAttribute);
 
-		var authorizeAttribute = attributes.FirstOrDefault(a => a.AttributeClass.IsAuthorize());
+		var authorizeAttribute = attributes.FirstOrDefault(a => a.AttributeClass.IsAuthorizeAttribute);
 		var authorize = authorizeAttribute != null;
 		var authorizePolicy = string.Empty;
 
@@ -104,29 +104,10 @@ public sealed partial class ImmediateApisGenerator
 
 			UseCustomization = useCustomization,
 			UseTransformMethod = useTransformMethod,
-			HasReturn = handleMethod.ReturnType.IsValueTask1(),
+			HasReturn = handleMethod.ReturnType.IsValueTask1,
 
 			RouteGroupName = routeGroup,
 		};
-	}
-
-	private static IMethodSymbol? GetValidHandleMethod(INamedTypeSymbol symbol)
-	{
-		if (symbol
-				.GetMembers()
-				.OfType<IMethodSymbol>()
-				.Where(m => m.Name is "Handle" or "HandleAsync")
-				.Take(2)
-				.ToList() is not [var handleMethod])
-		{
-			return null;
-		}
-
-		// must have request type
-		if (handleMethod.Parameters.Length is 0)
-			return null;
-
-		return handleMethod;
 	}
 
 	private static bool HasCustomizationMethod(INamedTypeSymbol symbol)
@@ -142,12 +123,13 @@ public sealed partial class ImmediateApisGenerator
 					ReturnsVoid: true,
 					Parameters: [{ Type: { } paramType }],
 				}
-				&& paramType.IsIEndpointConventionBuilderOrRouteHandlerBuilder()
+				&& paramType.IsIEndpointConventionBuilderOrRouteHandlerBuilder
 			);
 
 	private static bool HasTransformResultMethod(INamedTypeSymbol symbol, ITypeSymbol returnType)
-		=> returnType.IsValueTask1()
-			&& returnType is INamedTypeSymbol { TypeArguments: [{ } returnInnerType] }
+	{
+		return (
+			returnType is INamedTypeSymbol { IsValueTask1: true, TypeArguments: [{ } returnInnerType] }
 			&& symbol
 				.GetMembers()
 				.OfType<IMethodSymbol>()
@@ -161,7 +143,25 @@ public sealed partial class ImmediateApisGenerator
 						Parameters: [{ Type: { } paramType }],
 					}
 					&& SymbolEqualityComparer.IncludeNullability.Equals(returnInnerType, paramType)
-				);
+				)
+		)
+		|| (
+			returnType is INamedTypeSymbol { IsValueTask: true }
+			&& symbol
+				.GetMembers()
+				.OfType<IMethodSymbol>()
+				.Any(m =>
+					m is
+					{
+						Name: "TransformResult",
+						IsStatic: true,
+						DeclaredAccessibility: Accessibility.Internal,
+						ReturnsVoid: false,
+						Parameters: [],
+					}
+				)
+		);
+	}
 
 	private static Class GetClass(INamedTypeSymbol symbol) =>
 		new()
@@ -181,7 +181,7 @@ public sealed partial class ImmediateApisGenerator
 	{
 		foreach (var a in parameterSymbol.GetAttributes())
 		{
-			if (a.AttributeClass.IsBindingParameterAttribute())
+			if (a.AttributeClass.IsBindingParameterAttribute)
 				return a.AttributeClass.Name[..^9];
 		}
 
@@ -189,13 +189,13 @@ public sealed partial class ImmediateApisGenerator
 		{
 			foreach (var p in typeSymbol.GetMembers().OfType<IPropertySymbol>())
 			{
-				if (p.Type.IsIFormFile())
+				if (p.Type.IsIFormFile)
 					return "FromForm";
 			}
 
 			foreach (var p in typeSymbol.GetMembers().OfType<IPropertySymbol>())
 			{
-				if (p.GetAttributes().Any(a => a.AttributeClass.IsFromXxxAttribute()))
+				if (p.GetAttributes().Any(a => a.AttributeClass.IsFromXxxAttribute))
 					return "AsParameters";
 			}
 		}

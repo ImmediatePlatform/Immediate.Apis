@@ -45,7 +45,7 @@ public sealed class MissingHandlerAttributeAnalyzer : DiagnosticAnalyzer
 
 		if (!namedTypeSymbol
 				.GetAttributes()
-				.Any(x => x.AttributeClass.IsMapMethodAttribute()))
+				.Any(x => x.AttributeClass.IsMapMethodAttribute))
 		{
 			return;
 		}
@@ -54,7 +54,7 @@ public sealed class MissingHandlerAttributeAnalyzer : DiagnosticAnalyzer
 
 		if (!namedTypeSymbol
 				.GetAttributes()
-				.Any(x => x.AttributeClass.IsHandlerAttribute()))
+				.Any(x => x.AttributeClass.IsHandlerAttribute))
 		{
 			context.ReportDiagnostic(
 				Diagnostic.Create(

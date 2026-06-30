@@ -1,11 +1,52 @@
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 
 namespace Immediate.Apis;
 
 internal static class AttributeDataExtensions
 {
+	extension(ImmutableArray<AttributeData> attributes)
+	{
+		public AttributeData? GetMethodAttribute() =>
+			attributes.FirstOrDefault(a => a.AttributeClass.IsMapMethodAttribute);
+
+		public AttributeData? GetRouteGroupAttribute() =>
+			attributes.FirstOrDefault(a => a.AttributeClass.IsRouteGroupAttribute);
+	}
+
 	extension(AttributeData attributeData)
 	{
+		public IReadOnlyList<string> GetRoutes()
+		{
+			return attributeData switch
+			{
+				{
+					AttributeClass.Name: "MapMethodAttribute",
+					ConstructorArguments:
+					[
+					_,
+					{ Kind: TypedConstantKind.Array, Values: var arr },
+					],
+				} => [.. arr.Select(a => a.Value).OfType<string>()],
+
+				{
+					ConstructorArguments:
+					[
+					{ Kind: TypedConstantKind.Array, Values: var arr },
+					],
+				} => [.. arr.Select(a => a.Value).OfType<string>()],
+
+				{
+					ConstructorArguments:
+					[
+					{ Kind: TypedConstantKind.Primitive, Value: string str },
+					],
+				} => [str],
+
+				_ => [],
+			};
+		}
+
 		public string? GetHttpMethod() =>
 			attributeData.GetMapMethodMethod()
 			?? attributeData.GetMapMethodName()[3..];

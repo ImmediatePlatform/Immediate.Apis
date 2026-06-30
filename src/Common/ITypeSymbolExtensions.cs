@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 
@@ -6,188 +5,136 @@ namespace Immediate.Apis;
 
 internal static class ITypeSymbolExtensions
 {
-	public static bool IsMapMethodAttribute(this ITypeSymbol? typeSymbol) =>
-		typeSymbol is INamedTypeSymbol
-		{
-			Arity: 0,
-			Name: "MapGetAttribute"
-				or "MapPostAttribute"
-				or "MapPutAttribute"
-				or "MapPatchAttribute"
-				or "MapDeleteAttribute"
-				or "MapMethodAttribute",
-			ContainingNamespace.IsImmediateApisShared: true,
-		};
-
-	public static bool IsAllowAnonymous(this ITypeSymbol? typeSymbol) =>
-		typeSymbol is INamedTypeSymbol
-		{
-			Arity: 0,
-			Name: "AllowAnonymousAttribute",
-			ContainingNamespace.IsMicrosoftAspNetCoreAuthorization: true,
-		};
-
-	public static bool IsAuthorize(this ITypeSymbol? typeSymbol) =>
-		typeSymbol is INamedTypeSymbol
-		{
-			Arity: 0,
-			Name: "AuthorizeAttribute",
-			ContainingNamespace.IsMicrosoftAspNetCoreAuthorization: true,
-		};
-
-	public static bool IsHandlerAttribute(this ITypeSymbol? typeSymbol) =>
-		typeSymbol is
-		{
-			Name: "HandlerAttribute",
-			ContainingNamespace:
-			{
-				Name: "Shared",
-				ContainingNamespace:
-				{
-					Name: "Handlers",
-					ContainingNamespace:
-					{
-						Name: "Immediate",
-						ContainingNamespace.IsGlobalNamespace: true,
-					},
-				},
-			},
-		};
-
-	public static bool IsIEndpointConventionBuilderOrRouteHandlerBuilder(this ITypeSymbol? typeSymbol) =>
-		typeSymbol is INamedTypeSymbol
-		{
-			Arity: 0,
-			Name: "IEndpointConventionBuilder" or "RouteHandlerBuilder",
-			ContainingNamespace.IsMicrosoftAspNetCoreBuilder: true,
-		};
-
-	public static bool IsValueTask1(this ITypeSymbol? typeSymbol) =>
-		typeSymbol is INamedTypeSymbol
-		{
-			Arity: 1,
-			Name: "ValueTask",
-			ContainingNamespace:
-			{
-				Name: "Tasks",
-				ContainingNamespace:
-				{
-					Name: "Threading",
-					ContainingNamespace:
-					{
-						Name: "System",
-						ContainingNamespace.IsGlobalNamespace: true,
-					},
-				},
-			},
-		};
-
-	public static bool IsBindingParameterAttribute([NotNullWhen(returnValue: true)] this ITypeSymbol? typeSymbol) =>
-		typeSymbol.IsAsParametersAttribute() || typeSymbol.IsFromXxxAttribute();
-
-	public static bool IsFromXxxAttribute(this ITypeSymbol? typeSymbol) =>
-		typeSymbol is INamedTypeSymbol
-		{
-			Name: "FromBodyAttribute"
-				or "FromFormAttribute"
-				or "FromHeaderAttribute"
-				or "FromQueryAttribute"
-				or "FromRouteAttribute",
-			ContainingNamespace:
-			{
-				Name: "Mvc",
-				ContainingNamespace:
-				{
-					Name: "AspNetCore",
-					ContainingNamespace:
-					{
-						Name: "Microsoft",
-						ContainingNamespace.IsGlobalNamespace: true,
-					},
-				},
-			},
-		};
-
-	public static bool IsAsParametersAttribute(this ITypeSymbol? typeSymbol) =>
-		typeSymbol is INamedTypeSymbol
-		{
-			Arity: 0,
-			Name: "AsParametersAttribute",
-			ContainingNamespace.IsMicrosoftAspNetCoreHttp: true,
-		};
-
-	public static bool IsIFormFile(this ITypeSymbol? typeSymbol) =>
-		typeSymbol is INamedTypeSymbol
-		{
-			Arity: 0,
-			Name: "IFormFile",
-			ContainingNamespace.IsMicrosoftAspNetCoreHttp: true,
-		};
-
-	public static AttributeData? GetMethodAttribute(this ImmutableArray<AttributeData> attributes) =>
-		attributes.FirstOrDefault(a => a.AttributeClass.IsMapMethodAttribute());
-
-	public static IReadOnlyList<string> GetRoutes(this AttributeData attributeData)
+	extension([NotNullWhen(true)] ITypeSymbol? typeSymbol)
 	{
-		return attributeData switch
-		{
+		public bool IsMapMethodAttribute =>
+			typeSymbol is INamedTypeSymbol
 			{
-				AttributeClass.Name: "MapMethodAttribute",
-				ConstructorArguments:
-				[
-				_,
-				{ Kind: TypedConstantKind.Array, Values: var arr },
-				],
-			} => [.. arr.Select(a => a.Value).OfType<string>()],
+				Arity: 0,
+				Name: "MapGetAttribute"
+					or "MapPostAttribute"
+					or "MapPutAttribute"
+					or "MapPatchAttribute"
+					or "MapDeleteAttribute"
+					or "MapMethodAttribute",
+				ContainingNamespace.IsImmediateApisShared: true,
+			};
 
+		public bool IsAllowAnonymousAttribute =>
+			typeSymbol is INamedTypeSymbol
 			{
-				ConstructorArguments:
-				[
-				{ Kind: TypedConstantKind.Array, Values: var arr },
-				],
-			} => [.. arr.Select(a => a.Value).OfType<string>()],
+				Arity: 0,
+				Name: "AllowAnonymousAttribute",
+				ContainingNamespace.IsMicrosoftAspNetCoreAuthorization: true,
+			};
 
+		public bool IsAuthorizeAttribute =>
+			typeSymbol is INamedTypeSymbol
 			{
-				ConstructorArguments:
-				[
-				{ Kind: TypedConstantKind.Primitive, Value: string str },
-				],
-			} => [str],
+				Arity: 0,
+				Name: "AuthorizeAttribute",
+				ContainingNamespace.IsMicrosoftAspNetCoreAuthorization: true,
+			};
 
-			_ => [],
-		};
+		public bool IsHandlerAttribute =>
+			typeSymbol is
+			{
+				Name: "HandlerAttribute",
+				ContainingNamespace.IsImmediateHandlersShared: true,
+			};
+
+		public bool IsIEndpointConventionBuilderOrRouteHandlerBuilder =>
+			typeSymbol is INamedTypeSymbol
+			{
+				Arity: 0,
+				Name: "IEndpointConventionBuilder" or "RouteHandlerBuilder",
+				ContainingNamespace.IsMicrosoftAspNetCoreBuilder: true,
+			};
+
+		public bool IsValueTask =>
+			typeSymbol is INamedTypeSymbol
+			{
+				Arity: 0,
+				Name: "ValueTask",
+				ContainingNamespace.IsSystemThreadingTasks: true,
+			};
+
+		public bool IsValueTask1 =>
+			typeSymbol is INamedTypeSymbol
+			{
+				Arity: 1,
+				Name: "ValueTask",
+				ContainingNamespace.IsSystemThreadingTasks: true,
+			};
+
+		public bool IsBindingParameterAttribute =>
+			typeSymbol.IsAsParametersAttribute || typeSymbol.IsFromXxxAttribute;
+
+		public bool IsFromXxxAttribute =>
+			typeSymbol is INamedTypeSymbol
+			{
+				Name: "FromBodyAttribute"
+					or "FromFormAttribute"
+					or "FromHeaderAttribute"
+					or "FromQueryAttribute"
+					or "FromRouteAttribute",
+				ContainingNamespace.IsMicrosoftAspNetCoreMvc: true,
+			};
+
+		public bool IsAsParametersAttribute =>
+			typeSymbol is INamedTypeSymbol
+			{
+				Arity: 0,
+				Name: "AsParametersAttribute",
+				ContainingNamespace.IsMicrosoftAspNetCoreHttp: true,
+			};
+
+		public bool IsIFormFile =>
+			typeSymbol is INamedTypeSymbol
+			{
+				Arity: 0,
+				Name: "IFormFile",
+				ContainingNamespace.IsMicrosoftAspNetCoreHttp: true,
+			};
+
+		public bool IsRouteGroupAttribute =>
+			typeSymbol is INamedTypeSymbol
+			{
+				Arity: 0,
+				Name: "RouteGroupAttribute",
+				ContainingNamespace.IsImmediateApisShared: true,
+			};
+
+		public bool IsImmediateAssemblyIdentifierAttribute =>
+			typeSymbol is INamedTypeSymbol
+			{
+				Arity: 0,
+				Name: "ImmediateAssemblyIdentifierAttribute",
+				ContainingNamespace.IsImmediateHandlersShared: true,
+			};
 	}
 
-	public static AttributeData? GetRouteGroupAttribute(this ImmutableArray<AttributeData> attributes) =>
-		attributes.FirstOrDefault(a => a.AttributeClass.IsRouteGroupAttribute());
-
-	public static bool IsRouteGroupAttribute(this ITypeSymbol? typeSymbol) =>
-		typeSymbol is INamedTypeSymbol
+	extension(INamedTypeSymbol namedTypeSymbol)
+	{
+		public IMethodSymbol? GetValidHandleMethod()
 		{
-			Arity: 0,
-			Name: "RouteGroupAttribute",
-			ContainingNamespace.IsImmediateApisShared: true,
-		};
-
-	public static bool IsImmediateAssemblyIdentifierAttribute(this ITypeSymbol? typeSymbol) =>
-		typeSymbol is INamedTypeSymbol
-		{
-			Arity: 0,
-			Name: "ImmediateAssemblyIdentifierAttribute",
-			ContainingNamespace:
+			if (namedTypeSymbol
+					.GetMembers()
+					.OfType<IMethodSymbol>()
+					.Where(m => m.Name is "Handle" or "HandleAsync")
+					.Take(2)
+					.ToList() is not [var handleMethod])
 			{
-				Name: "Shared",
-				ContainingNamespace:
-				{
-					Name: "Handlers",
-					ContainingNamespace:
-					{
-						Name: "Immediate",
-						ContainingNamespace.IsGlobalNamespace: true,
-					},
-				},
-			},
-		};
+				return null;
+			}
+
+			// must have request type
+			if (handleMethod.Parameters.Length is 0)
+				return null;
+
+			return handleMethod;
+		}
+	}
 
 	extension(INamespaceSymbol namespaceSymbol)
 	{
@@ -198,6 +145,21 @@ internal static class ITypeSymbolExtensions
 				ContainingNamespace:
 				{
 					Name: "Apis",
+					ContainingNamespace:
+					{
+						Name: "Immediate",
+						ContainingNamespace.IsGlobalNamespace: true,
+					},
+				},
+			};
+
+		public bool IsImmediateHandlersShared =>
+			namespaceSymbol is
+			{
+				Name: "Shared",
+				ContainingNamespace:
+				{
+					Name: "Handlers",
 					ContainingNamespace:
 					{
 						Name: "Immediate",
@@ -246,6 +208,36 @@ internal static class ITypeSymbolExtensions
 					ContainingNamespace:
 					{
 						Name: "Microsoft",
+						ContainingNamespace.IsGlobalNamespace: true,
+					},
+				},
+			};
+
+		public bool IsMicrosoftAspNetCoreMvc =>
+			namespaceSymbol is
+			{
+				Name: "Mvc",
+				ContainingNamespace:
+				{
+					Name: "AspNetCore",
+					ContainingNamespace:
+					{
+						Name: "Microsoft",
+						ContainingNamespace.IsGlobalNamespace: true,
+					},
+				},
+			};
+
+		public bool IsSystemThreadingTasks =>
+			namespaceSymbol is
+			{
+				Name: "Tasks",
+				ContainingNamespace:
+				{
+					Name: "Threading",
+					ContainingNamespace:
+					{
+						Name: "System",
 						ContainingNamespace.IsGlobalNamespace: true,
 					},
 				},

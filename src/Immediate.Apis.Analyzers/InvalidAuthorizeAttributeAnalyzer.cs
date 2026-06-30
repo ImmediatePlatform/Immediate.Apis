@@ -57,15 +57,15 @@ public sealed class InvalidAuthorizeAttributeAnalyzer : DiagnosticAnalyzer
 
 		var attributes = namedTypeSymbol.GetAttributes();
 
-		if (!attributes.Any(a => a.AttributeClass.IsMapMethodAttribute()))
+		if (!attributes.Any(a => a.AttributeClass.IsMapMethodAttribute))
 			return;
 
 		token.ThrowIfCancellationRequested();
 
-		if (attributes.FirstOrDefault(a => a.AttributeClass.IsAuthorize()) is not { } authorizeAttribute)
+		if (attributes.FirstOrDefault(a => a.AttributeClass.IsAuthorizeAttribute) is not { } authorizeAttribute)
 			return;
 
-		if (attributes.Any(a => a.AttributeClass.IsAllowAnonymous()))
+		if (attributes.Any(a => a.AttributeClass.IsAllowAnonymousAttribute))
 		{
 			context.ReportDiagnostic(
 				Diagnostic.Create(

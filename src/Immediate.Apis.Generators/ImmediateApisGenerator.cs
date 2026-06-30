@@ -54,7 +54,7 @@ file static class Extensions
 	public static string GetAssemblyIdentifier(this Compilation compilation)
 	{
 		if (compilation.Assembly.GetAttributes()
-				.FirstOrDefault(a => a.AttributeClass.IsImmediateAssemblyIdentifierAttribute())
+				.FirstOrDefault(a => a.AttributeClass.IsImmediateAssemblyIdentifierAttribute)
 				is { ConstructorArguments: [{ Value: string { Length: >= 1 } identifier }] }
 			&& identifier[0] != '@'
 			&& SyntaxFacts.IsValidIdentifier(identifier))

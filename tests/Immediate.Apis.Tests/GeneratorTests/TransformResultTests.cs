@@ -6,7 +6,7 @@ public sealed class TransformResultTests
 {
 	[Theory]
 	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
-	public async Task TransformTest(string method)
+	public async Task TransformWithReturnValid(string method)
 	{
 		var result = GeneratorTestHelper.RunGenerator(
 			$$"""
@@ -30,6 +30,49 @@ public sealed class TransformResultTests
 					CancellationToken token)
 				{
 					return ValueTask.FromResult(0);
+				}
+			}
+			""");
+
+		Assert.Equal(
+			[
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteGroupBuilder..g.cs",
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
+				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
+			],
+			result.GeneratedTrees.Select(t => t.FilePath.Replace('\\', '/'))
+		);
+
+		_ = await VerifyIgnoreImmediateHandlers(result).UseParameters(method);
+	}
+
+	[Theory]
+	[MemberData(nameof(Methods), MemberType = typeof(Utility))]
+	public async Task TransformWithVoidValid(string method)
+	{
+		var result = GeneratorTestHelper.RunGenerator(
+			$$"""
+			using System.Threading;
+			using System.Threading.Tasks;
+			using Immediate.Apis.Shared;
+			using Immediate.Handlers.Shared;
+			
+			namespace Dummy;
+
+			[Handler]
+			[Map{{method}}("/test")]
+			public static partial class GetUsersQuery
+			{
+				internal static double TransformResult() => 1.0d;
+
+				public record Query;
+
+				private static ValueTask Handle(
+					Query _,
+					CancellationToken token)
+				{
+					return default;
 				}
 			}
 			""");

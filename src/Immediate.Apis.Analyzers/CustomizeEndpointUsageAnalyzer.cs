@@ -64,7 +64,7 @@ public sealed class CustomizeEndpointUsageAnalyzer : DiagnosticAnalyzer
 
 		if (customizeEndpointMethod is
 			{
-				DeclaredAccessibility: Accessibility.Internal,
+				DeclaredAccessibility: Accessibility.Internal or Accessibility.Private,
 				IsStatic: true,
 				ReturnsVoid: true,
 				Parameters: [{ Type: { } paramType }],

@@ -12,6 +12,9 @@ internal static class AttributeDataExtensions
 
 		public AttributeData? GetRouteGroupAttribute() =>
 			attributes.FirstOrDefault(a => a.AttributeClass.IsRouteGroupAttribute);
+
+		public AttributeData? GetMapGroupAttribute() =>
+			attributes.FirstOrDefault(a => a.AttributeClass.IsMapGroupAttribute);
 	}
 
 	extension(AttributeData attributeData)

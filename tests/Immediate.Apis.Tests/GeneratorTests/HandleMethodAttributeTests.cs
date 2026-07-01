@@ -39,8 +39,8 @@ public sealed class HandleMethodAttributeTests
 
 		Assert.Equal(
 			[
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteBuilder.Dummy_GetUsersQuery.g.cs",
-				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.RouteGroupBuilder.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.Dummy.GetUsersQuery.g.cs",
+				@"Immediate.Apis.Generators/Immediate.Apis.Generators.ImmediateApisGenerator/IA.MapEndpoints.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.Dummy.GetUsersQuery.g.cs",
 				@"Immediate.Handlers.Generators/Immediate.Handlers.Generators.ImmediateHandlersGenerator/IH.ServiceCollectionExtensions.g.cs",
 			],

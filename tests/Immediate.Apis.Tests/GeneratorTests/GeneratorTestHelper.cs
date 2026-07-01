@@ -136,7 +136,9 @@ public static class GeneratorTestHelper
 		new string[]
 		{
 			"AssemblyName",
-			"Handlers",
+			"Endpoints",
+			"EndpointsDictionary",
+			"RouteGroupsDictionary",
 		};
 
 	private static void AssertSteps(

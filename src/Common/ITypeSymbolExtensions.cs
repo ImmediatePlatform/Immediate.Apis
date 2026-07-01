@@ -51,6 +51,14 @@ internal static class ITypeSymbolExtensions
 				ContainingNamespace.IsMicrosoftAspNetCoreBuilder: true,
 			};
 
+		public bool IsRouteGroupBuilder =>
+			typeSymbol is INamedTypeSymbol
+			{
+				Arity: 0,
+				Name: "RouteGroupBuilder",
+				ContainingNamespace.IsMicrosoftAspNetCoreRouting: true,
+			};
+
 		public bool IsValueTask =>
 			typeSymbol is INamedTypeSymbol
 			{
@@ -102,6 +110,14 @@ internal static class ITypeSymbolExtensions
 			{
 				Arity: 0,
 				Name: "RouteGroupAttribute",
+				ContainingNamespace.IsImmediateApisShared: true,
+			};
+
+		public bool IsMapGroupAttribute =>
+			typeSymbol is INamedTypeSymbol
+			{
+				Arity: 1,
+				Name: "MapGroupAttribute",
 				ContainingNamespace.IsImmediateApisShared: true,
 			};
 
@@ -187,6 +203,21 @@ internal static class ITypeSymbolExtensions
 			namespaceSymbol is
 			{
 				Name: "Builder",
+				ContainingNamespace:
+				{
+					Name: "AspNetCore",
+					ContainingNamespace:
+					{
+						Name: "Microsoft",
+						ContainingNamespace.IsGlobalNamespace: true,
+					},
+				},
+			};
+
+		public bool IsMicrosoftAspNetCoreRouting =>
+			namespaceSymbol is
+			{
+				Name: "Routing",
 				ContainingNamespace:
 				{
 					Name: "AspNetCore",

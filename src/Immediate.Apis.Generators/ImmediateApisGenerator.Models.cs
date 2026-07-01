@@ -13,7 +13,6 @@ public sealed partial class ImmediateApisGenerator
 		public required string? Namespace { get; init; }
 		public required Class Class { get; init; }
 		public required string ClassFullName { get; init; }
-		public required string ClassAsMethodName { get; init; }
 		public required string ParameterType { get; init; }
 
 		public required bool AllowAnonymous { get; init; }
@@ -23,11 +22,40 @@ public sealed partial class ImmediateApisGenerator
 		public required bool UseCustomization { get; init; }
 		public required bool UseTransformMethod { get; init; }
 		public required bool HasReturn { get; init; }
+
+		public required string? RouteGroupClassFullName { get; init; }
 	}
 
 	public sealed record Class
 	{
 		public required string Type { get; init; }
 		public required string Name { get; init; }
+	}
+
+	public sealed record RouteGroupDefinition
+	{
+		public required string? Namespace { get; init; }
+		public required EquatableReadOnlyList<Class> OuterClasses { get; init; }
+		public required Class Class { get; init; }
+		public required string? ClassFullName { get; init; }
+
+		public required string? RouteGroupClassFullName { get; init; }
+
+		public required string Route { get; init; }
+		public required bool UseCustomization { get; init; }
+	}
+
+	public sealed record RouteEndpoint
+	{
+		public required string Name { get; init; }
+		public required string ClassFullName { get; init; }
+		public required EquatableReadOnlyList<string> Routes { get; init; }
+	}
+
+	public sealed record RouteGroup
+	{
+		public required RouteGroupDefinition Definition { get; init; }
+		public required EquatableReadOnlyList<RouteEndpoint> Endpoints { get; init; }
+		public required EquatableReadOnlyList<RouteGroup> Groups { get; init; }
 	}
 }

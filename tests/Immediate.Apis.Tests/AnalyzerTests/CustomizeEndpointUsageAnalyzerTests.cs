@@ -205,7 +205,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			[Authorize(Roles = "")]
 			public static class GetUsersQuery
 			{
-				private static void {|IAPI0004:CustomizeEndpoint|}(Microsoft.AspNetCore.Builder.IEndpointConventionBuilder endpoint)
+				public static void {|IAPI0004:CustomizeEndpoint|}(Microsoft.AspNetCore.Builder.IEndpointConventionBuilder endpoint)
 					=> endpoint
 						.WithDescription("");
 

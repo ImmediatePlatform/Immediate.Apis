@@ -89,7 +89,10 @@ public sealed class MissingCustomizeGroupMethodCodeFixProvider : CodeFixProvider
 			);
 
 		var newClassDecl = classDeclarationSyntax
-			.WithMembers(newMembers);
+			.WithMembers(newMembers)
+			.WithSemicolonToken(Token(SyntaxKind.None))
+			.WithOpenBraceToken(Token(SyntaxKind.OpenBraceToken))
+			.WithCloseBraceToken(Token(SyntaxKind.CloseBraceToken));
 
 		// Replace the old class declaration with the new one
 		var newRoot = root.ReplaceNode(classDeclarationSyntax, newClassDecl);

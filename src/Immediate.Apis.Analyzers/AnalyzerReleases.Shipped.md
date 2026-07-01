@@ -40,6 +40,7 @@ Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
 IAPI0011 | ImmediateApis | Warning | CustomizeGroupUsageAnalyzer
 IAPI0012 | ImmediateApis | Hidden | InvalidRouteGroupNameAnalyzer
+IAPI0013 | ImmediateApis | Error | InvalidMapGroupAnalyzer
 
 ### Removed Rules
 Rule ID | Category | Severity | Notes

@@ -14,4 +14,5 @@ internal static class DiagnosticIds
 	public const string IAPI0010InvalidRouteGroupName = "IAPI0010";
 	public const string IAPI0011CustomizeGroupInvalid = "IAPI0011";
 	public const string IAPI0012MissingCustomizeGroupMethod = "IAPI0012";
+	public const string IAPI0013InvalidMapGroupTarget = "IAPI0013";
 }

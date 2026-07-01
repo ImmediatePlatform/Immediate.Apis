@@ -124,7 +124,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			using Microsoft.AspNetCore.Authorization;
 			using Microsoft.AspNetCore.Builder;
 			using Microsoft.AspNetCore.Http;
-					
+
 			namespace Dummy;
 
 			[Handler]
@@ -150,7 +150,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 
 	[Theory]
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
-	public async Task MultipleDefinitionShouldNotWarn(string method) =>
+	public async Task MultipleDefinitionShouldWarn(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<CustomizeEndpointUsageAnalyzer>(
 			$$"""
 			using System.Threading;
@@ -158,6 +158,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			using Microsoft.AspNetCore.Authorization;
+			using Microsoft.AspNetCore.Builder;
 			using Microsoft.AspNetCore.Http;
 
 			namespace Dummy;
@@ -167,11 +168,11 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			[Authorize(Roles = "")]
 			public static class GetUsersQuery
 			{
-				internal static void CustomizeEndpoint(Microsoft.AspNetCore.Builder.IEndpointConventionBuilder endpoint)
+				internal static void {|IAPI0004:CustomizeEndpoint|}(IEndpointConventionBuilder endpoint)
 					=> endpoint
 						.WithDescription("");
 			
-				internal static void CustomizeEndpoint(int id)
+				internal static void {|IAPI0004:CustomizeEndpoint|}(int id)
 					=> id.ToString();
 			
 				public record Query;
@@ -196,6 +197,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			using Microsoft.AspNetCore.Authorization;
+			using Microsoft.AspNetCore.Builder;
 			using Microsoft.AspNetCore.Http;
 
 			namespace Dummy;
@@ -205,7 +207,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			[Authorize(Roles = "")]
 			public static class GetUsersQuery
 			{
-				public static void {|IAPI0004:CustomizeEndpoint|}(Microsoft.AspNetCore.Builder.IEndpointConventionBuilder endpoint)
+				public static void {|IAPI0004:CustomizeEndpoint|}(IEndpointConventionBuilder endpoint)
 					=> endpoint
 						.WithDescription("");
 
@@ -231,6 +233,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			using Microsoft.AspNetCore.Authorization;
+			using Microsoft.AspNetCore.Builder;
 			using Microsoft.AspNetCore.Http;
 
 			namespace Dummy;
@@ -240,7 +243,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			[Authorize(Roles = "")]
 			public class GetUsersQuery
 			{
-				internal void {|IAPI0004:CustomizeEndpoint|}(Microsoft.AspNetCore.Builder.IEndpointConventionBuilder endpoint)
+				internal void {|IAPI0004:CustomizeEndpoint|}(IEndpointConventionBuilder endpoint)
 					=> endpoint
 						.WithDescription("");
 
@@ -266,6 +269,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			using Microsoft.AspNetCore.Authorization;
+			using Microsoft.AspNetCore.Builder;
 			using Microsoft.AspNetCore.Http;
 
 			namespace Dummy;
@@ -275,7 +279,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			[Authorize(Roles = "")]
 			public static class GetUsersQuery
 			{
-				internal static Microsoft.AspNetCore.Builder.IEndpointConventionBuilder {|IAPI0004:CustomizeEndpoint|}(Microsoft.AspNetCore.Builder.IEndpointConventionBuilder endpoint)
+				internal static IEndpointConventionBuilder {|IAPI0004:CustomizeEndpoint|}(IEndpointConventionBuilder endpoint)
 					=> endpoint
 						.WithDescription("");
 
@@ -301,6 +305,7 @@ public sealed class CustomizeEndpointUsageAnalyzerTests
 			using Immediate.Apis.Shared;
 			using Immediate.Handlers.Shared;
 			using Microsoft.AspNetCore.Authorization;
+			using Microsoft.AspNetCore.Builder;
 			using Microsoft.AspNetCore.Http;
 
 			namespace Dummy;

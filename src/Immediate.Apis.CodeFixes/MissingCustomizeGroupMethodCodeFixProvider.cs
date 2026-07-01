@@ -12,10 +12,10 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace Immediate.Apis.CodeFixes;
 
 [ExportCodeFixProvider(LanguageNames.CSharp)]
-public sealed class MissingCustomizeEndpointMethodCodeFixProvider : CodeFixProvider
+public sealed class MissingCustomizeGroupMethodCodeFixProvider : CodeFixProvider
 {
 	public sealed override ImmutableArray<string> FixableDiagnosticIds { get; } =
-		ImmutableArray.Create([DiagnosticIds.IAPI0006MissingCustomizeEndpointMethod]);
+		ImmutableArray.Create([DiagnosticIds.IAPI0012MissingCustomizeGroupMethod]);
 
 	public override FixAllProvider? GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
@@ -34,16 +34,16 @@ public sealed class MissingCustomizeEndpointMethodCodeFixProvider : CodeFixProvi
 		{
 			context.RegisterCodeFix(
 				CodeAction.Create(
-					title: "Add `CustomizeEndpoint` method",
+					title: "Add `CustomizeGroup` method",
 					createChangedDocument: c =>
-						AddCustomizeEndpointMethodAsync(context.Document, compilationUnitSyntax, classDeclarationSyntax, c),
-					equivalenceKey: nameof(MissingCustomizeEndpointMethodCodeFixProvider)
+						AddCustomizeGroupMethodAsync(context.Document, compilationUnitSyntax, classDeclarationSyntax, c),
+					equivalenceKey: nameof(MissingCustomizeGroupMethodCodeFixProvider)
 				),
 				diagnostic);
 		}
 	}
 
-	private static async Task<Document> AddCustomizeEndpointMethodAsync(
+	private static async Task<Document> AddCustomizeGroupMethodAsync(
 		Document document,
 		CompilationUnitSyntax root,
 		ClassDeclarationSyntax classDeclarationSyntax,
@@ -52,16 +52,16 @@ public sealed class MissingCustomizeEndpointMethodCodeFixProvider : CodeFixProvi
 	{
 		var model = await document.GetSemanticModelAsync(cancellationToken);
 
-		var endpointConventionBuilderSymbol = model?.Compilation
-			.GetTypeByMetadataName("Microsoft.AspNetCore.Builder.RouteHandlerBuilder")!;
+		var routeGroupBuilderSymbol = model?.Compilation
+			.GetTypeByMetadataName("Microsoft.AspNetCore.Routing.RouteGroupBuilder")!;
 
-		var referenceId = DocumentationCommentId.CreateReferenceId(endpointConventionBuilderSymbol);
+		var referenceId = DocumentationCommentId.CreateReferenceId(routeGroupBuilderSymbol);
 		var annotation = new SyntaxAnnotation("SymbolId", referenceId);
 
-		var customizeEndpointMethodSyntax = MethodDeclaration(
+		var customizeGroupMethodSyntax = MethodDeclaration(
 				PredefinedType(
 					Token(SyntaxKind.VoidKeyword)),
-				Identifier("CustomizeEndpoint"))
+				Identifier("CustomizeGroup"))
 			.WithModifiers(
 				TokenList(
 				[
@@ -72,9 +72,9 @@ public sealed class MissingCustomizeEndpointMethodCodeFixProvider : CodeFixProvi
 				ParameterList(
 					SingletonSeparatedList(
 						Parameter(
-								Identifier("endpoint"))
+								Identifier("group"))
 							.WithType(
-								IdentifierName("RouteHandlerBuilder")))))
+								IdentifierName("RouteGroupBuilder")))))
 			.WithBody(
 				Block()
 			)
@@ -85,7 +85,7 @@ public sealed class MissingCustomizeEndpointMethodCodeFixProvider : CodeFixProvi
 		var newMembers = classDeclarationSyntax.Members
 			.Insert(
 				0,
-				customizeEndpointMethodSyntax
+				customizeGroupMethodSyntax
 			);
 
 		var newClassDecl = classDeclarationSyntax

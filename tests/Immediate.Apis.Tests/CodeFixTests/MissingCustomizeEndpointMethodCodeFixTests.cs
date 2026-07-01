@@ -48,7 +48,9 @@ public sealed class MissingCustomizeEndpointMethodCodeFixTests
 				[Map{{method}}("/test")]
 				public static class GetUsersQuery
 				{
-					internal static void CustomizeEndpoint(RouteHandlerBuilder endpoint) => {|CS0201:endpoint|};
+					private static void CustomizeEndpoint(RouteHandlerBuilder endpoint)
+					{
+					}
 
 					public record Query;
 

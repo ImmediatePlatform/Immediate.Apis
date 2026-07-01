@@ -5,23 +5,23 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Immediate.Apis.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public sealed class MissingCustomizeEndpointMethodAnalyzer : DiagnosticAnalyzer
+public sealed class MissingCustomizeGroupMethodAnalyzer : DiagnosticAnalyzer
 {
-	public static readonly DiagnosticDescriptor MissingCustomizeEndpointMethod =
+	public static readonly DiagnosticDescriptor MissingCustomizeGroupMethod =
 		new(
-			id: DiagnosticIds.IAPI0006MissingCustomizeEndpointMethod,
-			title: "Missing `CustomizeEndpoint` method",
-			messageFormat: "Missing `CustomizeEndpoint` method in the class",
+			id: DiagnosticIds.IAPI0012MissingCustomizeGroupMethod,
+			title: "Missing `CustomizeGroup` method",
+			messageFormat: "Missing `CustomizeGroup` method in the class",
 			category: "ImmediateApis",
 			defaultSeverity: DiagnosticSeverity.Hidden,
 			isEnabledByDefault: true,
-			description: "A class with `MapMethod` attribute can have a `CustomizeEndpoint` method."
+			description: "A class with `RouteGroup` attribute can have a `CustomizeGroup` method."
 		);
 
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
 		ImmutableArray.Create(
 		[
-			MissingCustomizeEndpointMethod,
+			MissingCustomizeGroupMethod,
 		]);
 
 	public override void Initialize(AnalysisContext context)
@@ -45,7 +45,7 @@ public sealed class MissingCustomizeEndpointMethodAnalyzer : DiagnosticAnalyzer
 
 		if (!namedTypeSymbol
 				.GetAttributes()
-				.Any(x => x.AttributeClass.IsMapMethodAttribute))
+				.Any(x => x.AttributeClass.IsRouteGroupAttribute))
 		{
 			return;
 		}
@@ -55,7 +55,7 @@ public sealed class MissingCustomizeEndpointMethodAnalyzer : DiagnosticAnalyzer
 		if (namedTypeSymbol
 				.GetMembers()
 				.OfType<IMethodSymbol>()
-				.Any(ims => ims.Name is "CustomizeEndpoint"))
+				.Any(ims => ims.Name is "CustomizeGroup"))
 		{
 			return;
 		}
@@ -64,7 +64,7 @@ public sealed class MissingCustomizeEndpointMethodAnalyzer : DiagnosticAnalyzer
 
 		context.ReportDiagnostic(
 			Diagnostic.Create(
-				MissingCustomizeEndpointMethod,
+				MissingCustomizeGroupMethod,
 				namedTypeSymbol.Locations[0]
 			)
 		);

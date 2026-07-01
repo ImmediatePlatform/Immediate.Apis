@@ -5,24 +5,24 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Immediate.Apis.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public sealed class CustomizeEndpointUsageAnalyzer : DiagnosticAnalyzer
+public sealed class CustomizeGroupUsageAnalyzer : DiagnosticAnalyzer
 {
-	public static readonly DiagnosticDescriptor CustomizeEndpointInvalid =
+	public static readonly DiagnosticDescriptor CustomizeGroupInvalid =
 		new(
-			id: DiagnosticIds.IAPI0004CustomizeEndpointInvalid,
-			title: "`CustomizeEndpoint` requires a specific definition",
-			messageFormat: "`CustomizeEndpoint` must be `internal static void CustomizeEndpoint(RouteHandlerBuilder endpoint)`",
+			id: DiagnosticIds.IAPI0011CustomizeGroupInvalid,
+			title: "`CustomizeGroup` requires a specific definition",
+			messageFormat: "`CustomizeGroup` must be `private static void CustomizeEndpoint(RouteGroupBuilder group)`",
 			category: "ImmediateApis",
 			defaultSeverity: DiagnosticSeverity.Warning,
 			isEnabledByDefault: true,
-			description: "An invalid definition of `CustomizeEndpoint` will not be used in the registration.",
+			description: "An invalid definition of `CustomizeGroup` will not be used in the registration.",
 			customTags: [WellKnownDiagnosticTags.Unnecessary]
 		);
 
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
 		ImmutableArray.Create(
 		[
-			CustomizeEndpointInvalid,
+			CustomizeGroupInvalid,
 		]);
 
 	public override void Initialize(AnalysisContext context)
@@ -46,7 +46,7 @@ public sealed class CustomizeEndpointUsageAnalyzer : DiagnosticAnalyzer
 
 		if (!namedTypeSymbol
 				.GetAttributes()
-				.Any(x => x.AttributeClass.IsMapMethodAttribute))
+				.Any(x => x.AttributeClass.IsRouteGroupAttribute))
 		{
 			return;
 		}
@@ -56,18 +56,18 @@ public sealed class CustomizeEndpointUsageAnalyzer : DiagnosticAnalyzer
 		var methods = namedTypeSymbol
 			.GetMembers()
 			.OfType<IMethodSymbol>()
-			.Where(ims => ims.Name is "CustomizeEndpoint")
+			.Where(ims => ims.Name is "CustomizeGroup")
 			.ToList();
 
-		foreach (var customizeEndpointMethod in methods)
+		foreach (var customizeGroupMethod in methods)
 		{
 			if (methods.Count == 1
-				&& customizeEndpointMethod is
+				&& customizeGroupMethod is
 				{
-					DeclaredAccessibility: Accessibility.Internal or Accessibility.Private,
+					DeclaredAccessibility: Accessibility.Private,
 					IsStatic: true,
 					ReturnsVoid: true,
-					Parameters: [{ Type.IsIEndpointConventionBuilderOrRouteHandlerBuilder: true }],
+					Parameters: [{ Type.IsRouteGroupBuilder: true }],
 				})
 			{
 				return;
@@ -75,8 +75,8 @@ public sealed class CustomizeEndpointUsageAnalyzer : DiagnosticAnalyzer
 
 			context.ReportDiagnostic(
 				Diagnostic.Create(
-					CustomizeEndpointInvalid,
-					customizeEndpointMethod.Locations[0]
+					CustomizeGroupInvalid,
+					customizeGroupMethod.Locations[0]
 				)
 			);
 		}

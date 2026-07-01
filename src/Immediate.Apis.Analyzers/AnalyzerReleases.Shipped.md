@@ -35,6 +35,12 @@ IAPI0010 | ImmediateApis | Error | InvalidRouteGroupNameAnalyzer
 
 ## Release 6.0
 
+### New Rules
+Rule ID | Category | Severity | Notes
+--------|----------|----------|-------
+IAPI0011 | ImmediateApis | Warning | CustomizeGroupUsageAnalyzer
+IAPI0012 | ImmediateApis | Hidden | InvalidRouteGroupNameAnalyzer
+
 ### Removed Rules
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------

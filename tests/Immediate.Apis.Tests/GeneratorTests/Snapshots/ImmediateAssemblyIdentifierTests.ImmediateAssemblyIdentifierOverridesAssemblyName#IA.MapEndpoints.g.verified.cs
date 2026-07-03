@@ -15,7 +15,6 @@ public static partial class ApisServiceCollectionExtensions
 
 		global::Dummy.GetUsersQuery.MapEndpoint(group);
 
-
 		return group;
 	}
 }

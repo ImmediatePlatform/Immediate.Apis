@@ -14,8 +14,8 @@ public static partial class ApisServiceCollectionExtensions
 		var group = global::Microsoft.AspNetCore.Builder.EndpointRouteBuilderExtensions.MapGroup(app, prefix);
 
 		global::Dummy.GetUsersQuery.MapEndpoint(group);
-		global::Dummy.GetUserQuery.MapEndpoint(group);
 
+		global::Dummy.GetUserQuery.MapEndpoint(group);
 
 		return group;
 	}

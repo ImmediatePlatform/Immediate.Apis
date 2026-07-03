@@ -13,8 +13,6 @@ public static partial class ApisServiceCollectionExtensions
 	{
 		var group = global::Microsoft.AspNetCore.Builder.EndpointRouteBuilderExtensions.MapGroup(app, prefix);
 
-
-
 		return group;
 	}
 }

@@ -12,11 +12,8 @@ partial class Root
 	{
 		var group = global::Microsoft.AspNetCore.Builder.EndpointRouteBuilderExtensions.MapGroup(app, "api/root");
 
-
-
 		global::Dummy.Root.Mid.MapGroup(group);
 	}
-
 
 partial class Mid
 {
@@ -26,10 +23,8 @@ partial class Mid
 
 		CustomizeGroup(group);
 
-
 		global::Dummy.Root.Mid.Inner.MapGroup(group);
 	}
-
 
 partial class Inner
 {
@@ -37,13 +32,10 @@ partial class Inner
 	{
 		var group = global::Microsoft.AspNetCore.Builder.EndpointRouteBuilderExtensions.MapGroup(app, "inner");
 
-
 		global::Dummy.GetUsersQuery.MapEndpoint(group);
-
 	}
 
 	public const string GetUsersQuery = "api/root/mid/inner/test";
-
 }
 }
 }

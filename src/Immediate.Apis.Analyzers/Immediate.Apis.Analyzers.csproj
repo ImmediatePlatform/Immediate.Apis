@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFrameworks>netstandard2.0</TargetFrameworks>
+	<TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
 	<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 	<IsRoslynComponent>true</IsRoslynComponent>
   </PropertyGroup>
@@ -14,11 +14,5 @@
 	<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="All" />
 	<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
   </ItemGroup>
-
-  <PropertyGroup Label="MinVer">
-	<MinVerAutoIncrement>minor</MinVerAutoIncrement>
-	<MinVerDefaultPreReleaseIdentifiers>preview.0</MinVerDefaultPreReleaseIdentifiers>
-	<MinVerTagPrefix>v</MinVerTagPrefix>
-  </PropertyGroup>
 
 </Project>

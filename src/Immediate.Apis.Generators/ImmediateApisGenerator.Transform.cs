@@ -67,13 +67,13 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
-		var @namespace = symbol.ContainingNamespace.ToString().NullIf("<global namespace>");
+		var @namespace = symbol.ContainingNamespace.ToDisplayString().NullIf("<global namespace>");
 		var @class = GetClass(symbol);
 
 		token.ThrowIfCancellationRequested();
 
 		var className = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-		var classAsMethodName = symbol.ToString().Replace('.', '_');
+		var classAsMethodName = symbol.ToDisplayString().Replace('.', '_');
 		var parameterType = handleMethod.Parameters[0].Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
 		token.ThrowIfCancellationRequested();
@@ -127,7 +127,7 @@ public sealed partial class ImmediateApisGenerator
 		if (symbol.ContainingType is { } && symbol.ContainingType.GetAttributes().GetRouteGroupAttribute() is null)
 			return null;
 
-		var @namespace = symbol.ContainingNamespace.ToString().NullIf("<global namespace>");
+		var @namespace = symbol.ContainingNamespace.ToDisplayString().NullIf("<global namespace>");
 		var outerClasses = GetOuterClasses(symbol);
 		var @class = GetClass(symbol);
 		var customization = HasCustomizeGroupMethod(symbol);

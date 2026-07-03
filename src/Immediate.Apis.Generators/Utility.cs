@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Scriban;
@@ -14,6 +15,8 @@ internal static class Utility
 				$"Immediate.Apis.Generators.Templates.{name}.sbntxt"
 			);
 
+		Debug.Assert(stream is { });
+
 		using var reader = new StreamReader(stream);
 		return Template.Parse(reader.ReadToEnd());
 	}
@@ -29,6 +32,7 @@ internal static class Utility
 		Func<T, TKey> keyFactory,
 		Func<T, TValue> valueFactory
 	)
+		where TKey : notnull
 		where TValue : class, IEquatable<TValue>
 	{
 		return values
@@ -47,6 +51,7 @@ internal static class Utility
 		this IncrementalValuesProvider<T> values,
 		Func<T, TKey> keyFactory
 	)
+		where TKey : notnull
 		where T : class, IEquatable<T>
 	{
 		return values

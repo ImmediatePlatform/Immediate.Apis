@@ -107,8 +107,8 @@ file static class Extensions
 		}
 
 		return compilation.AssemblyName!
-			.Replace(".", string.Empty)
-			.Replace(" ", string.Empty)
+			.Replace(".", string.Empty, StringComparison.Ordinal)
+			.Replace(" ", string.Empty, StringComparison.Ordinal)
 			.Trim();
 	}
 }

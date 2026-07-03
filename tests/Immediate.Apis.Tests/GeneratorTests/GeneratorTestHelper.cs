@@ -11,11 +11,10 @@ public static class GeneratorTestHelper
 {
 	public static GeneratorDriverRunResult RunGenerator(
 		[StringSyntax("c#-test")] string source,
-		LanguageVersion languageVersion = LanguageVersion.CSharp13,
 		params ReadOnlySpan<string> skippedSteps
 	)
 	{
-		var options = CSharpParseOptions.Default.WithLanguageVersion(languageVersion);
+		var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest);
 
 		var syntaxTree = CSharpSyntaxTree.ParseText(
 			source,

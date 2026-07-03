@@ -18,7 +18,7 @@
 	<PackageTags>csharp-sourcegenerator;mediator;mediator-pattern;minimal-apis</PackageTags>
 
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
-	<RepositoryUrl>https://github.com/viceroypenguin/Immediate.Apis</RepositoryUrl>
+	<RepositoryUrl>https://github.com/ImmediatePlatform/Immediate.Apis</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,16 +30,8 @@
 	-->
   <ItemGroup>
 	<None Include="../../readme.md" Pack="true" PackagePath="/" />
-	<None Include="../Immediate.Apis.Analyzers/bin/$(Configuration)/netstandard2.0/Immediate.Apis.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/roslyn4.8/cs" Visible="true" />
-	<None Include="../Immediate.Apis.CodeFixes/bin/$(Configuration)/netstandard2.0/Immediate.Apis.CodeFixes.dll" Pack="true" PackagePath="analyzers/dotnet/roslyn4.8/cs" Visible="true" />
-	<None Include="../Immediate.Apis.Generators/bin/$(Configuration)/netstandard2.0/Immediate.Apis.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/roslyn4.8/cs" Visible="true" />
 
-	<TfmSpecificPackageFile
-	  Include="$(PkgScriban)/lib/netstandard2.0/Scriban.dll"
-	  Pack="true"
-	  PackagePath="analyzers/dotnet/roslyn4.8/cs"
-	  Condition=" '$(TargetFramework)' == 'net8.0' " />
-
+	<!-- IH.Shared -->
 	<TfmSpecificPackageFile
 	  Include="../Immediate.Apis.Shared/bin/$(Configuration)/$(TargetFramework)/Immediate.Apis.Shared.dll"
 	  Pack="true"
@@ -49,6 +41,47 @@
 	  Include="../Immediate.Apis.Shared/bin/$(Configuration)/$(TargetFramework)/Immediate.Apis.Shared.xml"
 	  Pack="true"
 	  PackagePath="lib/$(TargetFramework)" />
+  </ItemGroup>
+
+  <!-- roslyn 4.8 for net8/net9 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+	<TfmSpecificPackageFile
+	  Include="../Immediate.Apis.Analyzers/bin/$(Configuration)/netstandard2.0/Immediate.Apis.Analyzers.dll"
+	  Pack="true"
+	  PackagePath="analyzers/dotnet/roslyn4.8/cs" />
+
+	<TfmSpecificPackageFile
+	  Include="../Immediate.Apis.CodeFixes/bin/$(Configuration)/netstandard2.0/Immediate.Apis.CodeFixes.dll"
+	  Pack="true"
+	  PackagePath="analyzers/dotnet/roslyn4.8/cs" />
+
+	<TfmSpecificPackageFile
+	  Include="../Immediate.Apis.Generators/bin/$(Configuration)/netstandard2.0/Immediate.Apis.Generators.dll"
+	  Pack="true"
+	  PackagePath="analyzers/dotnet/roslyn4.8/cs" />
+  </ItemGroup>
+
+  <!-- roslyn 5.0 for net10/net11 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+	<TfmSpecificPackageFile
+	  Include="../Immediate.Apis.Analyzers/bin/$(Configuration)/net10.0/Immediate.Apis.Analyzers.dll"
+	  Pack="true"
+	  PackagePath="analyzers/dotnet/roslyn5.0/cs" />
+
+	<TfmSpecificPackageFile
+	  Include="../Immediate.Apis.CodeFixes/bin/$(Configuration)/net10.0/Immediate.Apis.CodeFixes.dll"
+	  Pack="true"
+	  PackagePath="analyzers/dotnet/roslyn5.0/cs" />
+
+	<TfmSpecificPackageFile
+	  Include="../Immediate.Apis.Generators/bin/$(Configuration)/net10.0/Immediate.Apis.Generators.dll"
+	  Pack="true"
+	  PackagePath="analyzers/dotnet/roslyn5.0/cs" />
+
+	<TfmSpecificPackageFile
+	  Include="$(PkgScriban)/lib/net8.0/Scriban.dll"
+	  Pack="true"
+	  PackagePath="analyzers/dotnet/roslyn5.0/cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -61,11 +94,5 @@
 	<ProjectReference Include="../Immediate.Apis.Generators/Immediate.Apis.Generators.csproj" ReferenceOutputAssembly="false" />
 	<ProjectReference Include="../Immediate.Apis.Shared/Immediate.Apis.Shared.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
-
-  <PropertyGroup Label="MinVer">
-	<MinVerAutoIncrement>minor</MinVerAutoIncrement>
-	<MinVerDefaultPreReleaseIdentifiers>preview.0</MinVerDefaultPreReleaseIdentifiers>
-	<MinVerTagPrefix>v</MinVerTagPrefix>
-  </PropertyGroup>
 
 </Project>

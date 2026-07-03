@@ -14,8 +14,8 @@ namespace Dummy
 		{
 			var endpoint = global::Microsoft.AspNetCore.Builder.EndpointRouteBuilderExtensions.MapMethods(
 				app,
-				"HEAD",
-				["/test"],
+				"/test",
+				["HEAD"],
 				async (
 					[global::Microsoft.AspNetCore.Http.AsParametersAttribute] global::Dummy.GetUsersQuery.Query parameters,
 					[global::Microsoft.AspNetCore.Mvc.FromServices] global::Dummy.GetUsersQuery.Handler handler,
@@ -31,9 +31,9 @@ namespace Dummy
 
 		public static global::System.Collections.Generic.IReadOnlyList<string> Routes { get; } =
 		[
-			"HEAD",
+			"/test",
 		];
 
-		public static string Route { get; } = "HEAD";
+		public static string Route { get; } = "/test";
 	}
 }

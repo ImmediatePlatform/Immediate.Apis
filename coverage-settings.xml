@@ -20,6 +20,12 @@
 			</Exclude>
 		</Attributes>
 
+		<Sources>
+			<Exclude>
+				<Source>.*/scriban/.*</Source>
+			</Exclude>
+		</Sources>
+
 		<EnableStaticManagedInstrumentation>True</EnableStaticManagedInstrumentation>
 		<EnableDynamicManagedInstrumentation>True</EnableDynamicManagedInstrumentation>
 

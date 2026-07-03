@@ -319,6 +319,8 @@ dotnet_diagnostic.MA0051.severity = none
 dotnet_diagnostic.MA0053.severity = warning
 dotnet_diagnostic.MA0190.severity = none                # MA0190: Use partial property instead of partial method for GeneratedRegex
 
+dotnet_diagnostic.RS1041.severity = none                # RS1041: Compiler extensions should be implemented in assemblies targeting netstandard2.0
+
 [src/Immediate.Apis.Shared/*.cs]
 
 # XML Documentation

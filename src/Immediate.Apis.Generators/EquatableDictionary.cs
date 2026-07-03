@@ -50,7 +50,7 @@ public readonly struct EquatableDictionary<TKey, TValue>(
 					)
 				);
 
-	public override bool Equals(object obj) =>
+	public override bool Equals(object? obj) =>
 		obj is EquatableDictionary<TKey, TValue> dict && Equals(dict);
 
 	public override int GetHashCode() => _hashCode;
@@ -61,12 +61,12 @@ public readonly struct EquatableDictionary<TKey, TValue>(
 	public static bool operator !=(EquatableDictionary<TKey, TValue> left, EquatableDictionary<TKey, TValue> right) =>
 		!(left == right);
 
-	public bool TryGetValue(TKey key, out TValue value)
+	public bool TryGetValue(TKey key, out TValue? value)
 	{
 		if (_dictionary is { })
 			return _dictionary.TryGetValue(key, out value);
 
-		value = default!;
+		value = default;
 		return false;
 	}
 

@@ -9,14 +9,14 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 {
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
-		var methods = context.SyntaxProvider
+		var endpoints = context.SyntaxProvider
 			.ForAttributeWithMetadataName(
 				"Immediate.Handlers.Shared.HandlerAttribute",
 				predicate: (node, _) => node is TypeDeclarationSyntax,
-				transform: TransformMethod
+				transform: TransformEndpoint
 			)
 			.WhereNotNull()
-			.WithTrackingName("Handlers");
+			.WithTrackingName("Endpoints");
 
 		var assemblyName = context.CompilationProvider
 			.Select((cp, _) => cp.GetAssemblyIdentifier())
@@ -24,28 +24,72 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 
 		var perMethodTemplate = Utility.GetTemplate("Route");
 		context.RegisterSourceOutput(
-			methods.Combine(assemblyName),
-			(spc, m) => RenderMethod(spc, m.Left!, m.Right, perMethodTemplate)
+			endpoints.Combine(assemblyName),
+			(spc, m) => RenderEndpoint(spc, m.Left, m.Right, perMethodTemplate)
 		);
 
-		var allGroups = methods
-			.Collect()
-			.SelectMany(
-				(g, _) => g
-					.GroupBy(
-						m => m.RouteGroupName,
-						(k, g) => new RouteGroup { Name = k, Methods = g.ToEquatableReadOnlyList() },
-						StringComparer.Ordinal
-					)
+		var routesByGroup = endpoints
+			.GroupBy(
+				m => ValueTuple.Create(m.RouteGroupClassFullName),
+				m => new RouteEndpoint { Name = m.Class.Name, ClassFullName = m.ClassFullName, Routes = m.Routes }
 			)
-			.Where(x => x.Name is null || RouteGroupUtility.IsValidRouteGroupName(x.Name))
-			.WithTrackingName("GroupedMethods");
+			.WithTrackingName("EndpointsDictionary");
 
-		var allMethodsTemplate = Utility.GetTemplate("Routes");
+		var routeGroupsByGroup = context.SyntaxProvider
+			.ForAttributeWithMetadataName(
+				"Immediate.Apis.Shared.RouteGroupAttribute",
+				predicate: (node, _) => node is TypeDeclarationSyntax,
+				transform: TransformRouteGroup
+			)
+			.WhereNotNull()
+			.GroupBy(rg => ValueTuple.Create(rg.RouteGroupClassFullName))
+			.WithTrackingName("RouteGroupsDictionary");
+
+		var mapEndpointsTemplate = Utility.GetTemplate("MapEndpoints");
 		context.RegisterSourceOutput(
-			allGroups.Combine(assemblyName),
-			(spc, m) => RenderRouteGroup(spc, m.Left, m.Right, allMethodsTemplate)
+			routesByGroup.Select((g, _) => g.GetValueOrDefault(ValueTuple.Create<string?>(item1: null)))
+				.Combine(routeGroupsByGroup.Select((g, _) => g.GetValueOrDefault(ValueTuple.Create<string?>(item1: null))))
+				.Combine(assemblyName),
+			(spc, m) => RenderMapEndpoints(spc, m.Left.Left, m.Left.Right, m.Right, mapEndpointsTemplate)
 		);
+
+		var routeGroups = routesByGroup.Combine(routeGroupsByGroup)
+			.SelectMany(BuildRouteGroups)
+			.WithTrackingName("RouteGroups");
+
+		var routeGroupTemplate = Utility.GetTemplate("RouteGroup");
+		context.RegisterSourceOutput(
+			routeGroups.Combine(assemblyName),
+			(spc, m) => RenderRouteGroup(spc, m.Left, m.Right, routeGroupTemplate)
+		);
+	}
+
+	private static IEnumerable<RouteGroup> BuildRouteGroups(
+		(
+			EquatableDictionary<ValueTuple<string?>, EquatableReadOnlyList<RouteEndpoint>> Left,
+			EquatableDictionary<ValueTuple<string?>, EquatableReadOnlyList<RouteGroupDefinition>> Right
+		) tuple,
+		CancellationToken token
+	) => BuildRouteGroups(tuple.Left, tuple.Right, classFullName: null, token);
+
+	private static IEnumerable<RouteGroup> BuildRouteGroups(
+		EquatableDictionary<ValueTuple<string?>, EquatableReadOnlyList<RouteEndpoint>> endpoints,
+		EquatableDictionary<ValueTuple<string?>, EquatableReadOnlyList<RouteGroupDefinition>> routeGroups,
+		string? classFullName,
+		CancellationToken token
+	)
+	{
+		foreach (var g in routeGroups.GetValueOrDefault(ValueTuple.Create(classFullName)).OrderBy(x => x.ClassFullName, StringComparer.Ordinal))
+		{
+			token.ThrowIfCancellationRequested();
+
+			yield return new()
+			{
+				Definition = g,
+				Endpoints = endpoints.GetValueOrDefault(ValueTuple.Create(g.ClassFullName)),
+				Groups = BuildRouteGroups(endpoints, routeGroups, g.ClassFullName, token).ToEquatableReadOnlyList(),
+			};
+		}
 	}
 }
 

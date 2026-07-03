@@ -25,6 +25,15 @@ public sealed class DuplicateEndpointAnalyzer : DiagnosticAnalyzer
 			EndpointHasBeenSpecifiedMultipleTimes,
 		]);
 
+	private sealed record EndpointKey
+	{
+		public required string Verb { get; init; }
+		public required string Route { get; init; }
+		public required string ClassName { get; init; }
+		public required AttributeData AttributeData { get; init; }
+		public required string? RouteGroup { get; init; }
+	}
+
 	public override void Initialize(AnalysisContext context)
 	{
 		ArgumentNullException.ThrowIfNull(context);
@@ -34,7 +43,7 @@ public sealed class DuplicateEndpointAnalyzer : DiagnosticAnalyzer
 
 		context.RegisterCompilationStartAction(context =>
 		{
-			var endpoints = new List<(string Verb, string Route, string ClassName, AttributeData AttributeData, string? RouteGroup)>();
+			var endpoints = new List<EndpointKey>();
 			var @lock = new Lock();
 
 			context.RegisterSymbolAction(
@@ -51,13 +60,16 @@ public sealed class DuplicateEndpointAnalyzer : DiagnosticAnalyzer
 						{
 							endpoints.AddRange(
 								routes
-									.Select(r => (
-										method.ToUpperInvariant(),
-										r,
-										context.Symbol.Name,
-										attribute,
-										attributes.GetRouteGroupAttribute()?.GetRouteGroup()
-									))
+									.Select(r => new EndpointKey
+									{
+										Verb = method.ToUpperInvariant(),
+										Route = r,
+										ClassName = context.Symbol.Name,
+										AttributeData = attribute,
+										RouteGroup = attributes.GetMapGroupAttribute() is { AttributeClass.TypeArguments: [{ } groupTypeSymbol] }
+											? groupTypeSymbol.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat)
+											: null,
+									})
 							);
 						}
 					}

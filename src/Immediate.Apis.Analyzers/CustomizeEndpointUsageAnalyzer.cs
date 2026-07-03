@@ -1,6 +1,5 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Immediate.Apis.Analyzers;
@@ -8,7 +7,7 @@ namespace Immediate.Apis.Analyzers;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class CustomizeEndpointUsageAnalyzer : DiagnosticAnalyzer
 {
-	public static readonly DiagnosticDescriptor MustBeValidDefinition =
+	public static readonly DiagnosticDescriptor CustomizeEndpointInvalid =
 		new(
 			id: DiagnosticIds.IAPI0004CustomizeEndpointInvalid,
 			title: "`CustomizeEndpoint` requires a specific definition",
@@ -16,13 +15,14 @@ public sealed class CustomizeEndpointUsageAnalyzer : DiagnosticAnalyzer
 			category: "ImmediateApis",
 			defaultSeverity: DiagnosticSeverity.Warning,
 			isEnabledByDefault: true,
-			description: "An invalid definition of `CustomizeEndpoint` will not be used in the registration."
+			description: "An invalid definition of `CustomizeEndpoint` will not be used in the registration.",
+			customTags: [WellKnownDiagnosticTags.Unnecessary]
 		);
 
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
 		ImmutableArray.Create(
 		[
-			MustBeValidDefinition,
+			CustomizeEndpointInvalid,
 		]);
 
 	public override void Initialize(AnalysisContext context)
@@ -53,38 +53,32 @@ public sealed class CustomizeEndpointUsageAnalyzer : DiagnosticAnalyzer
 
 		token.ThrowIfCancellationRequested();
 
-		if (namedTypeSymbol
+		var methods = namedTypeSymbol
 			.GetMembers()
 			.OfType<IMethodSymbol>()
 			.Where(ims => ims.Name is "CustomizeEndpoint")
-			.ToList() is not [{ } customizeEndpointMethod])
-		{
-			return;
-		}
+			.ToList();
 
-		if (customizeEndpointMethod is
+		foreach (var customizeEndpointMethod in methods)
+		{
+			if (methods.Count == 1
+				&& customizeEndpointMethod is
+				{
+					DeclaredAccessibility: Accessibility.Internal or Accessibility.Private,
+					IsStatic: true,
+					ReturnsVoid: true,
+					Parameters: [{ Type.IsIEndpointConventionBuilderOrRouteHandlerBuilder: true }],
+				})
 			{
-				DeclaredAccessibility: Accessibility.Internal,
-				IsStatic: true,
-				ReturnsVoid: true,
-				Parameters: [{ Type: { } paramType }],
+				return;
 			}
-			&& paramType.IsIEndpointConventionBuilderOrRouteHandlerBuilder)
-		{
-			return;
+
+			context.ReportDiagnostic(
+				Diagnostic.Create(
+					CustomizeEndpointInvalid,
+					customizeEndpointMethod.Locations[0]
+				)
+			);
 		}
-
-		var syntax = (MethodDeclarationSyntax)customizeEndpointMethod
-			.DeclaringSyntaxReferences[0]
-			.GetSyntax(token);
-
-		context.ReportDiagnostic(
-			Diagnostic.Create(
-				MustBeValidDefinition,
-				syntax
-					.Identifier
-					.GetLocation()
-			)
-		);
 	}
 }

@@ -65,7 +65,7 @@ public sealed class MissingCustomizeEndpointMethodCodeFixProvider : CodeFixProvi
 			.WithModifiers(
 				TokenList(
 				[
-					Token(SyntaxKind.InternalKeyword),
+					Token(SyntaxKind.PrivateKeyword),
 					Token(SyntaxKind.StaticKeyword),
 				]))
 			.WithParameterList(
@@ -75,11 +75,9 @@ public sealed class MissingCustomizeEndpointMethodCodeFixProvider : CodeFixProvi
 								Identifier("endpoint"))
 							.WithType(
 								IdentifierName("RouteHandlerBuilder")))))
-			.WithExpressionBody(
-				ArrowExpressionClause(
-					IdentifierName("endpoint")))
-			.WithSemicolonToken(
-				Token(SyntaxKind.SemicolonToken))
+			.WithBody(
+				Block()
+			)
 			.WithAdditionalAnnotations(Simplifier.AddImportsAnnotation, annotation)
 			.WithAdditionalAnnotations(Formatter.Annotation);
 

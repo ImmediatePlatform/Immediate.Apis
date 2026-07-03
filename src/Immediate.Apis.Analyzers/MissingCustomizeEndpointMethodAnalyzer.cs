@@ -1,6 +1,5 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Immediate.Apis.Analyzers;
@@ -63,16 +62,10 @@ public sealed class MissingCustomizeEndpointMethodAnalyzer : DiagnosticAnalyzer
 
 		token.ThrowIfCancellationRequested();
 
-		var syntax = (ClassDeclarationSyntax)namedTypeSymbol
-			.DeclaringSyntaxReferences[0]
-			.GetSyntax(token);
-
 		context.ReportDiagnostic(
 			Diagnostic.Create(
 				MissingCustomizeEndpointMethod,
-				syntax
-					.Identifier
-					.GetLocation()
+				namedTypeSymbol.Locations[0]
 			)
 		);
 	}

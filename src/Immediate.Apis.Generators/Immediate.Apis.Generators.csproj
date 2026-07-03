@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <PackageReference Include="AssemblyMetadata.Generators" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Bcl.HashCode" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
     <PackageReference Include="Scriban" PrivateAssets="all" GeneratePathProperty="true" />

@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -7,7 +6,7 @@ namespace Immediate.Apis.Generators;
 
 public sealed partial class ImmediateApisGenerator
 {
-	private static Method? TransformMethod(
+	private static Method? TransformEndpoint(
 		GeneratorAttributeSyntaxContext context,
 		CancellationToken token
 	)
@@ -28,6 +27,11 @@ public sealed partial class ImmediateApisGenerator
 		token.ThrowIfCancellationRequested();
 
 		if (symbol.GetValidHandleMethod() is not { } handleMethod)
+			return null;
+
+		token.ThrowIfCancellationRequested();
+
+		if (!TryGetMapGoup(symbol, out var routeGroupFullClassName))
 			return null;
 
 		token.ThrowIfCancellationRequested();
@@ -78,9 +82,8 @@ public sealed partial class ImmediateApisGenerator
 		var httpMethod = attribute.GetMapMethodMethod();
 		var parameterAttribute = GetParameterAttribute(handleMethod.Parameters[0], mapMethod);
 		var handleMethodAttributes = GetHandleMethodAttributes(handleMethod);
-		var useCustomization = HasCustomizationMethod(symbol);
+		var useCustomization = HasCustomizeEndpointMethod(symbol);
 		var useTransformMethod = HasTransformResultMethod(symbol, handleMethod.ReturnType);
-		var routeGroup = GetRouteGroupName(attributes);
 
 		token.ThrowIfCancellationRequested();
 
@@ -95,7 +98,6 @@ public sealed partial class ImmediateApisGenerator
 			Namespace = @namespace,
 			Class = @class,
 			ClassFullName = className,
-			ClassAsMethodName = classAsMethodName,
 			ParameterType = parameterType,
 
 			AllowAnonymous = allowAnonymous,
@@ -106,11 +108,61 @@ public sealed partial class ImmediateApisGenerator
 			UseTransformMethod = useTransformMethod,
 			HasReturn = handleMethod.ReturnType.IsValueTask1,
 
-			RouteGroupName = routeGroup,
+			RouteGroupClassFullName = routeGroupFullClassName,
 		};
 	}
 
-	private static bool HasCustomizationMethod(INamedTypeSymbol symbol)
+	private static RouteGroupDefinition? TransformRouteGroup(
+		GeneratorAttributeSyntaxContext context,
+		CancellationToken token
+	)
+	{
+		token.ThrowIfCancellationRequested();
+
+		if (context.Attributes[0].ConstructorArguments is not [{ Value: string route }])
+			return null;
+
+		var symbol = (INamedTypeSymbol)context.TargetSymbol;
+
+		if (symbol.ContainingType is { } && symbol.ContainingType.GetAttributes().GetRouteGroupAttribute() is null)
+			return null;
+
+		var @namespace = symbol.ContainingNamespace.ToString().NullIf("<global namespace>");
+		var outerClasses = GetOuterClasses(symbol);
+		var @class = GetClass(symbol);
+		var customization = HasCustomizeGroupMethod(symbol);
+
+		return new()
+		{
+			Namespace = @namespace,
+			OuterClasses = outerClasses,
+			Class = @class,
+			ClassFullName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+			RouteGroupClassFullName = symbol.ContainingType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+			Route = route,
+			UseCustomization = customization,
+		};
+	}
+
+	private static bool TryGetMapGoup(INamedTypeSymbol symbol, out string? routeGroupFullClassName)
+	{
+		if (symbol.GetAttributes().GetMapGroupAttribute() is not { AttributeClass.TypeArguments: [{ } groupTypeSymbol] })
+		{
+			routeGroupFullClassName = null;
+			return true;
+		}
+
+		if (groupTypeSymbol.GetAttributes().GetRouteGroupAttribute() is null)
+		{
+			routeGroupFullClassName = null;
+			return false;
+		}
+
+		routeGroupFullClassName = groupTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+		return true;
+	}
+
+	private static bool HasCustomizeEndpointMethod(INamedTypeSymbol symbol)
 		=> symbol
 			.GetMembers()
 			.OfType<IMethodSymbol>()
@@ -119,11 +171,25 @@ public sealed partial class ImmediateApisGenerator
 				{
 					Name: "CustomizeEndpoint",
 					IsStatic: true,
-					DeclaredAccessibility: Accessibility.Internal,
+					DeclaredAccessibility: Accessibility.Internal or Accessibility.Private,
 					ReturnsVoid: true,
-					Parameters: [{ Type: { } paramType }],
+					Parameters: [{ Type.IsIEndpointConventionBuilderOrRouteHandlerBuilder: true }],
 				}
-				&& paramType.IsIEndpointConventionBuilderOrRouteHandlerBuilder
+			);
+
+	private static bool HasCustomizeGroupMethod(INamedTypeSymbol symbol)
+		=> symbol
+			.GetMembers()
+			.OfType<IMethodSymbol>()
+			.Any(m =>
+				m is
+				{
+					Name: "CustomizeGroup",
+					IsStatic: true,
+					DeclaredAccessibility: Accessibility.Private,
+					ReturnsVoid: true,
+					Parameters: [{ Type.IsRouteGroupBuilder: true }],
+				}
 			);
 
 	private static bool HasTransformResultMethod(INamedTypeSymbol symbol, ITypeSymbol returnType)
@@ -160,7 +226,25 @@ public sealed partial class ImmediateApisGenerator
 						Parameters: [],
 					}
 				)
-		);
+				);
+	}
+
+	private static EquatableReadOnlyList<Class> GetOuterClasses(INamedTypeSymbol symbol)
+	{
+		List<Class>? outerClasses = null;
+		var outerSymbol = symbol.ContainingType;
+		while (outerSymbol is not null)
+		{
+			(outerClasses ??= []).Add(GetClass(outerSymbol));
+			outerSymbol = outerSymbol.ContainingType;
+		}
+
+		if (outerClasses is null)
+			return default;
+
+		outerClasses.Reverse();
+
+		return outerClasses.ToEquatableReadOnlyList();
 	}
 
 	private static Class GetClass(INamedTypeSymbol symbol) =>
@@ -182,7 +266,7 @@ public sealed partial class ImmediateApisGenerator
 		foreach (var a in parameterSymbol.GetAttributes())
 		{
 			if (a.AttributeClass.IsBindingParameterAttribute)
-				return a.AttributeClass.Name[..^9];
+				return a.AttributeClass.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 		}
 
 		if (parameterSymbol.Type is INamedTypeSymbol typeSymbol)
@@ -190,19 +274,19 @@ public sealed partial class ImmediateApisGenerator
 			foreach (var p in typeSymbol.GetMembers().OfType<IPropertySymbol>())
 			{
 				if (p.Type.IsIFormFile)
-					return "FromForm";
+					return "global::Microsoft.AspNetCore.Mvc.FromFormAttribute";
 			}
 
 			foreach (var p in typeSymbol.GetMembers().OfType<IPropertySymbol>())
 			{
 				if (p.GetAttributes().Any(a => a.AttributeClass.IsFromXxxAttribute))
-					return "AsParameters";
+					return "global::Microsoft.AspNetCore.Http.AsParametersAttribute";
 			}
 		}
 
 		return httpMethod is "MapPatch" or "MapPost" or "MapPut"
-			? "FromBody"
-			: "AsParameters";
+			? "global::Microsoft.AspNetCore.Mvc.FromBodyAttribute"
+			: "global::Microsoft.AspNetCore.Http.AsParametersAttribute";
 	}
 
 	private static EquatableReadOnlyList<string> GetHandleMethodAttributes(IMethodSymbol methodSymbol) =>
@@ -240,13 +324,4 @@ public sealed partial class ImmediateApisGenerator
 			TypedConstantKind.Array => $"[{string.Join(", ", tc.Values.Select(GetTypedConstantString))}]",
 			_ => tc.ToCSharpString(),
 		};
-
-	private static string? GetRouteGroupName(ImmutableArray<AttributeData> attributes)
-	{
-		return attributes.GetRouteGroupAttribute() switch
-		{
-			{ } attribute => attribute.GetRouteGroup(),
-			_ => null,
-		};
-	}
 }

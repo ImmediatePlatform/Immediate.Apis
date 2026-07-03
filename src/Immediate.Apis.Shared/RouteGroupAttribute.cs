@@ -1,14 +1,15 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Immediate.Apis.Shared;
 
 /// <summary>
-///		Applied to a class to indicate that a minimal APIs route group registration should be generated
+///		Defines a group of endpoints, which may optionally be further customized.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
-public sealed class RouteGroupAttribute(string name) : Attribute
+public sealed class RouteGroupAttribute([StringSyntax("route")] string route) : Attribute
 {
-
 	/// <summary>
-	///		The name of the route group. This will be used in the generated registration method name.
+	///		The route the group will use as a prefix for all inherited endpoints.
 	/// </summary>
-	public string Name { get; } = name;
+	public string Route { get; } = route;
 }

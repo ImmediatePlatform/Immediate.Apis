@@ -23,6 +23,7 @@
 	<!--https://github.com/meziantou/Meziantou.Polyfill?tab=readme-ov-file#supported-polyfills-->
 	<Polyfill></Polyfill>
 	<Polyfill>$(Polyfill)|T:System.Index</Polyfill>
+	<Polyfill>$(Polyfill)|T:System.HashCode</Polyfill>
 	<Polyfill>$(Polyfill)|T:System.Range</Polyfill>
 	<Polyfill>$(Polyfill)|T:System.Diagnostics.CodeAnalysis</Polyfill>
 	<Polyfill>$(Polyfill)|T:System.Runtime.CompilerServices.CallerArgumentExpressionAttribute</Polyfill>

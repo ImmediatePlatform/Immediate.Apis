@@ -7,7 +7,7 @@
 namespace {{ method.namespace }}
 {
 {{ end }}
-	/// <remarks><see cref="{{ method.parameter_type }}" /> registered using <c>[<see cref="{{ method.parameter_attribute }}" />]</c></remarks>
+	/// <remarks><see cref="{{ method.parameter_type_doc }}" /> registered using <c>[<see cref="{{ method.parameter_attribute }}" />]</c></remarks>
 	partial {{ method.class.type }} {{ method.class.name }}
 	{
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Immediate.Apis", "{{ version }}")]

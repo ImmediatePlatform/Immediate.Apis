@@ -74,7 +74,8 @@ public sealed partial class ImmediateApisGenerator
 
 		var className = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 		var classAsMethodName = symbol.ToDisplayString().Replace('.', '_');
-		var parameterType = handleMethod.Parameters[0].Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+		var parameterType = handleMethod.Parameters[0].Type;
 
 		token.ThrowIfCancellationRequested();
 
@@ -98,7 +99,9 @@ public sealed partial class ImmediateApisGenerator
 			Namespace = @namespace,
 			Class = @class,
 			ClassFullName = className,
-			ParameterType = parameterType,
+
+			ParameterType = parameterType.ToDisplayString(DisplayNameFormatters.FullyQualifiedWithNullableFormat),
+			ParameterTypeDoc = parameterType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
 
 			AllowAnonymous = allowAnonymous,
 			Authorize = authorize,

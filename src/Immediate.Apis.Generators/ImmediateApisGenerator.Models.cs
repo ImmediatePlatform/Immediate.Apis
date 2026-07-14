@@ -13,7 +13,9 @@ public sealed partial class ImmediateApisGenerator
 		public required string? Namespace { get; init; }
 		public required Class Class { get; init; }
 		public required string ClassFullName { get; init; }
+
 		public required string ParameterType { get; init; }
+		public required string ParameterTypeDoc { get; init; }
 
 		public required bool AllowAnonymous { get; init; }
 		public required bool Authorize { get; init; }

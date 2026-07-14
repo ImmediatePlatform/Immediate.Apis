@@ -1,7 +1,2 @@
-# Auto detect text files and perform LF normalization
+*.verified.cs text eol=lf working-tree-encoding=UTF-8
 * text=auto
-
-*.cs     diff=csharp
-*.html   diff=html
-*.sln    merge=union
-*.csproj merge=union

@@ -168,12 +168,22 @@ public static partial class GetUsersQuery
 
 #### Group endpoints into a common route group
 
-You can register your endpoints within a RouteGroupBuilder (`app.MapGroup(...)`) by adding the `RouteGroup` attribute to your handler:
+You can register your endpoints within a routee group by adding the `MapGroup` attribute to your handler. Additional
+customization of the group can be done in the `CustomizeGroup` method.
 
 ```cs
+[RouteGroup("api/users")]
+public sealed partial class Root
+{
+	private static void CustomizeGroup(RouteGroupBuilder group)
+	{
+		// additional configuration of `group`
+	}
+}
+
 [Handler]
 [MapGet("/")]
-[RouteGroup("UserManagement")]
+[MapGroup<Root>]
 public static partial class GetUsersQuery
 {
     internal static Results<Ok<IEnumerable<User>>, NotFound> TransformResult(IEnumerable<User> result)
@@ -202,3 +212,33 @@ app.MapApplicationUserManagementEndpoints("/users")
 ```
 
 Endpoints decorated with this attribute will no longer be mapped by the `MapApplicationEndpoints()` method.
+
+#### `Tags`
+
+Assigns string tags to the registration. When `MapXxxEndpoints` is called with tag arguments, only registrations that share at
+least one tag (or registrations with no tags) are included. Tags can be provided on `[MapXxx()]` attribute or on the `[RouteGroup]`
+attribute.
+
+```csharp
+[Handler]
+[MapGet("/", Tags = ["Users"])]
+[RouteGroup("UserManagement")]
+public static partial class GetUsersQuery
+{
+    internal static Results<Ok<IEnumerable<User>>, NotFound> TransformResult(IEnumerable<User> result)
+    {
+        return TypedResults.Ok(result);
+    }
+
+    public record Query;
+
+    private static ValueTask<IEnumerable<User>> HandleAsync(
+        Query _,
+        UsersService usersService,
+        CancellationToken token
+    )
+    {
+        return usersService.GetUsers();
+    }
+}
+```

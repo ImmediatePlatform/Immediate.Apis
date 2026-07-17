@@ -8,7 +8,6 @@ public sealed partial class ImmediateApisGenerator
 	private static void RenderEndpoint(
 		SourceProductionContext context,
 		Method method,
-		string assemblyName,
 		Template template
 	)
 	{
@@ -17,7 +16,6 @@ public sealed partial class ImmediateApisGenerator
 
 		var source = template.Render(new
 		{
-			Assembly = assemblyName,
 			Method = method,
 			Version = ThisAssembly.InformationalVersion,
 		});
@@ -31,18 +29,33 @@ public sealed partial class ImmediateApisGenerator
 		SourceProductionContext context,
 		EquatableReadOnlyList<RouteEndpoint> endpoints,
 		EquatableReadOnlyList<RouteGroupDefinition> groups,
-		string assemblyName,
+		AssemblyDefaults assemblyDefaults,
 		Template template
 	)
 	{
 		var token = context.CancellationToken;
 		token.ThrowIfCancellationRequested();
 
+		var endpointLookup = endpoints.ToLookup(e => e.Tags, StringComparer.Ordinal);
+		var groupLookup = groups.ToLookup(e => e.Tags, StringComparer.Ordinal);
+
+		var tags = endpointLookup.Select(l => l.Key)
+			.Union(groupLookup.Select(l => l.Key), StringComparer.Ordinal)
+			.OrderBy(l => l, StringComparer.Ordinal)
+			.Select(k => new
+			{
+				Tag = k,
+				Endpoints = endpointLookup[k].ToEquatableReadOnlyList(),
+				Groups = groupLookup[k].ToEquatableReadOnlyList(),
+			})
+			.ToEquatableReadOnlyList();
+
 		var source = template.Render(new
 		{
-			Assembly = assemblyName,
-			Endpoints = endpoints,
-			Groups = groups,
+			assemblyDefaults.AssemblyName,
+			assemblyDefaults.LanguageVersion,
+
+			Tags = tags,
 			Version = ThisAssembly.InformationalVersion,
 		});
 
@@ -53,7 +66,6 @@ public sealed partial class ImmediateApisGenerator
 	private static void RenderRouteGroup(
 		SourceProductionContext context,
 		RouteGroup group,
-		string assemblyName,
 		Template template
 	)
 	{
@@ -62,7 +74,6 @@ public sealed partial class ImmediateApisGenerator
 
 		var source = template.Render(new
 		{
-			Assembly = assemblyName,
 			Root = group,
 			Version = ThisAssembly.InformationalVersion,
 		});

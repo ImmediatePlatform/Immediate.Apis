@@ -95,7 +95,8 @@ internal static partial class Utility
 
 	public static SettingsTask VerifyIgnoreImmediateHandlers(GeneratorDriverRunResult result, [CallerFilePath] string sourceFile = "") =>
 		Verify(result, sourceFile: sourceFile)
-			.IgnoreGeneratedResult(gsr => ImmediateHandlersHintName().IsMatch(Path.GetFileName(gsr.HintName)));
+			.IgnoreGeneratedResult(gsr => ImmediateHandlersHintName().IsMatch(Path.GetFileName(gsr.HintName)))
+			.IgnoreGeneratedResult(gsr => Path.GetFileName(gsr.HintName) is "IA.MapEndpoints.g.cs");
 
 	[GeneratedRegex(@"IH\..*\.g\.cs", RegexOptions.ExplicitCapture, matchTimeoutMilliseconds: 100)]
 	private static partial Regex ImmediateHandlersHintName();

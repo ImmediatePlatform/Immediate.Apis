@@ -85,6 +85,7 @@ public sealed partial class ImmediateApisGenerator
 		var handleMethodAttributes = GetHandleMethodAttributes(handleMethod);
 		var useCustomization = HasCustomizeEndpointMethod(symbol);
 		var useTransformMethod = HasTransformResultMethod(symbol, handleMethod.ReturnType);
+		var tags = attribute.NamedArguments.GetStringArray("Tags");
 
 		token.ThrowIfCancellationRequested();
 
@@ -111,6 +112,8 @@ public sealed partial class ImmediateApisGenerator
 			UseTransformMethod = useTransformMethod,
 			HasReturn = handleMethod.ReturnType.IsValueTask1,
 
+			Tags = tags,
+
 			RouteGroupClassFullName = routeGroupFullClassName,
 		};
 	}
@@ -134,6 +137,7 @@ public sealed partial class ImmediateApisGenerator
 		var outerClasses = GetOuterClasses(symbol);
 		var @class = GetClass(symbol);
 		var customization = HasCustomizeGroupMethod(symbol);
+		var tags = context.Attributes[0].NamedArguments.GetStringArray("Tags");
 
 		return new()
 		{
@@ -144,6 +148,7 @@ public sealed partial class ImmediateApisGenerator
 			RouteGroupClassFullName = symbol.ContainingType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
 			Route = route,
 			UseCustomization = customization,
+			Tags = tags,
 		};
 	}
 

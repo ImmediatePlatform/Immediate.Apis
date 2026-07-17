@@ -18,20 +18,24 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 			.WhereNotNull()
 			.WithTrackingName("Endpoints");
 
-		var assemblyName = context.CompilationProvider
-			.Select((cp, _) => cp.GetAssemblyIdentifier())
+		var assemblyDefaults = context.CompilationProvider
+			.Select((cp, _) => new AssemblyDefaults
+			{
+				AssemblyName = cp.GetAssemblyIdentifier(),
+				LanguageVersion = (cp.SyntaxTrees.FirstOrDefault()?.Options as CSharpParseOptions)?.LanguageVersion ?? LanguageVersion.LatestMajor,
+			})
 			.WithTrackingName("AssemblyName");
 
 		var perMethodTemplate = Utility.GetTemplate("Route");
 		context.RegisterSourceOutput(
-			endpoints.Combine(assemblyName),
-			(spc, m) => RenderEndpoint(spc, m.Left, m.Right, perMethodTemplate)
+			endpoints,
+			(spc, m) => RenderEndpoint(spc, m, perMethodTemplate)
 		);
 
 		var routesByGroup = endpoints
 			.GroupBy(
 				m => ValueTuple.Create(m.RouteGroupClassFullName),
-				m => new RouteEndpoint { Name = m.Class.Name, ClassFullName = m.ClassFullName, Routes = m.Routes }
+				m => new RouteEndpoint { Name = m.Class.Name, ClassFullName = m.ClassFullName, Tags = m.Tags, Routes = m.Routes }
 			)
 			.WithTrackingName("EndpointsDictionary");
 
@@ -49,7 +53,7 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 		context.RegisterSourceOutput(
 			routesByGroup.Select((g, _) => g.GetValueOrDefault(ValueTuple.Create<string?>(item1: null)))
 				.Combine(routeGroupsByGroup.Select((g, _) => g.GetValueOrDefault(ValueTuple.Create<string?>(item1: null))))
-				.Combine(assemblyName),
+				.Combine(assemblyDefaults),
 			(spc, m) => RenderMapEndpoints(spc, m.Left.Left, m.Left.Right, m.Right, mapEndpointsTemplate)
 		);
 
@@ -59,8 +63,8 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 
 		var routeGroupTemplate = Utility.GetTemplate("RouteGroup");
 		context.RegisterSourceOutput(
-			routeGroups.Combine(assemblyName),
-			(spc, m) => RenderRouteGroup(spc, m.Left, m.Right, routeGroupTemplate)
+			routeGroups,
+			(spc, rg) => RenderRouteGroup(spc, rg, routeGroupTemplate)
 		);
 	}
 
@@ -86,10 +90,32 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 			yield return new()
 			{
 				Definition = g,
-				Endpoints = endpoints.GetValueOrDefault(ValueTuple.Create(g.ClassFullName)),
-				Groups = BuildRouteGroups(endpoints, routeGroups, g.ClassFullName, token).ToEquatableReadOnlyList(),
+				Tags = BuildTags(
+					endpoints.GetValueOrDefault(ValueTuple.Create(g.ClassFullName)),
+					[.. BuildRouteGroups(endpoints, routeGroups, g.ClassFullName, token)]
+				),
 			};
 		}
+	}
+
+	private static EquatableReadOnlyList<RouteTag> BuildTags(
+		IReadOnlyList<RouteEndpoint> endpoints,
+		IReadOnlyList<RouteGroup> routeGroups
+	)
+	{
+		var endpointLookup = endpoints.ToLookup(e => e.Tags, StringComparer.Ordinal);
+		var groupLookup = routeGroups.ToLookup(e => e.Definition.Tags, StringComparer.Ordinal);
+
+		return endpointLookup.Select(l => l.Key)
+			.Union(groupLookup.Select(l => l.Key), StringComparer.Ordinal)
+			.OrderBy(l => l, StringComparer.Ordinal)
+			.Select(k => new RouteTag
+			{
+				Tag = k,
+				Endpoints = endpointLookup[k].ToEquatableReadOnlyList(),
+				Groups = groupLookup[k].ToEquatableReadOnlyList(),
+			})
+			.ToEquatableReadOnlyList();
 	}
 }
 
@@ -109,6 +135,7 @@ file static class Extensions
 		return compilation.AssemblyName!
 			.Replace(".", string.Empty, StringComparison.Ordinal)
 			.Replace(" ", string.Empty, StringComparison.Ordinal)
+			.Replace("-", string.Empty, StringComparison.Ordinal)
 			.Trim();
 	}
 }

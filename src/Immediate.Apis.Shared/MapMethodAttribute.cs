@@ -56,4 +56,9 @@ public class MapMethodAttribute : Attribute
 	///		The HTTP method that the handler should be registered with
 	/// </summary>
 	public string Method { get; }
+
+	/// <summary>
+	///		An optional list of tags which can be used to filter the generated endpoint to be registered at runtime.
+	/// </summary>
+	public string[]? Tags { get; init; }
 }

@@ -1,7 +1,15 @@
+using Microsoft.CodeAnalysis.CSharp;
+
 namespace Immediate.Apis.Generators;
 
 public sealed partial class ImmediateApisGenerator
 {
+	private sealed record AssemblyDefaults
+	{
+		public required string AssemblyName { get; init; }
+		public required LanguageVersion LanguageVersion { get; init; }
+	}
+
 	private sealed record Method
 	{
 		public required string MapMethod { get; init; }
@@ -25,6 +33,8 @@ public sealed partial class ImmediateApisGenerator
 		public required bool UseTransformMethod { get; init; }
 		public required bool HasReturn { get; init; }
 
+		public required string? Tags { get; init; }
+
 		public required string? RouteGroupClassFullName { get; init; }
 	}
 
@@ -45,18 +55,27 @@ public sealed partial class ImmediateApisGenerator
 
 		public required string Route { get; init; }
 		public required bool UseCustomization { get; init; }
+
+		public required string? Tags { get; init; }
 	}
 
 	public sealed record RouteEndpoint
 	{
 		public required string Name { get; init; }
 		public required string ClassFullName { get; init; }
+		public required string? Tags { get; init; }
 		public required EquatableReadOnlyList<string> Routes { get; init; }
 	}
 
 	public sealed record RouteGroup
 	{
 		public required RouteGroupDefinition Definition { get; init; }
+		public required EquatableReadOnlyList<RouteTag> Tags { get; init; }
+	}
+
+	public sealed record RouteTag
+	{
+		public required string? Tag { get; init; }
 		public required EquatableReadOnlyList<RouteEndpoint> Endpoints { get; init; }
 		public required EquatableReadOnlyList<RouteGroup> Groups { get; init; }
 	}

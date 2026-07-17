@@ -14,36 +14,70 @@ partial {{ c.type }} {{ c.name }}
 {{~ func route_group(group, prefix) ~}}
 partial {{ group.definition.class.type }} {{ group.definition.class.name }}
 {
-	[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Immediate.Handlers", "{{ version }}")]
-	internal static void MapGroup(global::Microsoft.AspNetCore.Routing.IEndpointRouteBuilder app)
+	[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Immediate.Apis", "{{ version }}")]
+	internal static void MapGroup(global::Microsoft.AspNetCore.Routing.IEndpointRouteBuilder app, global::System.ReadOnlySpan<string> tags)
 	{
 		var group = global::Microsoft.AspNetCore.Builder.EndpointRouteBuilderExtensions.MapGroup(app, "{{ group.definition.route }}");
-		{{~ if group.definition.use_customization ~}}
 
+		{{~ if group.definition.use_customization ~}}
 		CustomizeGroup(group);
+
 		{{~ end ~}}
-		{{~ for e in group.endpoints ~}}
+		{{~ for g in group.tags ~}}
+		{{~ if g.tag != null ~}}
+		if (tags is [] || Intersects(tags, [{{ g.tag }}]))
+		{
+		{{~ end ~}}
+		{{~ for e in g.endpoints ~}}
 
 		{{ e.class_full_name }}.MapEndpoint(group);
 		{{~ end ~}}
-		{{~ for g in group.groups ~}}
+		{{~ for rg in g.groups ~}}
 
-		{{ g.definition.class_full_name }}.MapGroup(group);
+		{{ rg.definition.class_full_name }}.MapGroup(group, tags);
+		{{~ end ~}}
+		{{~ if g.tag != null ~}}
+		}
+		{{~ end ~}}
+
 		{{~ end ~}}
 	}
-	{{~ for e in group.endpoints ~}}
+	{{~ for g in group.tags ~}}
+	{{~ for e in g.endpoints ~}}
 
 	{{~ if e.routes.count == 1 ~}}
 	public const string {{ e.name }} = "{{ prefix }}/{{ e.routes[0] }}";
 	{{~ end ~}}
 	{{~ end ~}}
-	{{~ for g in group.groups ~}}
+	{{~ for g in g.groups ~}}
 
 	{{~ route_group(g, prefix + "/" + g.definition.route) ~}}
+	{{~ end ~}}
 	{{~ end ~}}
 }
 {{~ end ~}}
 {{~ route_group(root, root.definition.route) ~}}
+
+partial {{ root.definition.class.type }} {{ root.definition.class.name }}
+{
+	// old-fashioned inner-loop; should be fine since neither tags list will ever be large
+	private static bool Intersects(
+		global::System.ReadOnlySpan<string> first,
+		global::System.ReadOnlySpan<string> second
+	)
+	{
+		foreach (var f in first)
+		{
+			foreach (var s in second)
+			{
+				if (string.Equals(f, s, global::System.StringComparison.Ordinal))
+					return true;
+			}
+		}
+
+		return false;
+	}
+}
 {{~ for c in root.definition.outer_classes ~}}
 }
 {{~ end ~}}

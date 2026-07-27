@@ -11,7 +11,6 @@ internal static class DiagnosticIds
 	public const string IAPI0007MissingTransformResultMethod = "IAPI0007";
 	public const string IAPI0008HandlerShouldNotDependOnEndpoint = "IAPI0008";
 	public const string IAPI0009EndpointHasBeenSpecifiedMultipleTimes = "IAPI0009";
-	public const string IAPI0010InvalidRouteGroupName = "IAPI0010";
 	public const string IAPI0011CustomizeGroupInvalid = "IAPI0011";
 	public const string IAPI0012MissingCustomizeGroupMethod = "IAPI0012";
 	public const string IAPI0013InvalidMapGroupTarget = "IAPI0013";

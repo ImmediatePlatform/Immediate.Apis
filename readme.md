@@ -54,7 +54,7 @@ However, this name can be overridden using `[assembly: ImmediateAssemblyIdentifi
 ### Customizing the endpoints
 #### AsParameters
 
-By default on POST and PUT requests Immediate.Apis will assume that your request class should be treated as a `[FromBody]`. Sometimes, however, this is not desired. For example imagine a PUT request that sits at a route `/api/todos/{id}` and updates a TODO with a given ID. We would want to get the `id` from the route and the properties to update from the body. To do so, we need to create the following request command class:
+By default on POST, PUT, and PATCH requests Immediate.Apis will assume that your request class should be treated as a `[FromBody]`. Sometimes, however, this is not desired. For example imagine a PUT request that sits at a route `/api/todos/{id}` and updates a TODO with a given ID. We would want to get the `id` from the route and the properties to update from the body. To do so, we need to create the following request command class:
 
 ```cs
 public sealed record Command

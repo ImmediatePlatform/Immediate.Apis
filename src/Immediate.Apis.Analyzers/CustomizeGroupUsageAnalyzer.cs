@@ -11,7 +11,7 @@ public sealed class CustomizeGroupUsageAnalyzer : DiagnosticAnalyzer
 		new(
 			id: DiagnosticIds.IAPI0011CustomizeGroupInvalid,
 			title: "`CustomizeGroup` requires a specific definition",
-			messageFormat: "`CustomizeGroup` must be `private static void CustomizeEndpoint(RouteGroupBuilder group)`",
+			messageFormat: "`CustomizeGroup` must be `private static void CustomizeGroup(RouteGroupBuilder group)`",
 			category: "ImmediateApis",
 			defaultSeverity: DiagnosticSeverity.Warning,
 			isEnabledByDefault: true,

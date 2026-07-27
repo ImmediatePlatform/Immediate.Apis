@@ -76,23 +76,6 @@ internal static partial class Utility
 			"Delete",
 		];
 
-	public static TheoryData<string> ValidRouteGroupNames =>
-		[
-			"_TestGroup",
-			"Test_Group",
-			"Test123Group",
-			"123TestGroup",
-		];
-
-	public static TheoryData<string> InvalidRouteGroupNames =>
-		[
-			"",
-			"Test.Group",
-			"Test Group",
-			"Test@Group",
-			"Test#Group",
-		];
-
 	public static SettingsTask VerifyIgnoreImmediateHandlers(GeneratorDriverRunResult result, [CallerFilePath] string sourceFile = "") =>
 		Verify(result, sourceFile: sourceFile)
 			.IgnoreGeneratedResult(gsr => ImmediateHandlersHintName().IsMatch(Path.GetFileName(gsr.HintName)))

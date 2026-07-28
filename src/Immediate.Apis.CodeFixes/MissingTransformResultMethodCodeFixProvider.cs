@@ -69,16 +69,25 @@ public sealed class MissingTransformResultMethodCodeFixProvider : CodeFixProvide
 			return document;
 		}
 
-		if (handleMethodSyntax.ReturnType is not GenericNameSyntax
+		var (valid, returnType) = handleMethodSyntax.ReturnType switch
+		{
+			GenericNameSyntax
 			{
-				TypeArgumentList.Arguments: [{ } returnType],
-			})
+				TypeArgumentList.Arguments: [{ } rt],
+			} => (true, rt),
+
+			IdentifierNameSyntax => (true, null),
+
+			_ => (false, null),
+		};
+
+		if (!valid)
 		{
 			return document;
 		}
 
 		var transformResultMethodSyntax = MethodDeclaration(
-				returnType,
+				returnType ?? ParseTypeName("object"),
 				Identifier("TransformResult"))
 			.WithModifiers(
 				TokenList(
@@ -88,15 +97,33 @@ public sealed class MissingTransformResultMethodCodeFixProvider : CodeFixProvide
 				]))
 			.WithParameterList(
 				ParameterList(
-					SingletonSeparatedList(
-						Parameter(
-								Identifier("result"))
-							.WithType(returnType))))
+					returnType switch
+					{
+						{ } =>
+							SingletonSeparatedList(
+								Parameter(
+									Identifier("result")
+								)
+								.WithType(returnType)
+							),
+
+						_ => [],
+					}
+				)
+			)
 			.WithBody(
 				Block(
 					SingletonList<StatementSyntax>(
 						ReturnStatement(
-							IdentifierName("result")))))
+							returnType switch
+							{
+								{ } => IdentifierName("result"),
+								_ => ParseExpression("new()"),
+							}
+						)
+					)
+				)
+			)
 			.WithAdditionalAnnotations(Formatter.Annotation);
 
 		// Manually add trailing trivia to ensure proper spacing

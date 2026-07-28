@@ -234,7 +234,7 @@ public sealed partial class ImmediateApisGenerator
 						Parameters: [],
 					}
 				)
-				);
+		);
 	}
 
 	private static EquatableReadOnlyList<Class> GetOuterClasses(INamedTypeSymbol symbol)

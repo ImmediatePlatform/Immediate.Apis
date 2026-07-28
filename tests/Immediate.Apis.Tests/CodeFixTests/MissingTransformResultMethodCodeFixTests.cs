@@ -130,4 +130,64 @@ public sealed class MissingTransformResultMethodCodeFixTests
 				"""
 			).RunAsync(TestContext.Current.CancellationToken);
 	}
+
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	public async Task ValidDefinitionHandleAsyncWithNoReturnType_ShouldAddTransformResultMethod(string method)
+	{
+		await CodeFixTestHelper
+			.CreateCodeFixTest<MissingTransformResultMethodAnalyzer, MissingTransformResultMethodCodeFixProvider>(
+				$$"""
+				using System.Threading;
+				using System.Threading.Tasks;
+				using Immediate.Apis.Shared;
+				using Immediate.Handlers.Shared;
+				using System.Collections.Generic;
+
+				namespace Dummy;
+
+				[Handler]
+				[Map{{method}}("/test")]
+				public static class {|IAPI0007:GetUsersQuery|}
+				{
+					public record Query;
+					public record Response;
+				
+					private static async ValueTask HandleAsync(
+						Query _,
+						CancellationToken token)
+					{
+					}
+				}
+				""",
+				$$"""
+				using System.Threading;
+				using System.Threading.Tasks;
+				using Immediate.Apis.Shared;
+				using Immediate.Handlers.Shared;
+				using System.Collections.Generic;
+
+				namespace Dummy;
+
+				[Handler]
+				[Map{{method}}("/test")]
+				public static class GetUsersQuery
+				{
+					internal static object TransformResult()
+					{
+						return new();
+					}
+
+					public record Query;
+					public record Response;
+				
+					private static async ValueTask HandleAsync(
+						Query _,
+						CancellationToken token)
+					{
+					}
+				}
+				"""
+			).RunAsync(TestContext.Current.CancellationToken);
+	}
 }

@@ -7,10 +7,6 @@
 namespace {{ root.definition.namespace }};
 
 {{~ end ~}}
-{{~ for c in root.definition.outer_classes ~}}
-partial {{ c.type }} {{ c.name }}
-{
-{{~ end ~}}
 {{~ func route_group(group, prefix) ~}}
 partial {{ group.definition.class.type }} {{ group.definition.class.name }}
 {
@@ -78,6 +74,3 @@ partial {{ root.definition.class.type }} {{ root.definition.class.name }}
 		return false;
 	}
 }
-{{~ for c in root.definition.outer_classes ~}}
-}
-{{~ end ~}}

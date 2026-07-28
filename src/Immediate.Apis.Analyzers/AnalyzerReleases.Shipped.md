@@ -46,3 +46,10 @@ IAPI0013 | ImmediateApis | Error | InvalidMapGroupAnalyzer
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
 IAPI0010 | ImmediateApis | Error | InvalidRouteGroupNameAnalyzer
+
+## Release 6.3
+
+### New Rules
+Rule ID | Category | Severity | Notes
+--------|----------|----------|-------
+IAPI0014 | ImmediateApis | Error | RouteGroupClassAnalyzer

@@ -47,7 +47,6 @@ public sealed partial class ImmediateApisGenerator
 	public sealed record RouteGroupDefinition
 	{
 		public required string? Namespace { get; init; }
-		public required EquatableReadOnlyList<Class> OuterClasses { get; init; }
 		public required Class Class { get; init; }
 		public required string? ClassFullName { get; init; }
 

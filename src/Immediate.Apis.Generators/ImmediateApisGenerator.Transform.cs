@@ -134,7 +134,6 @@ public sealed partial class ImmediateApisGenerator
 			return null;
 
 		var @namespace = symbol.ContainingNamespace.ToDisplayString().NullIf("<global namespace>");
-		var outerClasses = GetOuterClasses(symbol);
 		var @class = GetClass(symbol);
 		var customization = HasCustomizeGroupMethod(symbol);
 		var tags = context.Attributes[0].NamedArguments.GetStringArray("Tags");
@@ -142,7 +141,6 @@ public sealed partial class ImmediateApisGenerator
 		return new()
 		{
 			Namespace = @namespace,
-			OuterClasses = outerClasses,
 			Class = @class,
 			ClassFullName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
 			RouteGroupClassFullName = symbol.ContainingType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
@@ -235,24 +233,6 @@ public sealed partial class ImmediateApisGenerator
 					}
 				)
 		);
-	}
-
-	private static EquatableReadOnlyList<Class> GetOuterClasses(INamedTypeSymbol symbol)
-	{
-		List<Class>? outerClasses = null;
-		var outerSymbol = symbol.ContainingType;
-		while (outerSymbol is not null)
-		{
-			(outerClasses ??= []).Add(GetClass(outerSymbol));
-			outerSymbol = outerSymbol.ContainingType;
-		}
-
-		if (outerClasses is null)
-			return default;
-
-		outerClasses.Reverse();
-
-		return outerClasses.ToEquatableReadOnlyList();
 	}
 
 	private static Class GetClass(INamedTypeSymbol symbol) =>

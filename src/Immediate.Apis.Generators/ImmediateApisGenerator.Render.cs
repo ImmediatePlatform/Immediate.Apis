@@ -78,7 +78,7 @@ public sealed partial class ImmediateApisGenerator
 			Version = ThisAssembly.InformationalVersion,
 		});
 
-		var name = $"{group.Definition.Namespace}.{string.Join(".", group.Definition.OuterClasses.Select(c => c.Name))}.{group.Definition.Class.Name}";
+		var name = $"{group.Definition.Namespace}.{group.Definition.Class.Name}";
 		context.AddSource($"IA.{name}.g.cs", source);
 	}
 }

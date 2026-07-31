@@ -135,6 +135,7 @@ public static class GeneratorTestHelper
 		new string[]
 		{
 			"AssemblyName",
+			"RootNamespace",
 			"Endpoints",
 			"EndpointsDictionary",
 			"RouteGroupsDictionary",

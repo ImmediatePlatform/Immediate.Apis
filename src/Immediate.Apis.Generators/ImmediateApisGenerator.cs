@@ -26,6 +26,15 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 			})
 			.WithTrackingName("AssemblyName");
 
+		var @namespace = context
+			.AnalyzerConfigOptionsProvider
+			.Select(
+				(c, _) => c.GlobalOptions
+					.TryGetValue("build_property.rootnamespace", out var ns)
+						? ns : ""
+			)
+			.WithTrackingName("RootNamespace");
+
 		var perMethodTemplate = Utility.GetTemplate("Route");
 		context.RegisterSourceOutput(
 			endpoints,
@@ -53,8 +62,8 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 		context.RegisterSourceOutput(
 			routesByGroup.Select((g, _) => g.GetValueOrDefault(ValueTuple.Create<string?>(item1: null)))
 				.Combine(routeGroupsByGroup.Select((g, _) => g.GetValueOrDefault(ValueTuple.Create<string?>(item1: null))))
-				.Combine(assemblyDefaults),
-			(spc, m) => RenderMapEndpoints(spc, m.Left.Left, m.Left.Right, m.Right, mapEndpointsTemplate)
+				.Combine(assemblyDefaults.Combine(@namespace)),
+			(spc, m) => RenderMapEndpoints(spc, m.Left.Left, m.Left.Right, m.Right.Left, m.Right.Right, mapEndpointsTemplate)
 		);
 
 		var routeGroups = routesByGroup.Combine(routeGroupsByGroup)

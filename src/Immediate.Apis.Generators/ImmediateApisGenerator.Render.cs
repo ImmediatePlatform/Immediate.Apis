@@ -30,6 +30,7 @@ public sealed partial class ImmediateApisGenerator
 		EquatableReadOnlyList<RouteEndpoint> endpoints,
 		EquatableReadOnlyList<RouteGroupDefinition> groups,
 		AssemblyDefaults assemblyDefaults,
+		string @namespace,
 		Template template
 	)
 	{
@@ -54,6 +55,7 @@ public sealed partial class ImmediateApisGenerator
 		{
 			assemblyDefaults.AssemblyName,
 			assemblyDefaults.LanguageVersion,
+			Namespace = @namespace,
 
 			Tags = tags,
 			Version = ThisAssembly.InformationalVersion,

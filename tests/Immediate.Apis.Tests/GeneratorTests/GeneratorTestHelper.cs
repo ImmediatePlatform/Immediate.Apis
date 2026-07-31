@@ -4,6 +4,7 @@ using Immediate.Apis.Generators;
 using Immediate.Handlers.Generators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Immediate.Apis.Tests.GeneratorTests;
 
@@ -42,6 +43,7 @@ public static class GeneratorTestHelper
 				new ImmediateHandlersGenerator().AsSourceGenerator(),
 			],
 			parseOptions: options,
+			optionsProvider: new OptionsProvider(),
 			driverOptions: new GeneratorDriverOptions(default, trackIncrementalGeneratorSteps: true)
 		);
 
@@ -148,5 +150,26 @@ public static class GeneratorTestHelper
 		var outputs = steps.SelectMany(o => o.Outputs);
 
 		Assert.All(outputs, o => Assert.True(o.Reason is IncrementalStepRunReason.Unchanged or IncrementalStepRunReason.Cached));
+	}
+
+	private sealed class OptionsProvider : AnalyzerConfigOptionsProvider
+	{
+		private static readonly AnalyzerConfigOptions s_options =
+			new DictionaryAnalyzerOptions(
+				new(StringComparer.OrdinalIgnoreCase)
+				{
+					["build_property.rootnamespace"] = "Immediate.Apis.Testing",
+				}
+			);
+
+		public override AnalyzerConfigOptions GetOptions(SyntaxTree tree) => s_options;
+		public override AnalyzerConfigOptions GetOptions(AdditionalText textFile) => s_options;
+		public override AnalyzerConfigOptions GlobalOptions => s_options;
+	}
+
+	private sealed class DictionaryAnalyzerOptions(Dictionary<string, string> properties) : AnalyzerConfigOptions
+	{
+		public override bool TryGetValue(string key, out string value)
+			=> properties.TryGetValue(key, out value!);
 	}
 }

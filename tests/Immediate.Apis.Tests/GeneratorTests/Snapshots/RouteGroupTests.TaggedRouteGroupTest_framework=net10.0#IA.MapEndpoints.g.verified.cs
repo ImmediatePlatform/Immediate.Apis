@@ -4,6 +4,8 @@
 
 #pragma warning disable CS1591
 
+namespace Immediate.Apis.Testing;
+
 public static partial class ApisServiceCollectionExtensions
 {
 	public static global::Microsoft.AspNetCore.Routing.RouteGroupBuilder MapTestsEndpoints(

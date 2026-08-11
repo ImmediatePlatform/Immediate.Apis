@@ -94,6 +94,37 @@ public sealed class InvalidAuthorizeAttributeAnalyzerTests
 
 	[Theory]
 	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
+	public async Task MultipleAuthorizeAttributesShouldValidateEachAttribute(string method) =>
+		await AnalyzerTestHelpers.CreateAnalyzerTest<InvalidAuthorizeAttributeAnalyzer>(
+			$$"""
+			using System.Threading;
+			using System.Threading.Tasks;
+			using Immediate.Apis.Shared;
+			using Immediate.Handlers.Shared;
+			using Microsoft.AspNetCore.Authorization;
+
+			namespace Dummy;
+
+			[Handler]
+			[Map{{method}}("/test")]
+			[Authorize]
+			[{|IAPI0002:Authorize("Policy", Roles = "")|}]
+			public static class GetUsersQuery
+			{
+				public record Query;
+
+				private static async ValueTask<int> Handle(
+					Query _,
+					CancellationToken token)
+				{
+					return 0;
+				}
+			}
+			"""
+		).RunAsync(TestContext.Current.CancellationToken);
+
+	[Theory]
+	[MemberData(nameof(Utility.Methods), MemberType = typeof(Utility))]
 	public async Task AuthorizeShouldNotError(string method) =>
 		await AnalyzerTestHelpers.CreateAnalyzerTest<InvalidAuthorizeAttributeAnalyzer>(
 			$$"""

@@ -48,10 +48,6 @@ namespace {{ method.namespace }}
 			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(endpoint);
 			{{~ end ~}}
 			{{~ if method.authorize_policies.count > 0 ~}}
-			{{~ if method.authorize_policies.count == 1 ~}}
-
-			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(endpoint, "{{ method.authorize_policies[0] }}");
-			{{~ else ~}}
 
 			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(
 				endpoint
@@ -59,7 +55,6 @@ namespace {{ method.namespace }}
 				, "{{ policy }}"
 				{{~ end ~}}
 			);
-			{{~ end ~}}
 			{{~ end ~}}
 			{{~ end ~}}
 			{{~ if method.use_customization ~}}

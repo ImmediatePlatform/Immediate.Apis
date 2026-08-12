@@ -26,7 +26,10 @@ namespace Dummy
 				}
 			);
 
-			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(endpoint, "TestPolicy");
+			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(
+				endpoint
+				, "TestPolicy"
+			);
 
 		}
 

@@ -48,15 +48,16 @@ public sealed partial class ImmediateApisGenerator
 
 			switch (authorizeAttribute)
 			{
-				case { ConstructorArguments: [{ Value: string policy }] }:
-					if (string.IsNullOrEmpty(policy))
-						authorizeDefault = true;
-					else
-						authorizePolicies.Add(policy);
-					break;
-
-				case { ConstructorArguments: [{ Value: null }] }:
+				case { ConstructorArguments: [{ Value: null }] }
+					or { ConstructorArguments: [], NamedArguments: [] }
+					or { ConstructorArguments: [], NamedArguments: [{ Key: "Policy", Value.Value: null }] }:
+				{
 					authorizeDefault = true;
+					break;
+				}
+
+				case { ConstructorArguments: [{ Value: string policy }] }:
+					authorizePolicies.Add(policy);
 					break;
 
 				case { NamedArguments: [{ } argument] }:
@@ -64,16 +65,9 @@ public sealed partial class ImmediateApisGenerator
 					if (argument is not { Key: "Policy", Value.Value: string ap })
 						return null;
 
-					if (string.IsNullOrEmpty(ap))
-						authorizeDefault = true;
-					else
-						authorizePolicies.Add(ap);
+					authorizePolicies.Add(ap);
 					break;
 				}
-
-				case { ConstructorArguments: [], NamedArguments: [] }:
-					authorizeDefault = true;
-					break;
 
 				default:
 					return null;

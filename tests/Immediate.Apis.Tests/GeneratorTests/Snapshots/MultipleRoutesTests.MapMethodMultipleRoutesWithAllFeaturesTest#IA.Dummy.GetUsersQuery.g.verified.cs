@@ -26,7 +26,10 @@ namespace Dummy
 				}
 			);
 
-			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(endpoint, "AdminPolicy");
+			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(
+				endpoint
+				, "AdminPolicy"
+			);
 
 			global::Dummy.GetUsersQuery.CustomizeEndpoint(endpoint);
 
@@ -44,7 +47,10 @@ namespace Dummy
 				}
 			);
 
-			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(endpoint, "AdminPolicy");
+			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(
+				endpoint
+				, "AdminPolicy"
+			);
 
 			global::Dummy.GetUsersQuery.CustomizeEndpoint(endpoint);
 

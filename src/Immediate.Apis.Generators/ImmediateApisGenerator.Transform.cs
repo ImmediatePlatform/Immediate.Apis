@@ -56,10 +56,6 @@ public sealed partial class ImmediateApisGenerator
 					break;
 				}
 
-				case { ConstructorArguments: [{ Value: string policy }] }:
-					authorizePolicies.Add(policy);
-					break;
-
 				case { NamedArguments: [{ } argument] }:
 				{
 					if (argument is not { Key: "Policy", Value.Value: string ap })
@@ -68,6 +64,10 @@ public sealed partial class ImmediateApisGenerator
 					authorizePolicies.Add(ap);
 					break;
 				}
+
+				case { ConstructorArguments: [{ Value: string policy }] }:
+					authorizePolicies.Add(policy);
+					break;
 
 				default:
 					return null;

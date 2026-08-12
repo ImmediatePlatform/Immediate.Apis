@@ -38,31 +38,40 @@ public sealed partial class ImmediateApisGenerator
 
 		var allowAnonymous = attributes.Any(a => a.AttributeClass.IsAllowAnonymousAttribute);
 
-		var authorizeAttribute = attributes.FirstOrDefault(a => a.AttributeClass.IsAuthorizeAttribute);
-		var authorize = authorizeAttribute != null;
-		var authorizePolicy = string.Empty;
+		var authorize = false;
+		var authorizeDefault = false;
+		var authorizePolicies = new List<string>();
 
-		switch (authorizeAttribute)
+		foreach (var authorizeAttribute in attributes.Where(a => a.AttributeClass.IsAuthorizeAttribute))
 		{
-			case { ConstructorArguments.Length: > 0 }:
-				authorizePolicy = (string)authorizeAttribute.ConstructorArguments[0].Value!;
-				break;
+			authorize = true;
 
-			case { NamedArguments.Length: > 0 }:
+			switch (authorizeAttribute)
 			{
-				foreach (var argument in authorizeAttribute.NamedArguments)
+				case { ConstructorArguments: [{ Value: null }] }
+					or { ConstructorArguments: [], NamedArguments: [] }
+					or { ConstructorArguments: [], NamedArguments: [{ Key: "Policy", Value.Value: null }] }:
+				{
+					authorizeDefault = true;
+					break;
+				}
+
+				case { NamedArguments: [{ } argument] }:
 				{
 					if (argument is not { Key: "Policy", Value.Value: string ap })
 						return null;
 
-					authorizePolicy = ap;
+					authorizePolicies.Add(ap);
+					break;
 				}
 
-				break;
-			}
+				case { ConstructorArguments: [{ Value: string policy }] }:
+					authorizePolicies.Add(policy);
+					break;
 
-			default:
-				break;
+				default:
+					return null;
+			}
 		}
 
 		token.ThrowIfCancellationRequested();
@@ -106,7 +115,8 @@ public sealed partial class ImmediateApisGenerator
 
 			AllowAnonymous = allowAnonymous,
 			Authorize = authorize,
-			AuthorizePolicy = authorizePolicy,
+			AuthorizeDefault = authorizeDefault,
+			AuthorizePolicies = authorizePolicies.ToEquatableReadOnlyList(),
 
 			UseCustomization = useCustomization,
 			UseTransformMethod = useTransformMethod,

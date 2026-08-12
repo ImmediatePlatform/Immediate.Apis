@@ -61,7 +61,9 @@ public sealed class InvalidAuthorizeAttributeAnalyzer : DiagnosticAnalyzer
 
 		token.ThrowIfCancellationRequested();
 
-		if (attributes.FirstOrDefault(a => a.AttributeClass.IsAuthorizeAttribute) is not { } authorizeAttribute)
+		var authorizeAttributes = attributes.Where(a => a.AttributeClass.IsAuthorizeAttribute);
+
+		if (!attributes.Any(a => a.AttributeClass.IsAuthorizeAttribute))
 			return;
 
 		if (attributes.Any(a => a.AttributeClass.IsAllowAnonymousAttribute))
@@ -74,17 +76,20 @@ public sealed class InvalidAuthorizeAttributeAnalyzer : DiagnosticAnalyzer
 			);
 		}
 
-		foreach (var argument in authorizeAttribute.NamedArguments.Where(a => a.Key is not "Policy"))
+		foreach (var authorizeAttribute in authorizeAttributes)
 		{
-			context.ReportDiagnostic(
-				Diagnostic.Create(
-					InvalidAuthorizeParameter,
-					authorizeAttribute.ApplicationSyntaxReference
-						?.GetSyntax(token)
-						.GetLocation(),
-					argument.Key
-				)
-			);
+			foreach (var argument in authorizeAttribute.NamedArguments.Where(a => a.Key is not "Policy"))
+			{
+				context.ReportDiagnostic(
+					Diagnostic.Create(
+						InvalidAuthorizeParameter,
+						authorizeAttribute.ApplicationSyntaxReference
+							?.GetSyntax(token)
+							.GetLocation(),
+						argument.Key
+					)
+				);
+			}
 		}
 	}
 }

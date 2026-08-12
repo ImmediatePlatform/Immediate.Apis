@@ -26,7 +26,10 @@ namespace Dummy
 				}
 			);
 
-			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(endpoint, "AdminPolicy");
+			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(
+				endpoint
+				, "AdminPolicy"
+			);
 
 			endpoint = global::Microsoft.AspNetCore.Builder.EndpointRouteBuilderExtensions.MapPost(
 				app,
@@ -42,7 +45,10 @@ namespace Dummy
 				}
 			);
 
-			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(endpoint, "AdminPolicy");
+			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(
+				endpoint
+				, "AdminPolicy"
+			);
 
 		}
 

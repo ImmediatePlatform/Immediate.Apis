@@ -43,8 +43,19 @@ namespace {{ method.namespace }}
 
 			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.AllowAnonymous(endpoint);
 			{{~ else if method.authorize ~}}
+			{{~ if method.authorize_default ~}}
 
-			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(endpoint{{ if !string.empty method.authorize_policy }}, "{{ method.authorize_policy }}"{{ end }});
+			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(endpoint);
+			{{~ end ~}}
+			{{~ if method.authorize_policies.count > 0 ~}}
+
+			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(
+				endpoint
+				{{~ for policy in method.authorize_policies ~}}
+				, "{{ policy }}"
+				{{~ end ~}}
+			);
+			{{~ end ~}}
 			{{~ end ~}}
 			{{~ if method.use_customization ~}}
 

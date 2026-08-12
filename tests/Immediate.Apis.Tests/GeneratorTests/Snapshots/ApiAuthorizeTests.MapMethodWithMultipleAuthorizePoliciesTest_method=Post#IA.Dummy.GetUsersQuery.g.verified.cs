@@ -12,9 +12,9 @@ namespace Dummy
 	{
 		internal static void MapEndpoint(global::Microsoft.AspNetCore.Routing.IEndpointRouteBuilder app)
 		{
-			var endpoint = global::Microsoft.AspNetCore.Builder.EndpointRouteBuilderExtensions.MapPut(
+			var endpoint = global::Microsoft.AspNetCore.Builder.EndpointRouteBuilderExtensions.MapPost(
 				app,
-				"/api/users",
+				"/test",
 				async (
 					[global::Microsoft.AspNetCore.Mvc.FromBodyAttribute] global::Dummy.GetUsersQuery.Query parameters,
 					[global::Microsoft.AspNetCore.Mvc.FromServices] global::Dummy.GetUsersQuery.Handler handler,
@@ -26,36 +26,24 @@ namespace Dummy
 				}
 			);
 
-			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(
-				endpoint
-				, "AdminPolicy"
-			);
-
-			endpoint = global::Microsoft.AspNetCore.Builder.EndpointRouteBuilderExtensions.MapPut(
-				app,
-				"/v1/users",
-				async (
-					[global::Microsoft.AspNetCore.Mvc.FromBodyAttribute] global::Dummy.GetUsersQuery.Query parameters,
-					[global::Microsoft.AspNetCore.Mvc.FromServices] global::Dummy.GetUsersQuery.Handler handler,
-					global::System.Threading.CancellationToken token
-				) =>
-				{
-					var ret = await handler.HandleAsync(parameters, token);
-					return ret;
-				}
-			);
+			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(endpoint);
 
 			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.RequireAuthorization(
 				endpoint
-				, "AdminPolicy"
+				, ""
+				, ""
+				, "FirstPolicy"
+				, "SecondPolicy"
+				, "NamedPolicy"
 			);
 
 		}
 
 		public static global::System.Collections.Generic.IReadOnlyList<string> Routes { get; } =
 		[
-			"/api/users",
-			"/v1/users",
+			"/test",
 		];
+
+		public static string Route { get; } = "/test";
 	}
 }

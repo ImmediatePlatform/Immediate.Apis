@@ -34,7 +34,7 @@ namespace Dummy
 				, ""
 				, "FirstPolicy"
 				, "SecondPolicy"
-				, "ConstructorPolicy"
+				, "NamedPolicy"
 			);
 
 		}

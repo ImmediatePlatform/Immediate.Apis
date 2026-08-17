@@ -62,9 +62,34 @@ partial class GetUsersQuery2
 		global::Microsoft.Extensions.DependencyInjection.ServiceLifetime lifetime = global::Microsoft.Extensions.DependencyInjection.ServiceLifetime.Scoped
 	)
 	{
-		services.Add(new(typeof(global::Dummy.GetUsersQuery2.Handler), typeof(global::Dummy.GetUsersQuery2.Handler), lifetime));
-		services.Add(new(typeof(global::Immediate.Handlers.Shared.IHandler<global::Dummy.GetUsersQuery2.Query, int>), typeof(global::Dummy.GetUsersQuery2.Handler), lifetime));
-		services.Add(new(typeof(global::Dummy.GetUsersQuery2.HandleBehavior), typeof(global::Dummy.GetUsersQuery2.HandleBehavior), lifetime));
+		
+		global::Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAdd(
+			services,
+			global::Microsoft.Extensions.DependencyInjection.ServiceDescriptor.Describe(
+				typeof(global::Dummy.GetUsersQuery2.Handler),
+				typeof(global::Dummy.GetUsersQuery2.Handler),
+				lifetime
+			)
+		);
+
+		global::Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAdd(
+			services,
+			global::Microsoft.Extensions.DependencyInjection.ServiceDescriptor.Describe(
+				typeof(global::Immediate.Handlers.Shared.IHandler<global::Dummy.GetUsersQuery2.Query, int>),
+				typeof(global::Dummy.GetUsersQuery2.Handler),
+				lifetime
+			)
+		);
+
+		global::Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAdd(
+			services,
+			global::Microsoft.Extensions.DependencyInjection.ServiceDescriptor.Describe(
+				typeof(global::Dummy.GetUsersQuery2.HandleBehavior),
+				typeof(global::Dummy.GetUsersQuery2.HandleBehavior),
+				lifetime
+			)
+		);
+
 		return services;
 	}
 }

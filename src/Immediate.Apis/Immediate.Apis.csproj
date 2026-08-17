@@ -68,8 +68,9 @@
 	  Pack="true"
 	  PackagePath="analyzers/dotnet/roslyn5.0/cs" />
 
+	<!-- Specifically use ns2.0 for VS -->
 	<TfmSpecificPackageFile
-	  Include="../Immediate.Apis.CodeFixes/bin/$(Configuration)/net10.0/Immediate.Apis.CodeFixes.dll"
+	  Include="../Immediate.Apis.CodeFixes/bin/$(Configuration)/netstandard2.0/Immediate.Apis.CodeFixes.dll"
 	  Pack="true"
 	  PackagePath="analyzers/dotnet/roslyn5.0/cs" />
 

@@ -333,6 +333,8 @@ dotnet_diagnostic.CS1712.severity = error               # CS1712: Type parameter
 
 dotnet_diagnostic.CA1822.severity = none                # CA1822: Mark members as static
 
+dotnet_diagnostic.MA0002.severity = none                # MA0002: IEqualityComparer<string> or IComparer<string> is missing
+
 [tests/*.g.verified.cs]
 
 # Mark code as excluded and generated

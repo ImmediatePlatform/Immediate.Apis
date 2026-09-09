@@ -1,9 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFrameworks>net8.0;net9.0;net10.0;net11.0</TargetFrameworks>
 	<IsPackable>true</IsPackable>
 	<IncludeBuildOutput>false</IncludeBuildOutput>
+
+	<EnablePackageValidation>true</EnablePackageValidation>
+	<PackageValidationBaselineVersion>6.0.0</PackageValidationBaselineVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Nuget">
@@ -43,46 +45,67 @@
 	  PackagePath="lib/$(TargetFramework)" />
   </ItemGroup>
 
-  <!-- roslyn 4.8 for net8/net9 -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-	<TfmSpecificPackageFile
-	  Include="../Immediate.Apis.Analyzers/bin/$(Configuration)/netstandard2.0/Immediate.Apis.Analyzers.dll"
+  <ItemGroup>
+	<None
+	  Include="../Immediate.Apis.Analyzers/bin/$(Configuration)/roslyn4.8/Immediate.Apis.Analyzers.dll"
 	  Pack="true"
 	  PackagePath="analyzers/dotnet/roslyn4.8/cs" />
 
-	<TfmSpecificPackageFile
-	  Include="../Immediate.Apis.CodeFixes/bin/$(Configuration)/netstandard2.0/Immediate.Apis.CodeFixes.dll"
+	<None
+	  Include="../Immediate.Apis.CodeFixes/bin/$(Configuration)/roslyn4.8/Immediate.Apis.CodeFixes.dll"
 	  Pack="true"
 	  PackagePath="analyzers/dotnet/roslyn4.8/cs" />
 
-	<TfmSpecificPackageFile
-	  Include="../Immediate.Apis.Generators/bin/$(Configuration)/netstandard2.0/Immediate.Apis.Generators.dll"
+	<None
+	  Include="../Immediate.Apis.Generators/bin/$(Configuration)/roslyn4.8/Immediate.Apis.Generators.dll"
 	  Pack="true"
 	  PackagePath="analyzers/dotnet/roslyn4.8/cs" />
   </ItemGroup>
 
-  <!-- roslyn 5.0 for net10/net11 -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
-	<TfmSpecificPackageFile
-	  Include="../Immediate.Apis.Analyzers/bin/$(Configuration)/net10.0/Immediate.Apis.Analyzers.dll"
+  <ItemGroup>
+	<None
+	  Include="../Immediate.Apis.Analyzers/bin/$(Configuration)/roslyn5.0/Immediate.Apis.Analyzers.dll"
 	  Pack="true"
 	  PackagePath="analyzers/dotnet/roslyn5.0/cs" />
 
-	<!-- Specifically use ns2.0 for VS -->
-	<TfmSpecificPackageFile
-	  Include="../Immediate.Apis.CodeFixes/bin/$(Configuration)/netstandard2.0/Immediate.Apis.CodeFixes.dll"
+	<None
+	  Include="../Immediate.Apis.CodeFixes/bin/$(Configuration)/roslyn5.0/Immediate.Apis.CodeFixes.dll"
+	  Pack="true"
+	  PackagePath="analyzers/dotnet/roslyn5.0/cs" />
+
+	<None
+	  Include="../Immediate.Apis.Generators/bin/$(Configuration)/roslyn5.0/Immediate.Apis.Generators.dll"
 	  Pack="true"
 	  PackagePath="analyzers/dotnet/roslyn5.0/cs" />
 
 	<TfmSpecificPackageFile
-	  Include="../Immediate.Apis.Generators/bin/$(Configuration)/net10.0/Immediate.Apis.Generators.dll"
-	  Pack="true"
-	  PackagePath="analyzers/dotnet/roslyn5.0/cs" />
-
-	<TfmSpecificPackageFile
+	  Condition=" '$(TargetFramework)' == 'net8.0' "
 	  Include="$(PkgScriban)/lib/net8.0/Scriban.dll"
 	  Pack="true"
 	  PackagePath="analyzers/dotnet/roslyn5.0/cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<None
+	  Include="../Immediate.Apis.Analyzers/bin/$(Configuration)/roslyn5.9/Immediate.Apis.Analyzers.dll"
+	  Pack="true"
+	  PackagePath="analyzers/dotnet/roslyn5.9/cs" />
+
+	<None
+	  Include="../Immediate.Apis.CodeFixes/bin/$(Configuration)/roslyn5.9/Immediate.Apis.CodeFixes.dll"
+	  Pack="true"
+	  PackagePath="analyzers/dotnet/roslyn5.9/cs" />
+
+	<None
+	  Include="../Immediate.Apis.Generators/bin/$(Configuration)/roslyn5.9/Immediate.Apis.Generators.dll"
+	  Pack="true"
+	  PackagePath="analyzers/dotnet/roslyn5.9/cs" />
+
+	<TfmSpecificPackageFile
+	  Condition=" '$(TargetFramework)' == 'net8.0' "
+	  Include="$(PkgScriban)/lib/net8.0/Scriban.dll"
+	  Pack="true"
+	  PackagePath="analyzers/dotnet/roslyn5.9/cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -90,10 +113,27 @@
   </ItemGroup>
 
   <ItemGroup>
-	<ProjectReference Include="../Immediate.Apis.Analyzers/Immediate.Apis.Analyzers.csproj" ReferenceOutputAssembly="false" />
-	<ProjectReference Include="../Immediate.Apis.CodeFixes/Immediate.Apis.CodeFixes.csproj" ReferenceOutputAssembly="false" />
-	<ProjectReference Include="../Immediate.Apis.Generators/Immediate.Apis.Generators.csproj" ReferenceOutputAssembly="false" />
 	<ProjectReference Include="../Immediate.Apis.Shared/Immediate.Apis.Shared.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <PropertyGroup>
+	<RoslynVersion Condition=" '$(TargetFramework)' == 'net8.0' ">roslyn4.8</RoslynVersion>
+	<RoslynVersion Condition=" '$(TargetFramework)' == 'net10.0' ">roslyn5.0</RoslynVersion>
+	<RoslynVersion Condition=" '$(TargetFramework)' == 'net11.0' ">roslyn5.9</RoslynVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<ProjectReference Include="../../src/Immediate.Apis.Analyzers/Immediate.Apis.Analyzers.csproj" ReferenceOutputAssembly="false">
+	  <SetTargetFramework>TargetFramework=$(RoslynVersion)</SetTargetFramework>
+	</ProjectReference>
+
+	<ProjectReference Include="../../src/Immediate.Apis.CodeFixes/Immediate.Apis.CodeFixes.csproj" ReferenceOutputAssembly="false">
+	  <SetTargetFramework>TargetFramework=$(RoslynVersion)</SetTargetFramework>
+	</ProjectReference>
+
+	<ProjectReference Include="../../src/Immediate.Apis.Generators/Immediate.Apis.Generators.csproj" ReferenceOutputAssembly="false">
+	  <SetTargetFramework>TargetFramework=$(RoslynVersion)</SetTargetFramework>
+	</ProjectReference>
   </ItemGroup>
 
 </Project>

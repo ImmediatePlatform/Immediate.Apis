@@ -5,7 +5,7 @@
 
   <ItemGroup>
 	<PackageVersion Include="AssemblyMetadata.Generators" Version="2.2.0" />
-	<PackageVersion Include="Immediate.Handlers" Version="4.1.0" />
+	<PackageVersion Include="Immediate.Handlers" Version="4.2.0" />
 	<PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.9.0" />
 	<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.4" />
 	<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing" Version="1.1.4" />
@@ -34,14 +34,6 @@
 	<PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.12" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
-	<PackageVersion Include="Basic.Reference.Assemblies.AspNet90" Version="1.8.11" />
-	<PackageVersion Include="Basic.Reference.Assemblies.Net90" Version="1.8.11" />
-	<PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="9.0.20" />
-	<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.20" />
-	<PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.20" />
-  </ItemGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
 	<PackageVersion Include="Basic.Reference.Assemblies.AspNet80" Version="1.8.11" />
 	<PackageVersion Include="Basic.Reference.Assemblies.Net80" Version="1.8.11" />
@@ -51,25 +43,18 @@
   </ItemGroup>
 
   <!-- IA.Generators dependencies -->
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net11.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net11.0' or '$(TargetFramework)' == 'roslyn5.9' ">
 	<PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="5.9.0" />
 	<PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
 	<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.9.0" />
 	<PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.9.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net10.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net10.0' or '$(TargetFramework)' == 'roslyn5.0' ">
 	<PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="5.0.0" />
 	<PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
 	<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0" />
 	<PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.0.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
-	<PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.12.0" />
-	<PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
-	<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.12.0" />
-	<PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.12.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
@@ -79,7 +64,7 @@
 	<PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.11.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'roslyn4.8' ">
 	<PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.8.0" />
 	<PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
 	<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.8.0" />

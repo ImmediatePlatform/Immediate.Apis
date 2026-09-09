@@ -2,8 +2,10 @@
 
   <PropertyGroup>
 	<OutputType>Exe</OutputType>
-	<!-- Temporary fix for packaging bug -->
-	<NoWarn>$(NoWarn);NU1603</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net11.0'))">
+	<Features>runtime-async=on</Features>
   </PropertyGroup>
 
   <ItemGroup Label="Usings">
@@ -47,10 +49,31 @@
 
   <ItemGroup>
 	<ProjectReference Include="../../src/Immediate.Apis.Shared/Immediate.Apis.Shared.csproj" />
-	<ProjectReference Include="../../src/Immediate.Apis.Analyzers/Immediate.Apis.Analyzers.csproj" />
-	<ProjectReference Include="../../src/Immediate.Apis.CodeFixes/Immediate.Apis.CodeFixes.csproj" />
-	<ProjectReference Include="../../src/Immediate.Apis.Generators/Immediate.Apis.Generators.csproj" />
-	<Reference Include="$(PkgImmediate_Handlers)/analyzers/dotnet/roslyn4.8/cs/Immediate.Handlers.Generators.dll" />
+  </ItemGroup>
+
+  <PropertyGroup>
+	<RoslynVersion Condition=" '$(TargetFramework)' == 'net8.0' ">roslyn4.8</RoslynVersion>
+	<RoslynVersion Condition=" '$(TargetFramework)' == 'net10.0' ">roslyn5.0</RoslynVersion>
+	<RoslynVersion Condition=" '$(TargetFramework)' == 'net11.0' ">roslyn5.9</RoslynVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<ProjectReference Include="../../src/Immediate.Apis.Analyzers/Immediate.Apis.Analyzers.csproj" ReferenceOutputAssembly="false">
+	  <SetTargetFramework>TargetFramework=$(RoslynVersion)</SetTargetFramework>
+	</ProjectReference>
+	<Reference Include="../../src/Immediate.Apis.Analyzers/bin/$(Configuration)/$(RoslynVersion)/Immediate.Apis.Analyzers.dll" />
+
+	<ProjectReference Include="../../src/Immediate.Apis.CodeFixes/Immediate.Apis.CodeFixes.csproj" ReferenceOutputAssembly="false">
+	  <SetTargetFramework>TargetFramework=$(RoslynVersion)</SetTargetFramework>
+	</ProjectReference>
+	<Reference Include="../../src/Immediate.Apis.CodeFixes/bin/$(Configuration)/$(RoslynVersion)/Immediate.Apis.CodeFixes.dll" />
+
+	<ProjectReference Include="../../src/Immediate.Apis.Generators/Immediate.Apis.Generators.csproj" ReferenceOutputAssembly="false">
+	  <SetTargetFramework>TargetFramework=$(RoslynVersion)</SetTargetFramework>
+	</ProjectReference>
+	<Reference Include="../../src/Immediate.Apis.Generators/bin/$(Configuration)/$(RoslynVersion)/Immediate.Apis.Generators.dll" />
+
+	<Reference Include="$(PkgImmediate_Handlers)/analyzers/dotnet/$(RoslynVersion)/cs/Immediate.Handlers.Generators.dll" />
   </ItemGroup>
 
 </Project>

@@ -38,6 +38,12 @@
 	<MeziantouPolyfill_IncludedPolyfills>$(Polyfill)</MeziantouPolyfill_IncludedPolyfills>
   </PropertyGroup>
 
+  <PropertyGroup Label="Message Suppression">
+	<!-- Suppress sponsorship messages from Verify and Scriban, as in Immediate.Handlers. -->
+	<Verify_SponsorshipLicenseIgnored>true</Verify_SponsorshipLicenseIgnored>
+	<NoWarn>$(NoWarn);SC023</NoWarn>
+  </PropertyGroup>
+
   <PropertyGroup Label="MinVer">
 	<MinVerAutoIncrement>minor</MinVerAutoIncrement>
 	<MinVerDefaultPreReleaseIdentifiers>preview</MinVerDefaultPreReleaseIdentifiers>

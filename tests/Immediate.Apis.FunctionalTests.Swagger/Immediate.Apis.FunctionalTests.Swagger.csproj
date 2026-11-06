@@ -2,7 +2,6 @@
 
   <ItemGroup>
 	<PackageReference Include="Immediate.Handlers" />
-	<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
 	<PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 

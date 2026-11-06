@@ -32,7 +32,7 @@ internal static partial class Utility
 		"net11.0",
 		new PackageIdentity(
 			"Microsoft.NETCore.App.Ref",
-			"11.0.0-rc.1.26425.128"
+			"11.0.0-rc.3.26522.148"
 		),
 		Path.Combine("ref", "net11.0")
 	);

@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<Compile Include="../Common/*.cs" Link="Common/%(Filename).cs" />
+	<Compile Include="../Common/*.cs" Exclude="../Common/FileSystemRouting.cs" Link="Common/%(Filename).cs" />
   </ItemGroup>
 
   <ItemGroup>

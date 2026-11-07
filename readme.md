@@ -213,6 +213,47 @@ app.MapApplicationUserManagementEndpoints("/users")
 
 Endpoints decorated with this attribute will no longer be mapped by the `MapApplicationEndpoints()` method.
 
+#### Directory-based routing (opt-in)
+
+Enable directory-based routing for handlers with an empty `[MapGet]`, `[MapPost]`, or other mapping attribute:
+
+```csharp
+[assembly: FileSystemRouting(
+    RootDirectory = "Api",
+    NamingPolicy = RouteNamingPolicy.LowerCase)]
+
+// Api/Public/Products/CreateProduct.cs
+[Handler]
+[MapPost]
+public static partial class CreateProduct
+{
+    public sealed record Command(string Name);
+    private static ValueTask<string> Handle(Command command, CancellationToken token)
+        => ValueTask.FromResult(command.Name);
+}
+```
+
+`app.MapMyAppEndpoints("/api")` registers this handler at `POST /api/public/products`. `RootDirectory`
+is relative to the project directory and is excluded from the route. Filenames and namespaces do not contribute
+segments. Without `RootDirectory`, routing starts at the project directory. `NamingPolicy` defaults to `LowerCase`;
+`PascalCase`, `CamelCase`, `KebabCase`, and `SnakeCase` are also supported. Spaces and punctuation separate words.
+
+Directories become nested route groups. A top-level partial class with `[RouteGroup("...")]` in a directory
+replaces that directory's inferred segment and can use `CustomizeGroup` for authorization, OpenAPI tags, and other
+conventions. A group in the root directory supplies an optional root prefix. Groups can be in different files and
+namespaces; they do not need to be nested C# types. Their existing registration tags continue to apply.
+
+Explicit route strings retain their existing behavior and do not infer directories. `[MapGroup<T>]` always selects
+its specified group; with a routeless mapping attribute, the endpoint maps to that group's root. Existing nested
+route groups remain supported. Directory groups used by inferred endpoints participate in the inferred hierarchy,
+including when explicitly referenced by another handler.
+
+The compiler's source paths determine routing; no filesystem scanning occurs. Linked files outside `RootDirectory`,
+missing source paths, partial handlers split across directories, multiple top-level groups in a directory, and
+collisions after naming conversion produce `IAPI0015`. Use an explicit route or group to resolve ambiguous layouts.
+Duplicate effective routes involving inferred endpoints produce `IAPI0009`. Folder names such as `V1` become ordinary
+route segments; API versioning metadata remains configured through ASP.NET Core conventions.
+
 #### `Tags`
 
 Assigns string tags to the registration. When `MapXxxEndpoints` is called with tag arguments, only registrations that share at

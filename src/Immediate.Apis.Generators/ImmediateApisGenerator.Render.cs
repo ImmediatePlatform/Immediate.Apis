@@ -74,13 +74,24 @@ public sealed partial class ImmediateApisGenerator
 		var token = context.CancellationToken;
 		token.ThrowIfCancellationRequested();
 
-		var source = template.Render(new
-		{
-			Root = group,
-			Version = ThisAssembly.InformationalVersion,
-		});
+		RenderGroup(group, group.Definition.Route);
 
-		var name = $"{group.Definition.Namespace}.{group.Definition.Class.Name}";
-		context.AddSource($"IA.{name}.g.cs", source);
+		void RenderGroup(RouteGroup current, string prefix)
+		{
+			if (current.Definition.DeclarationParentClassFullName is null)
+			{
+				var source = template.Render(new
+				{
+					Root = current,
+					Prefix = prefix,
+					Version = ThisAssembly.InformationalVersion,
+				});
+				var name = $"{current.Definition.Namespace}.{current.Definition.Class.Name}";
+				context.AddSource($"IA.{name}.g.cs", source);
+			}
+
+			foreach (var child in current.Tags.SelectMany(t => t.Groups))
+				RenderGroup(child, prefix + "/" + child.Definition.Route);
+		}
 	}
 }

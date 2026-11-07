@@ -21,8 +21,7 @@ public sealed partial class ImmediateApisGenerator
 		if (attributes.GetMethodAttribute() is not { } attribute)
 			return null;
 
-		if (attribute.GetRoutes() is not { Count: > 0 } routes)
-			return null;
+		var routes = attribute.GetRoutes();
 
 		token.ThrowIfCancellationRequested();
 
@@ -125,6 +124,8 @@ public sealed partial class ImmediateApisGenerator
 			Tags = tags,
 
 			RouteGroupClassFullName = routeGroupFullClassName,
+			FilePath = attribute.ApplicationSyntaxReference?.SyntaxTree.FilePath ?? "",
+			PartialFiles = FileSystemRouting.GetPartialFiles(symbol, token).ToEquatableReadOnlyList(),
 		};
 	}
 
@@ -154,6 +155,8 @@ public sealed partial class ImmediateApisGenerator
 			Class = @class,
 			ClassFullName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
 			RouteGroupClassFullName = symbol.ContainingType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+			DeclarationParentClassFullName = symbol.ContainingType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+			FilePath = context.Attributes[0].ApplicationSyntaxReference?.SyntaxTree.FilePath ?? "",
 			Route = route,
 			UseCustomization = customization,
 			Tags = tags,

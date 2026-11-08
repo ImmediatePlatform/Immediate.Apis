@@ -5,15 +5,24 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Immediate.Apis;
 
-internal sealed record FileSystemRoutingSettings(bool Enabled, string ProjectDirectory, string RootDirectory, int NamingPolicy)
+internal sealed record FileSystemRoutingSettings
 {
+	public required bool Enabled { get; init; }
+	public required string ProjectDirectory { get; init; }
+	public required string RootDirectory { get; init; }
+	public required int NamingPolicy { get; init; }
+
 	public static FileSystemRoutingSettings Create(Compilation compilation, AnalyzerConfigOptions options)
 	{
-		var attribute = compilation.Assembly.GetAttributes().FirstOrDefault(a => string.Equals(a.AttributeClass?.ToDisplayString(), "Immediate.Apis.Shared.FileSystemRoutingAttribute", StringComparison.Ordinal));
+		var attribute = compilation.Assembly.GetAttributes().FirstOrDefault(a => a.AttributeClass.IsFileSystemRoutingAttribute);
 		_ = options.TryGetValue("build_property.ProjectDir", out var projectDirectory);
-		return new(attribute is not null, projectDirectory ?? "",
-			attribute?.NamedArguments.FirstOrDefault(a => string.Equals(a.Key, "RootDirectory", StringComparison.Ordinal)).Value.Value as string ?? "",
-			attribute?.NamedArguments.FirstOrDefault(a => string.Equals(a.Key, "NamingPolicy", StringComparison.Ordinal)).Value.Value is int policy ? policy : 2);
+		return new()
+		{
+			Enabled = attribute is not null,
+			ProjectDirectory = projectDirectory ?? "",
+			RootDirectory = attribute?.NamedArguments.FirstOrDefault(a => string.Equals(a.Key, "RootDirectory", StringComparison.Ordinal)).Value.Value as string ?? "",
+			NamingPolicy = attribute?.NamedArguments.FirstOrDefault(a => string.Equals(a.Key, "NamingPolicy", StringComparison.Ordinal)).Value.Value is int policy ? policy : 2,
+		};
 	}
 
 	public string? Error =>
@@ -24,9 +33,28 @@ internal sealed record FileSystemRoutingSettings(bool Enabled, string ProjectDir
 		: null;
 }
 
-internal sealed record FileSystemGroup(string ClassName, string? ParentClassName, string FilePath, string Route);
-internal sealed record DirectoryRouteGroup(string Directory, string ClassName, string? ParentClassName, string Route, bool IsDeclared);
-internal sealed record FileSystemRoute(string? GroupClassName, string? Error);
+internal sealed record FileSystemGroup
+{
+	public required string ClassName { get; init; }
+	public required string? ParentClassName { get; init; }
+	public required string FilePath { get; init; }
+	public required string Route { get; init; }
+}
+
+internal sealed record DirectoryRouteGroup
+{
+	public required string Directory { get; init; }
+	public required string ClassName { get; init; }
+	public required string? ParentClassName { get; init; }
+	public required string Route { get; init; }
+	public required bool IsDeclared { get; init; }
+}
+
+internal sealed record FileSystemRoute
+{
+	public required string? GroupClassName { get; init; }
+	public required string? Error { get; init; }
+}
 
 /// <summary>Shared by the generator and analyzers; uses compiler paths only, never filesystem IO.</summary>
 internal sealed class FileSystemRouting(FileSystemRoutingSettings settings, IReadOnlyList<FileSystemGroup> declarations)
@@ -43,11 +71,11 @@ internal sealed class FileSystemRouting(FileSystemRoutingSettings settings, IRea
 	public FileSystemRoute Resolve(string filePath, IEnumerable<string> partialFiles)
 	{
 		if (settings.Error is { } error)
-			return new(GroupClassName: null, Error: error);
+			return new() { GroupClassName = null, Error = error };
 		if (GetDirectory(filePath) is not { } directory)
-			return new(GroupClassName: null, Error: "The mapping attribute must be in a source file inside RootDirectory. Linked files outside that directory are not supported.");
+			return new() { GroupClassName = null, Error = "The mapping attribute must be in a source file inside RootDirectory. Linked files outside that directory are not supported." };
 		if (partialFiles.Any(p => !GetPathComparer(settings.ProjectDirectory).Equals(GetDirectory(p), directory)))
-			return new(GroupClassName: null, Error: "All declarations of a file-routed partial handler must be in the same directory.");
+			return new() { GroupClassName = null, Error = "All declarations of a file-routed partial handler must be in the same directory." };
 
 		string? parent = null;
 		var current = "";
@@ -57,15 +85,15 @@ internal sealed class FileSystemRouting(FileSystemRoutingSettings settings, IRea
 			current = current.Length == 0 ? segment : current + "/" + segment;
 			var matches = declarations.Where(g => g.ParentClassName is null && GetPathComparer(settings.ProjectDirectory).Equals(GetDirectory(g.FilePath), current)).ToArray();
 			if (matches.Length > 1)
-				return new(GroupClassName: null, Error: $"Directory '{current}' contains multiple top-level route groups. Select a group explicitly with MapGroup<T>.");
+				return new() { GroupClassName = null, Error = $"Directory '{current}' contains multiple top-level route groups. Select a group explicitly with MapGroup<T>." };
 			var route = matches.Length == 1 ? matches[0].Route : ConvertSegment(segment, settings.NamingPolicy);
 			if (matches.Length == 0 && segment.Length > 0 && route.Length == 0)
-				return new(GroupClassName: null, Error: $"Directory '{current}' has no usable route segment after applying the naming policy.");
+				return new() { GroupClassName = null, Error = $"Directory '{current}' has no usable route segment after applying the naming policy." };
 			if (segment.Length > 0)
 			{
 				var key = parentDirectory + "\0" + route.ToUpperInvariant();
 				if (_segments.TryGetValue(key, out var previous) && !GetPathComparer(settings.ProjectDirectory).Equals(previous, current))
-					return new(GroupClassName: null, Error: $"Directories '{previous}' and '{current}' resolve to the same route segment '{route}'.");
+					return new() { GroupClassName = null, Error = $"Directories '{previous}' and '{current}' resolve to the same route segment '{route}'." };
 				_segments[key] = current;
 			}
 			// The root needs a node only when it contains a declared group.
@@ -78,11 +106,18 @@ internal sealed class FileSystemRouting(FileSystemRoutingSettings settings, IRea
 			}
 
 			var className = matches.Length == 1 ? matches[0].ClassName : GetClassName(current);
-			_groups[current] = new(current, className, parent, route, matches.Length == 1);
+			_groups[current] = new()
+			{
+				Directory = current,
+				ClassName = className,
+				ParentClassName = parent,
+				Route = route,
+				IsDeclared = matches.Length == 1,
+			};
 			parent = className;
 		}
 
-		return new(parent, Error: null);
+		return new() { GroupClassName = parent, Error = null };
 	}
 
 	public string? GetDirectory(string filePath)

@@ -4,7 +4,11 @@ namespace Immediate.Apis.Generators;
 
 public sealed partial class ImmediateApisGenerator
 {
-	private sealed record ResolvedRouting(EquatableReadOnlyList<Method> Endpoints, EquatableReadOnlyList<RouteGroupDefinition> Groups);
+	private sealed record ResolvedRouting
+	{
+		public required EquatableReadOnlyList<Method> Endpoints { get; init; }
+		public required EquatableReadOnlyList<RouteGroupDefinition> Groups { get; init; }
+	}
 
 	private static ResolvedRouting ResolveRouting(
 		ImmutableArray<Method> endpoints,
@@ -12,10 +16,20 @@ public sealed partial class ImmediateApisGenerator
 		FileSystemRoutingSettings settings, CancellationToken token)
 	{
 		if (!settings.Enabled)
-			return new(endpoints.Where(e => e.Routes.Count > 0).ToEquatableReadOnlyList(), groups.ToEquatableReadOnlyList());
+			return new()
+			{
+				Endpoints = endpoints.Where(e => e.Routes.Count > 0).ToEquatableReadOnlyList(),
+				Groups = groups.ToEquatableReadOnlyList(),
+			};
 
 		var resolver = new FileSystemRouting(settings, [.. groups.Select(g =>
-			new FileSystemGroup(g.ClassFullName!, g.DeclarationParentClassFullName, g.FilePath, g.Route))]);
+			new FileSystemGroup
+			{
+				ClassName = g.ClassFullName!,
+				ParentClassName = g.DeclarationParentClassFullName,
+				FilePath = g.FilePath,
+				Route = g.Route,
+			})]);
 		var resolved = new List<Method>();
 		foreach (var endpoint in endpoints.OrderBy(e => e.ClassFullName, StringComparer.Ordinal))
 		{
@@ -27,7 +41,7 @@ public sealed partial class ImmediateApisGenerator
 			}
 
 			var route = endpoint.RouteGroupClassFullName is { } explicitGroup
-				? new FileSystemRoute(explicitGroup, Error: null)
+				? new FileSystemRoute { GroupClassName = explicitGroup, Error = null }
 				: resolver.Resolve(endpoint.FilePath, endpoint.PartialFiles);
 			if (route.Error is null)
 				resolved.Add(endpoint with { Routes = new([""]), RouteGroupClassFullName = route.GroupClassName });
@@ -45,6 +59,8 @@ public sealed partial class ImmediateApisGenerator
 
 			definitions.Add(directory.ClassName, new()
 			{
+				FilePath = "",
+				DeclarationParentClassFullName = null,
 				Namespace = "Immediate.Apis.Generated",
 				Class = new() { Type = "class", Name = directory.ClassName[(directory.ClassName.LastIndexOf('.') + 1)..] },
 				ClassFullName = directory.ClassName,
@@ -55,6 +71,10 @@ public sealed partial class ImmediateApisGenerator
 			});
 		}
 
-		return new(resolved.ToEquatableReadOnlyList(), definitions.Values.OrderBy(g => g.ClassFullName, StringComparer.Ordinal).ToEquatableReadOnlyList());
+		return new()
+		{
+			Endpoints = resolved.ToEquatableReadOnlyList(),
+			Groups = definitions.Values.OrderBy(g => g.ClassFullName, StringComparer.Ordinal).ToEquatableReadOnlyList(),
+		};
 	}
 }

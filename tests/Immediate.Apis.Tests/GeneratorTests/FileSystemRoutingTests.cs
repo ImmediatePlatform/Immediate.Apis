@@ -257,6 +257,22 @@ public sealed class FileSystemRoutingTests
 		Assert.Contains("MapGroup(app, \"weather-forecast\")", Sources(result), StringComparison.Ordinal);
 	}
 
+	[Theory]
+	[InlineData("Other.FileSystemRouting", "namespace Other { public sealed class FileSystemRoutingAttribute : System.Attribute; }")]
+	[InlineData("Immediate.Apis.Shared.FileSystemRouting<int>", "namespace Immediate.Apis.Shared { public sealed class FileSystemRoutingAttribute<T> : System.Attribute; }")]
+	[InlineData("Immediate.Apis.Shared.Container.FileSystemRouting", "namespace Immediate.Apis.Shared { public static class Container { public sealed class FileSystemRoutingAttribute : System.Attribute; } }")]
+	public async Task SimilarlyNamedAttributesDoNotEnableRouting(string attribute, string declaration)
+	{
+		var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest);
+		var input = Input("LowerCase", [CSharpSyntaxTree.ParseText(Handler("Create"), options, "/project/Api/Products/Create.cs", cancellationToken: TestContext.Current.CancellationToken)], options);
+		input = input.ReplaceSyntaxTree(input.SyntaxTrees.First(), CSharpSyntaxTree.ParseText($"[assembly: {attribute}]\n{declaration}", options, "/project/AssemblyInfo.cs", cancellationToken: TestContext.Current.CancellationToken));
+		var driver = Driver(options).RunGeneratorsAndUpdateCompilation(input, out var output, out var diagnostics, TestContext.Current.CancellationToken);
+		Assert.Empty(diagnostics);
+		AssertCompiles(output);
+		Assert.Empty(await Diagnostics(output));
+		Assert.DoesNotContain("MapPost(", Sources(driver.GetRunResult()), StringComparison.Ordinal);
+	}
+
 	private sealed class EndpointBuilder(IServiceProvider services) : IEndpointRouteBuilder
 	{
 		public IServiceProvider ServiceProvider => services;

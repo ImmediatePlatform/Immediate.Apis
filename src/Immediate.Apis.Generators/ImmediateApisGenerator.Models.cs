@@ -37,8 +37,8 @@ public sealed partial class ImmediateApisGenerator
 		public required string? Tags { get; init; }
 
 		public required string? RouteGroupClassFullName { get; init; }
-		public string FilePath { get; init; } = "";
-		public EquatableReadOnlyList<string> PartialFiles { get; init; }
+		public required string FilePath { get; init; }
+		public required EquatableReadOnlyList<string> PartialFiles { get; init; }
 	}
 
 	public sealed record Class
@@ -49,8 +49,8 @@ public sealed partial class ImmediateApisGenerator
 
 	public sealed record RouteGroupDefinition
 	{
-		public string FilePath { get; init; } = "";
-		public string? DeclarationParentClassFullName { get; init; }
+		public required string FilePath { get; init; }
+		public required string? DeclarationParentClassFullName { get; init; }
 		public required string? Namespace { get; init; }
 		public required Class Class { get; init; }
 		public required string? ClassFullName { get; init; }

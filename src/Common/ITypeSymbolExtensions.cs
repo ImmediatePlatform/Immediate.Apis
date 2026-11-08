@@ -105,6 +105,15 @@ internal static class ITypeSymbolExtensions
 				ContainingNamespace.IsMicrosoftAspNetCoreHttp: true,
 			};
 
+		public bool IsFileSystemRoutingAttribute =>
+			typeSymbol is INamedTypeSymbol
+			{
+				Arity: 0,
+				Name: "FileSystemRoutingAttribute",
+				ContainingType: null,
+				ContainingNamespace.IsImmediateApisShared: true,
+			};
+
 		public bool IsRouteGroupAttribute =>
 			typeSymbol is INamedTypeSymbol
 			{

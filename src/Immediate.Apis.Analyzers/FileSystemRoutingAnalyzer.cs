@@ -45,18 +45,20 @@ public sealed class FileSystemRoutingAnalyzer : DiagnosticAnalyzer
 	{
 		if (settings.Error is { } configurationError)
 		{
-			var attribute = context.Compilation.Assembly.GetAttributes().First(a => string.Equals(a.AttributeClass?.ToDisplayString(), "Immediate.Apis.Shared.FileSystemRoutingAttribute", StringComparison.Ordinal));
+			var attribute = context.Compilation.Assembly.GetAttributes().First(a => a.AttributeClass.IsFileSystemRoutingAttribute);
 			Report(attribute, configurationError);
 			return;
 		}
 
 		var declarations = symbols.Select(s => (Symbol: s, Attribute: s.GetAttributes().GetRouteGroupAttribute()))
 			.Where(p => p.Attribute is not null)
-			.Select(p => new FileSystemGroup(
-				p.Symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-				p.Symbol.ContainingType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-				p.Attribute!.ApplicationSyntaxReference?.SyntaxTree.FilePath ?? "",
-				p.Attribute.ConstructorArguments.FirstOrDefault().Value as string ?? ""))
+			.Select(p => new FileSystemGroup
+			{
+				ClassName = p.Symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+				ParentClassName = p.Symbol.ContainingType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+				FilePath = p.Attribute!.ApplicationSyntaxReference?.SyntaxTree.FilePath ?? "",
+				Route = p.Attribute.ConstructorArguments.FirstOrDefault().Value as string ?? "",
+			})
 			.ToArray();
 		var resolver = new FileSystemRouting(settings, declarations);
 		var endpoints = new List<Endpoint>();
@@ -83,7 +85,15 @@ public sealed class FileSystemRoutingAnalyzer : DiagnosticAnalyzer
 				routes = [""];
 			}
 
-			endpoints.AddRange(routes.Select(route => new Endpoint(method.ToUpperInvariant(), route, group, symbol.Name, attribute, inferred)));
+			endpoints.AddRange(routes.Select(route => new Endpoint
+			{
+				Method = method.ToUpperInvariant(),
+				Route = route,
+				Group = group,
+				Name = symbol.Name,
+				Attribute = attribute,
+				Inferred = inferred,
+			}));
 		}
 
 		foreach (var duplicates in endpoints.GroupBy(e => (e.Method,
@@ -102,5 +112,13 @@ public sealed class FileSystemRoutingAnalyzer : DiagnosticAnalyzer
 			InvalidFileSystemRoute, attribute.ApplicationSyntaxReference?.GetSyntax(context.CancellationToken).GetLocation(), error));
 	}
 
-	private sealed record Endpoint(string Method, string Route, string? Group, string Name, AttributeData Attribute, bool Inferred);
+	private sealed record Endpoint
+	{
+		public required string Method { get; init; }
+		public required string Route { get; init; }
+		public required string? Group { get; init; }
+		public required string Name { get; init; }
+		public required AttributeData Attribute { get; init; }
+		public required bool Inferred { get; init; }
+	}
 }

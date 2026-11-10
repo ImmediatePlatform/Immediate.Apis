@@ -21,8 +21,7 @@ public sealed partial class ImmediateApisGenerator
 		if (attributes.GetMethodAttribute() is not { } attribute)
 			return null;
 
-		if (attribute.GetRoutes() is not { Count: > 0 } routes)
-			return null;
+		var routes = attribute.GetRoutes();
 
 		token.ThrowIfCancellationRequested();
 
@@ -76,13 +75,12 @@ public sealed partial class ImmediateApisGenerator
 
 		token.ThrowIfCancellationRequested();
 
-		var @namespace = symbol.ContainingNamespace.ToDisplayString().NullIf("<global namespace>");
+		var @namespace = symbol.ContainingNamespace.IsGlobalNamespace ? null : symbol.ContainingNamespace.ToDisplayString();
 		var @class = GetClass(symbol);
 
 		token.ThrowIfCancellationRequested();
 
 		var className = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-		var classAsMethodName = symbol.ToDisplayString().Replace('.', '_');
 
 		var parameterType = handleMethod.Parameters[0].Type;
 
@@ -125,6 +123,8 @@ public sealed partial class ImmediateApisGenerator
 			Tags = tags,
 
 			RouteGroupClassFullName = routeGroupFullClassName,
+			FilePath = attribute.ApplicationSyntaxReference?.SyntaxTree.FilePath ?? "",
+			PartialFiles = FileSystemRouting.GetPartialFiles(symbol, token).ToEquatableReadOnlyList(),
 		};
 	}
 
@@ -143,7 +143,7 @@ public sealed partial class ImmediateApisGenerator
 		if (symbol.ContainingType is { } && symbol.ContainingType.GetAttributes().GetRouteGroupAttribute() is null)
 			return null;
 
-		var @namespace = symbol.ContainingNamespace.ToDisplayString().NullIf("<global namespace>");
+		var @namespace = symbol.ContainingNamespace.IsGlobalNamespace ? null : symbol.ContainingNamespace.ToDisplayString();
 		var @class = GetClass(symbol);
 		var customization = HasCustomizeGroupMethod(symbol);
 		var tags = context.Attributes[0].NamedArguments.GetStringArray("Tags");
@@ -154,6 +154,8 @@ public sealed partial class ImmediateApisGenerator
 			Class = @class,
 			ClassFullName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
 			RouteGroupClassFullName = symbol.ContainingType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+			DeclarationParentClassFullName = symbol.ContainingType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+			FilePath = context.Attributes[0].ApplicationSyntaxReference?.SyntaxTree.FilePath ?? "",
 			Route = route,
 			UseCustomization = customization,
 			Tags = tags,

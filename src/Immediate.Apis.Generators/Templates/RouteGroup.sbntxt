@@ -47,12 +47,14 @@ partial {{ group.definition.class.type }} {{ group.definition.class.name }}
 	{{~ end ~}}
 	{{~ for g in g.groups ~}}
 
+	{{~ if g.definition.declaration_parent_class_full_name == group.definition.class_full_name ~}}
 	{{~ route_group(g, prefix + "/" + g.definition.route) ~}}
+	{{~ end ~}}
 	{{~ end ~}}
 	{{~ end ~}}
 }
 {{~ end ~}}
-{{~ route_group(root, root.definition.route) ~}}
+{{~ route_group(root, prefix) ~}}
 
 partial {{ root.definition.class.type }} {{ root.definition.class.name }}
 {

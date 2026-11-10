@@ -9,14 +9,13 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 {
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
-		var endpoints = context.SyntaxProvider
+		var endpointDeclarations = context.SyntaxProvider
 			.ForAttributeWithMetadataName(
 				"Immediate.Handlers.Shared.HandlerAttribute",
 				predicate: (node, _) => node is TypeDeclarationSyntax,
 				transform: TransformEndpoint
 			)
-			.WhereNotNull()
-			.WithTrackingName("Endpoints");
+			.WhereNotNull();
 
 		var assemblyDefaults = context.CompilationProvider
 			.Select((cp, _) => new AssemblyDefaults
@@ -35,6 +34,19 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 			)
 			.WithTrackingName("RootNamespace");
 
+		var groupDeclarations = context.SyntaxProvider
+			.ForAttributeWithMetadataName(
+				"Immediate.Apis.Shared.RouteGroupAttribute",
+				predicate: (node, _) => node is TypeDeclarationSyntax,
+				transform: TransformRouteGroup)
+			.WhereNotNull();
+
+		var fileSystemSettings = context.CompilationProvider.Combine(context.AnalyzerConfigOptionsProvider)
+			.Select((pair, _) => FileSystemRoutingSettings.Create(pair.Left, pair.Right.GlobalOptions));
+		var routing = endpointDeclarations.Collect().Combine(groupDeclarations.Collect()).Combine(fileSystemSettings)
+			.Select((pair, token) => ResolveRouting(pair.Left.Left, pair.Left.Right, pair.Right, token));
+		var endpoints = routing.SelectMany((r, _) => r.Endpoints).WithTrackingName("Endpoints");
+
 		var perMethodTemplate = Utility.GetTemplate("Route");
 		context.RegisterSourceOutput(
 			endpoints,
@@ -48,13 +60,7 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 			)
 			.WithTrackingName("EndpointsDictionary");
 
-		var routeGroupsByGroup = context.SyntaxProvider
-			.ForAttributeWithMetadataName(
-				"Immediate.Apis.Shared.RouteGroupAttribute",
-				predicate: (node, _) => node is TypeDeclarationSyntax,
-				transform: TransformRouteGroup
-			)
-			.WhereNotNull()
+		var routeGroupsByGroup = routing.SelectMany((r, _) => r.Groups)
 			.GroupBy(rg => ValueTuple.Create(rg.RouteGroupClassFullName))
 			.WithTrackingName("RouteGroupsDictionary");
 

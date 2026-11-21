@@ -5,7 +5,7 @@
 
   <ItemGroup>
 	<PackageVersion Include="AssemblyMetadata.Generators" Version="2.2.0" />
-	<PackageVersion Include="Immediate.Handlers" Version="4.3.0" />
+	<PackageVersion Include="Immediate.Handlers" Version="4.4.0" />
 	<PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.12.0" />
 	<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.4" />
 	<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing" Version="1.1.4" />

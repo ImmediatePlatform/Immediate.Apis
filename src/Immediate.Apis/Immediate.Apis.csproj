@@ -87,25 +87,25 @@
 
   <ItemGroup>
 	<None
-	  Include="../Immediate.Apis.Analyzers/bin/$(Configuration)/roslyn5.9/Immediate.Apis.Analyzers.dll"
+	  Include="../Immediate.Apis.Analyzers/bin/$(Configuration)/roslyn5.12/Immediate.Apis.Analyzers.dll"
 	  Pack="true"
-	  PackagePath="analyzers/dotnet/roslyn5.9/cs" />
+	  PackagePath="analyzers/dotnet/roslyn5.12/cs" />
 
 	<None
-	  Include="../Immediate.Apis.CodeFixes/bin/$(Configuration)/roslyn5.9/Immediate.Apis.CodeFixes.dll"
+	  Include="../Immediate.Apis.CodeFixes/bin/$(Configuration)/roslyn5.12/Immediate.Apis.CodeFixes.dll"
 	  Pack="true"
-	  PackagePath="analyzers/dotnet/roslyn5.9/cs" />
+	  PackagePath="analyzers/dotnet/roslyn5.12/cs" />
 
 	<None
-	  Include="../Immediate.Apis.Generators/bin/$(Configuration)/roslyn5.9/Immediate.Apis.Generators.dll"
+	  Include="../Immediate.Apis.Generators/bin/$(Configuration)/roslyn5.12/Immediate.Apis.Generators.dll"
 	  Pack="true"
-	  PackagePath="analyzers/dotnet/roslyn5.9/cs" />
+	  PackagePath="analyzers/dotnet/roslyn5.12/cs" />
 
 	<TfmSpecificPackageFile
 	  Condition=" '$(TargetFramework)' == 'net8.0' "
 	  Include="$(PkgScriban)/lib/net8.0/Scriban.dll"
 	  Pack="true"
-	  PackagePath="analyzers/dotnet/roslyn5.9/cs" />
+	  PackagePath="analyzers/dotnet/roslyn5.12/cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -119,7 +119,7 @@
   <PropertyGroup>
 	<RoslynVersion Condition=" '$(TargetFramework)' == 'net8.0' ">roslyn4.8</RoslynVersion>
 	<RoslynVersion Condition=" '$(TargetFramework)' == 'net10.0' ">roslyn5.0</RoslynVersion>
-	<RoslynVersion Condition=" '$(TargetFramework)' == 'net11.0' ">roslyn5.9</RoslynVersion>
+	<RoslynVersion Condition=" '$(TargetFramework)' == 'net11.0' ">roslyn5.12</RoslynVersion>
   </PropertyGroup>
 
   <ItemGroup>

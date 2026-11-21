@@ -12,7 +12,8 @@
 	<PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.12.0" />
 	<PackageVersion Include="Scalar.AspNetCore" Version="3.1.1" />
 	<PackageVersion Include="Scriban" Version="7.6.1" />
-	<PackageVersion Include="Swashbuckle.AspNetCore" Version="11.0.1" />
+	<PackageVersion Include="Swashbuckle.AspNetCore" Version="11.0.1" Condition=" '$(TargetFramework)' != 'net8.0' " />
+	<PackageVersion Include="Swashbuckle.AspNetCore" Version="10.3.1" Condition=" '$(TargetFramework)' == 'net8.0' " />
 	<PackageVersion Include="Verify.SourceGenerators" Version="2.5.0" />
 	<PackageVersion Include="Verify.XunitV3" Version="33.4.0" />
 	<PackageVersion Include="xunit.v3.mtp-v2" Version="4.0.3" />

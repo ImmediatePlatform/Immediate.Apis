@@ -6,26 +6,26 @@
   <ItemGroup>
 	<PackageVersion Include="AssemblyMetadata.Generators" Version="2.2.0" />
 	<PackageVersion Include="Immediate.Handlers" Version="4.3.0" />
-	<PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.9.0" />
+	<PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.12.0" />
 	<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.4" />
 	<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing" Version="1.1.4" />
 	<PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.12.0" />
-	<PackageVersion Include="Scalar.AspNetCore" Version="2.20.0" />
+	<PackageVersion Include="Scalar.AspNetCore" Version="3.1.1" />
 	<PackageVersion Include="Scriban" Version="7.6.1" />
-	<PackageVersion Include="Swashbuckle.AspNetCore" Version="10.3.1" />
+	<PackageVersion Include="Swashbuckle.AspNetCore" Version="11.0.1" />
 	<PackageVersion Include="Verify.SourceGenerators" Version="2.5.0" />
-	<PackageVersion Include="Verify.XunitV3" Version="33.3.4" />
+	<PackageVersion Include="Verify.XunitV3" Version="33.4.0" />
 	<PackageVersion Include="xunit.v3.mtp-v2" Version="4.0.3" />
   </ItemGroup>
 
   <PropertyGroup>
-	<Net10PackageVersion>10.0.15</Net10PackageVersion>
-	<Net11PackageVersion>11.0.0</Net11PackageVersion>
+	<Net10PackageVersion>10.0.15<//Net10PackageVersion>
+	<Net11PackageVersion>11.0.0<//Net11PackageVersion>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net11.0' ">
-	<PackageVersion Include="Basic.Reference.Assemblies.AspNet110" Version="1.8.14" />
-	<PackageVersion Include="Basic.Reference.Assemblies.Net110" Version="1.8.14" />
+	<PackageVersion Include="Basic.Reference.Assemblies.AspNet110" Version="1.8.15" />
+	<PackageVersion Include="Basic.Reference.Assemblies.Net110" Version="1.8.15" />
 	<PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="$(Net11PackageVersion)" />
 	<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(Net11PackageVersion)" />
 	<PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="$(Net11PackageVersion)" />
@@ -33,8 +33,8 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net10.0' ">
-	<PackageVersion Include="Basic.Reference.Assemblies.AspNet100" Version="1.8.14" />
-	<PackageVersion Include="Basic.Reference.Assemblies.Net100" Version="1.8.14" />
+	<PackageVersion Include="Basic.Reference.Assemblies.AspNet100" Version="1.8.15" />
+	<PackageVersion Include="Basic.Reference.Assemblies.Net100" Version="1.8.15" />
 	<PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="$(Net10PackageVersion)" />
 	<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(Net10PackageVersion)" />
 	<PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="$(Net10PackageVersion)" />
@@ -42,20 +42,20 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
-	<PackageVersion Include="Basic.Reference.Assemblies.AspNet80" Version="1.8.14" />
-	<PackageVersion Include="Basic.Reference.Assemblies.Net80" Version="1.8.14" />
+	<PackageVersion Include="Basic.Reference.Assemblies.AspNet80" Version="1.8.15" />
+	<PackageVersion Include="Basic.Reference.Assemblies.Net80" Version="1.8.15" />
 	<PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="8.0.34" />
 	<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="8.0.34" />
 	<PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
-	<PackageVersion Include="System.Security.Cryptography.Pkcs" Version="9.0.23" />
+	<PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.15" />
   </ItemGroup>
 
   <!-- IA.Generators dependencies -->
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net11.0' or '$(TargetFramework)' == 'roslyn5.9' ">
-	<PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="5.9.0" />
-	<PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
-	<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.9.0" />
-	<PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.9.0" />
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net11.0' or '$(TargetFramework)' == 'roslyn5.12' ">
+	<PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="5.12.0" />
+	<PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.12.0" />
+	<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.12.0" />
+	<PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.12.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net10.0' or '$(TargetFramework)' == 'roslyn5.0' ">
@@ -81,8 +81,8 @@
 
   <ItemGroup>
 	<GlobalPackageReference Include="DotNet.ReproducibleBuilds" Version="2.0.5" PrivateAssets="All" />
-	<GlobalPackageReference Include="Meziantou.Analyzer" Version="3.0.322" PrivateAssets="All" />
-	<GlobalPackageReference Include="Meziantou.Polyfill" Version="1.0.171" PrivateAssets="All" />
+	<GlobalPackageReference Include="Meziantou.Analyzer" Version="3.0.341" PrivateAssets="All" />
+	<GlobalPackageReference Include="Meziantou.Polyfill" Version="1.0.173" PrivateAssets="All" />
 	<GlobalPackageReference Include="MinVer" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
 </Project>

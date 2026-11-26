@@ -39,6 +39,44 @@ namespace {{ method.namespace }}
 					{{~ end ~}}
 				}
 			);
+			{{~ if method.documentation.summary ~}}
+
+			_ = global::Microsoft.AspNetCore.Http.OpenApiRouteHandlerBuilderExtensions.WithSummary(endpoint, {{ method.documentation.summary }});
+			{{~ end ~}}
+			{{~ if method.documentation.description ~}}
+
+			_ = global::Microsoft.AspNetCore.Http.OpenApiRouteHandlerBuilderExtensions.WithDescription(endpoint, {{ method.documentation.description }});
+			{{~ end ~}}
+			{{~ if method.documentation.has_request_or_response_documentation ~}}
+
+			_ = global::Microsoft.AspNetCore.Builder.RoutingEndpointConventionBuilderExtensions.WithMetadata(
+				endpoint,
+				new global::Immediate.Apis.Shared.EndpointXmlCommentsMetadata(
+					{{~ if method.documentation.parameters.count > 0 ~}}
+					new global::System.Collections.Generic.Dictionary<string, string>(global::System.StringComparer.Ordinal)
+					{
+						{{~ for parameter in method.documentation.parameters ~}}
+						[{{ parameter.key }}] = {{ parameter.description }},
+						{{~ end ~}}
+					},
+					{{~ else ~}}
+					null,
+					{{~ end ~}}
+					{{ method.documentation.request_body ?? "null" }},
+					{{ method.documentation.returns ?? "null" }},
+					{{~ if method.documentation.responses.count > 0 ~}}
+					new global::System.Collections.Generic.Dictionary<string, string>(global::System.StringComparer.Ordinal)
+					{
+						{{~ for response in method.documentation.responses ~}}
+						[{{ response.key }}] = {{ response.description }},
+						{{~ end ~}}
+					}
+					{{~ else ~}}
+					null
+					{{~ end ~}}
+				)
+			);
+			{{~ end ~}}
 			{{~ if method.allow_anonymous ~}}
 
 			_ = global::Microsoft.AspNetCore.Builder.AuthorizationEndpointConventionBuilderExtensions.AllowAnonymous(endpoint);

@@ -19,6 +19,7 @@ public sealed partial class Post
 		return TypedResults.Ok(result);
 	}
 
+	/// <summary>The requested forecast date.</summary>
 	public sealed record Query
 	{
 		public DateOnly Date { get; init; }

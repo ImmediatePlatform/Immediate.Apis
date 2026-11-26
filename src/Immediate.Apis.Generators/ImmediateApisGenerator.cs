@@ -35,6 +35,8 @@ public sealed partial class ImmediateApisGenerator : IIncrementalGenerator
 			)
 			.WithTrackingName("RootNamespace");
 
+		RegisterXmlComments(context, @namespace);
+
 		var perMethodTemplate = Utility.GetTemplate("Route");
 		context.RegisterSourceOutput(
 			endpoints,

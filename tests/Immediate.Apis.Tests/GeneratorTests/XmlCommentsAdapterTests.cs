@@ -6,6 +6,7 @@ using Microsoft.OpenApi;
 #if !NET10_0
 using Swashbuckle.AspNetCore.SwaggerGen;
 #endif
+using static Immediate.Apis.Tests.Utility;
 
 namespace Immediate.Apis.Tests.GeneratorTests;
 
@@ -13,9 +14,9 @@ public sealed class XmlCommentsAdapterTests
 {
 #if NET10_0_OR_GREATER
 	[Fact]
-	public void EmitsOnlyAspNetCoreAdapterWhenReferenced()
+	public async Task EmitsOnlyAspNetCoreAdapterWhenReferenced()
 	{
-		var source = GenerateAdapter(
+		var result = GenerateAdapter(
 			"""
 			using Microsoft.AspNetCore.OpenApi;
 
@@ -29,16 +30,15 @@ public sealed class XmlCommentsAdapterTests
 			[typeof(OpenApiOptions)]
 		);
 
-		Assert.Contains("options.AddOperationTransformer(", source, StringComparison.Ordinal);
-		Assert.DoesNotContain("Swashbuckle", source, StringComparison.Ordinal);
+		_ = await VerifyIgnoreImmediateHandlers(result);
 	}
 #endif
 
 #if !NET10_0
 	[Fact]
-	public void EmitsOnlySwashbuckleAdapterWhenReferenced()
+	public async Task EmitsOnlySwashbuckleAdapterWhenReferenced()
 	{
-		var source = GenerateAdapter(
+		var result = GenerateAdapter(
 			"""
 			using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -52,16 +52,15 @@ public sealed class XmlCommentsAdapterTests
 			[typeof(SwaggerGenOptions)]
 		);
 
-		Assert.Contains(".AddOperationFilterInstance(", source, StringComparison.Ordinal);
-		Assert.DoesNotContain("Microsoft.AspNetCore.OpenApi", source, StringComparison.Ordinal);
+		_ = await VerifyIgnoreImmediateHandlers(result);
 	}
 #endif
 
 #if NET11_0
 	[Fact]
-	public void EmitsBothAdaptersWithCompatibleProviderReferences()
+	public async Task EmitsBothAdaptersWithCompatibleProviderReferences()
 	{
-		var source = GenerateAdapter(
+		var result = GenerateAdapter(
 			"""
 			using Microsoft.AspNetCore.OpenApi;
 			using Swashbuckle.AspNetCore.SwaggerGen;
@@ -77,14 +76,12 @@ public sealed class XmlCommentsAdapterTests
 			[typeof(OpenApiOptions), typeof(SwaggerGenOptions)]
 		);
 
-		Assert.Contains("options.AddOperationTransformer(", source, StringComparison.Ordinal);
-		Assert.Contains(".AddOperationFilterInstance(", source, StringComparison.Ordinal);
+		_ = await VerifyIgnoreImmediateHandlers(result);
 	}
 #endif
 
-	private static string GenerateAdapter(string source, IReadOnlyList<Type> providers)
-	{
-		var result = GeneratorTestHelper.RunGenerator(
+	private static GeneratorDriverRunResult GenerateAdapter(string source, IReadOnlyList<Type> providers) =>
+		GeneratorTestHelper.RunGenerator(
 			source,
 			additionalReferences:
 			[
@@ -93,6 +90,4 @@ public sealed class XmlCommentsAdapterTests
 			],
 			skippedSteps: ["Endpoints"]
 		);
-		return Assert.Single(result.Results[0].GeneratedSources, s => s.HintName is "IA.XmlComments.g.cs").SourceText.ToString();
-	}
 }

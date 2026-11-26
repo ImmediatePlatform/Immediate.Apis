@@ -1,11 +1,11 @@
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Immediate.Apis.Tests.Utility;
 
 namespace Immediate.Apis.Tests.GeneratorTests;
 
 public sealed class XmlCommentsTests
 {
 	[Fact]
-	public void MapsHandlerAndRequestCommentsToEndpointMetadata()
+	public async Task MapsHandlerAndRequestCommentsToEndpointMetadata()
 	{
 		var result = GeneratorTestHelper.RunGenerator(
 			"""
@@ -37,18 +37,11 @@ public sealed class XmlCommentsTests
 			}
 			""");
 
-		var source = result.Results[0].GeneratedSources.Single(s => s.HintName.EndsWith("GetTodo.g.cs", StringComparison.Ordinal)).SourceText.ToString();
-		Assert.Contains("WithSummary(endpoint, \"Find a Todo.\")", source, StringComparison.Ordinal);
-		Assert.Contains("WithDescription(endpoint, \"Reads from the \\\"active\\\" list.\")", source, StringComparison.Ordinal);
-		Assert.Contains("[\"Id\"] = \"The todo identifier.\"", source, StringComparison.Ordinal);
-		Assert.Contains("[\"Filter\"] = \"A search `filter`.\"", source, StringComparison.Ordinal);
-		Assert.Contains("\"The matching item.\"", source, StringComparison.Ordinal);
-		Assert.Contains("[\"404\"] = \"No todo matches.\"", source, StringComparison.Ordinal);
-		Assert.DoesNotContain(result.Results[0].GeneratedSources, s => s.HintName is "IA.XmlComments.g.cs");
+		_ = await VerifyIgnoreImmediateHandlers(result);
 	}
 
 	[Fact]
-	public void UsesBodyParameterCommentAndPreservesExplicitSummary()
+	public async Task UsesBodyParameterCommentAndPreservesExplicitSummary()
 	{
 		var result = GeneratorTestHelper.RunGenerator(
 			"""
@@ -72,17 +65,6 @@ public sealed class XmlCommentsTests
 			}
 			""");
 
-		var route = Assert.Single(result.Results[0].GeneratedSources, s => s.HintName.EndsWith("AddTodo.g.cs", StringComparison.Ordinal));
-		var source = route.SourceText.ToString();
-		Assert.Contains("EndpointSummaryAttribute(\"Configured summary.\")", source, StringComparison.Ordinal);
-		Assert.DoesNotContain("WithSummary(", source, StringComparison.Ordinal);
-		Assert.Contains("WithDescription(endpoint, \"Creates a new todo in the requested list.\")", source, StringComparison.Ordinal);
-
-		var bodyDescriptions = route.SyntaxTree.GetRoot(TestContext.Current.CancellationToken)
-			.DescendantNodes()
-			.OfType<ObjectCreationExpressionSyntax>()
-			.Where(node => node.Type.ToString() is "global::Immediate.Apis.Shared.EndpointXmlCommentsMetadata")
-			.Select(node => node.ArgumentList!.Arguments[1].Expression.ToString());
-		Assert.Equal(["\"The todo to create.\"", "\"The todo to create.\""], bodyDescriptions);
+		_ = await VerifyIgnoreImmediateHandlers(result);
 	}
 }

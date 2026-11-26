@@ -13,6 +13,12 @@ public static class GeneratorTestHelper
 	public static GeneratorDriverRunResult RunGenerator(
 		[StringSyntax("c#-test")] string source,
 		params ReadOnlySpan<string> skippedSteps
+	) => RunGenerator(source, additionalReferences: [], skippedSteps);
+
+	internal static GeneratorDriverRunResult RunGenerator(
+		[StringSyntax("c#-test")] string source,
+		IReadOnlyList<MetadataReference> additionalReferences,
+		params ReadOnlySpan<string> skippedSteps
 	)
 	{
 		var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest);
@@ -30,9 +36,14 @@ public static class GeneratorTestHelper
 			[
 				..Utility.NetCoreAssemblies,
 				..Utility.GetMetadataReferences(),
+				..additionalReferences,
 			],
 			options: new(
-				outputKind: OutputKind.DynamicallyLinkedLibrary
+				outputKind: OutputKind.DynamicallyLinkedLibrary,
+				// The SDK suppresses framework reference unification warnings for net8 libraries on newer targets.
+				specificDiagnosticOptions: additionalReferences.Count == 0
+					? null
+					: ImmutableDictionary<string, ReportDiagnostic>.Empty.Add("CS1701", ReportDiagnostic.Suppress)
 			)
 		);
 

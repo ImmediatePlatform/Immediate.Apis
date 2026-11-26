@@ -9,10 +9,13 @@ builder.Services.AddImmediateApisFunctionalTestsScalarHandlers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services
-	.AddOpenApi(o => o.CreateSchemaReferenceId = t =>
-		t.Type.IsNested
+	.AddOpenApi(o =>
+	{
+		_ = o.AddImmediateApisXmlComments();
+		o.CreateSchemaReferenceId = t => t.Type.IsNested
 			? $"{t.Type.DeclaringType!.Name}+{t.Type.Name}"
-			: OpenApiOptions.CreateDefaultSchemaReferenceId(t));
+			: OpenApiOptions.CreateDefaultSchemaReferenceId(t);
+	});
 
 var app = builder.Build();
 

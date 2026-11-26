@@ -51,6 +51,43 @@ By default, this is the short form of the assembly name. For example:
 
 However, this name can be overridden using `[assembly: ImmediateAssemblyIdentifier("SomeIdentifier")]`.
 
+### OpenAPI XML documentation
+
+Enable XML documentation in the project with `<GenerateDocumentationFile>true</GenerateDocumentationFile>`.
+Document the handler class with `<summary>` and `<remarks>` to set the operation summary and description.
+For an `[AsParameters]` request, document each property with `<summary>` or each positional record parameter
+with `<param name="...">` on the record. Use the CLR member name even when a binding attribute supplies a different
+name for the route, query, or header.
+
+```cs
+/// <summary>Finds a todo item.</summary>
+[Handler]
+[MapGet("/todos/{id}")]
+public static partial class GetTodo
+{
+    /// <param name="Id">The todo identifier.</param>
+    public sealed record Query([FromRoute(Name = "id")] int Id);
+
+    // Handle or HandleAsync implementation
+}
+```
+
+For a request body, use `<param>` on `Handle` or `HandleAsync`, or `<summary>` on the request type.
+Use `<returns>` on the handler method to describe successful responses, and `<response code="404">` to describe
+a specific response already declared by the endpoint.
+
+Operation summaries and descriptions are available through ASP.NET Core endpoint metadata. Add the generated
+`AddImmediateApisXmlComments()` extension from your project's root namespace to include parameter, body, and response
+descriptions in the document.
+
+```cs
+// ASP.NET Core OpenAPI
+builder.Services.AddOpenApi(options => options.AddImmediateApisXmlComments());
+
+// Swashbuckle
+builder.Services.AddSwaggerGen(options => options.AddImmediateApisXmlComments());
+```
+
 ### Customizing the endpoints
 #### AsParameters
 

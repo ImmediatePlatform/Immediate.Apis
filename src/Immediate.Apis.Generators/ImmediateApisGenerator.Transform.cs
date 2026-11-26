@@ -112,6 +112,7 @@ public sealed partial class ImmediateApisGenerator
 
 			ParameterType = parameterType.ToDisplayString(DisplayNameFormatters.FullyQualifiedWithNullableFormat),
 			ParameterTypeDoc = parameterType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+			Documentation = GetEndpointDocumentation(symbol, handleMethod, parameterAttribute, context.SemanticModel.Compilation, token),
 
 			AllowAnonymous = allowAnonymous,
 			Authorize = authorize,

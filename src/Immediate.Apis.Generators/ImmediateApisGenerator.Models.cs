@@ -24,6 +24,7 @@ public sealed partial class ImmediateApisGenerator
 
 		public required string ParameterType { get; init; }
 		public required string ParameterTypeDoc { get; init; }
+		public required EndpointDocumentation Documentation { get; init; }
 
 		public required bool AllowAnonymous { get; init; }
 		public required bool Authorize { get; init; }
@@ -38,6 +39,21 @@ public sealed partial class ImmediateApisGenerator
 
 		public required string? RouteGroupClassFullName { get; init; }
 	}
+
+	private sealed record EndpointDocumentation(
+		string? Summary,
+		string? Description,
+		EquatableReadOnlyList<DocumentationEntry> Parameters,
+		string? RequestBody,
+		string? Returns,
+		EquatableReadOnlyList<DocumentationEntry> Responses
+	)
+	{
+		public bool HasRequestOrResponseDocumentation =>
+			Parameters.Count > 0 || RequestBody is not null || Returns is not null || Responses.Count > 0;
+	}
+
+	private sealed record DocumentationEntry(string Key, string Description);
 
 	public sealed record Class
 	{
